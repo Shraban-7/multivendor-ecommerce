@@ -93,7 +93,13 @@ class LoginController extends Controller
 
             session()->flash('success', 'Login successful');
 
-            return redirect()->intended($config['redirect']);
+            // Customers may return to the page they came from; seller/admin/employee
+            // always land on their own dashboard.
+            if ($type === 'user') {
+                return redirect()->intended($config['redirect']);
+            }
+
+            return redirect()->to($config['redirect']);
         }
 
         return redirect()->back()->with('error', 'Incorrect email!');

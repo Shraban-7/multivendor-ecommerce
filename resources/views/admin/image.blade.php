@@ -10,28 +10,28 @@
 
 <div id="alertBox"></div>
 
-<div class="row mb-3">
-    <div class="col-6">
-        <div class="card card-body mb-3">
+<div class="grid grid-cols-1 mb-3">
+    <div class="col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5 mb-3">
             <form id="form" action="{{ route('admin.images.store') }}" enctype="multipart/form-data" method="POST">
                 @csrf
-                <div class="row">
-                    <div class="mb-3 col-12">
-                        <label class="form-label">Upload Your Watermark</label>
+                <div class="grid grid-cols-1">
+                    <div class="mb-3 col-span-full">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Upload Your Watermark</label>
                         <x-image-input name="watermark" />
                     </div>
-                    <div class="mb-3 col-12">
-                        <label class="form-label">Upload Your Images</label>
-                        <input class="form-control" name="images[]" type="file" multiple>
+                    <div class="mb-3 col-span-full">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Upload Your Images</label>
+                        <input class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="images[]" type="file" multiple>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-theme">Save</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </form>
         </div>
 
         @if(count($watermarkedImages))
-        <div class="card card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5">
+            <div class="flex justify-between items-center mb-3">
                 <h5 class="mb-0">Watermarked Images</h5>
                 @if(count($watermarkedImages))
                 <form action="{{ route('admin.images.delete-all') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete all images?')">
@@ -43,17 +43,17 @@
             </div>
 
             <div style="max-height: 500px; overflow-y: auto;">
-                <div class="row">
+                <div class="grid grid-cols-1">
                     @foreach ($watermarkedImages as $image)
-                    <div class="col-md-3 mb-4">
-                        <div class="card">
+                    <div class="md:col-span-1 mb-4">
+                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
                             <img src="{{ asset('storage/' . $image) }}"
                                 class="card-img-top"
                                 alt="Watermarked Image"
                                 style="height: 200px; object-fit: cover; width: 100%;">
 
-                            <div class="card-footer text-center">
-                                <a href="{{ asset('storage/' . $image) }}" download class="btn btn-sm btn-light border w-100">
+                            <div class="px-5 py-3 border-t border-border bg-surface-muted text-center">
+                                <a href="{{ asset('storage/' . $image) }}" download class="btn btn-light btn-sm btn-block">
                                     <i data-feather="download" class="nav-icon icon-xs me-2"></i> Download</a>
                             </div>
                         </div>
@@ -66,24 +66,24 @@
 
     </div>
 
-    <div class="col-6">
+    <div class="col-span-1">
 
-        <div class="card card-body mb-3">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5 mb-3">
             <form id="cropImageForm" enctype="multipart/form-data" method="POST">
                 @csrf
-                <div class="row">
-                    <div class="mb-3 col-12">
-                        <label class="form-label">Crop Your Image</label>
+                <div class="grid grid-cols-1">
+                    <div class="mb-3 col-span-full">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Crop Your Image</label>
                         <x-image-input name="image" />
                     </div>
                 </div>
-                <button type="submit" class="btn btn-theme">Save</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </form>
         </div>
 
         @if(count($croppedImages))
-        <div class="card card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5">
+            <div class="flex justify-between items-center mb-3">
                 <h5 class="mb-0">Cropped Images</h5>
                 @if(count($croppedImages))
                 <form action="{{ route('admin.images.delete-cropped-image') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete all images?')">
@@ -95,17 +95,17 @@
             </div>
 
             <div style="max-height: 500px; overflow-y: auto;">
-                <div class="row">
+                <div class="grid grid-cols-1">
                     @foreach ($croppedImages as $image)
-                    <div class="col-md-3 mb-4">
-                        <div class="card">
+                    <div class="md:col-span-1 mb-4">
+                        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
                             <img src="{{ asset('storage/' . $image) }}"
                                 class="card-img-top"
                                 alt="Cropped Image"
                                 style="height: 200px; object-fit: cover; width: 100%;">
 
-                            <div class="card-footer text-center">
-                                <a href="{{ asset('storage/' . $image) }}" download class="btn btn-sm btn-light border w-100">
+                            <div class="px-5 py-3 border-t border-border bg-surface-muted text-center">
+                                <a href="{{ asset('storage/' . $image) }}" download class="btn btn-light btn-sm btn-block">
                                     <i data-feather="download" class="nav-icon icon-xs me-2"></i> Download</a>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeImageCropperModalBtn"></button>
             </div>
             <div class="modal-body text-center">
-                <input type="file" id="imageUploadInput" accept="image/*" class="form-control mb-3">
+                <input type="file" id="imageUploadInput" accept="image/*" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors mb-3">
                 <img id="cropperImage" src="#" class="d-none img-fluid" style="max-height: 400px;">
             </div>
             <div class="modal-footer">
@@ -190,7 +190,7 @@
 
                 const previewURL = URL.createObjectURL(blob);
 
-                imagePreviewDiv.innerHTML = `<img src="${previewURL}" class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover" style="z-index: 1;">`;
+                imagePreviewDiv.innerHTML = `<img src="${previewURL}" class="w-full h-full absolute top-0 left-0 object-fit-cover" style="z-index: 1;">`;
                 removeImageBtn.classList.remove('d-none');
 
                 // Convert blob to File and set it on original input
@@ -243,7 +243,7 @@
                 return res.text();
             })
             .then(data => {
-                $('#alertBox').html(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+                $('#alertBox').html(`<div class="p-4 rounded-sm bg-emerald-50 border border-emerald-200 text-feedback-success text-sm flex items-start gap-3 alert-dismissible fade show" role="alert">
                         Cropped image saved successfully!
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>`);

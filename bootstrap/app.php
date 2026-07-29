@@ -69,6 +69,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'seller' => SellerMiddleware::class,
             'admin' => AdminMiddleware::class,
             'markReadAuto' => AutoMarkNotificationsAsRead::class,

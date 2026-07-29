@@ -95,7 +95,8 @@ body {
    ────────────────────────── */
 
 .navbar-vertical,
-#sellerSidebar.navbar-vertical {
+#sellerSidebar.navbar-vertical,
+#adminSidebar.navbar-vertical {
   background-color: #FFFFFF !important;
   border-right: 1px solid #E5E5E5 !important;
   /* Column layout so the brand stays pinned and only the nav list scrolls.
@@ -122,20 +123,24 @@ body {
 }
 
 /* ID-prefixed to outrank the panel-wide "#db-wrapper ::-webkit-scrollbar" rule */
-#sellerSidebar .sidebar-scroll::-webkit-scrollbar {
+#sellerSidebar .sidebar-scroll::-webkit-scrollbar,
+#adminSidebar .sidebar-scroll::-webkit-scrollbar {
   width: 4px;
 }
 
-#sellerSidebar .sidebar-scroll::-webkit-scrollbar-track {
+#sellerSidebar .sidebar-scroll::-webkit-scrollbar-track,
+#adminSidebar .sidebar-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-#sellerSidebar .sidebar-scroll::-webkit-scrollbar-thumb {
+#sellerSidebar .sidebar-scroll::-webkit-scrollbar-thumb,
+#adminSidebar .sidebar-scroll::-webkit-scrollbar-thumb {
   background-color: transparent;
   border-radius: 999px;
 }
 
-#sellerSidebar:hover .sidebar-scroll::-webkit-scrollbar-thumb {
+#sellerSidebar:hover .sidebar-scroll::-webkit-scrollbar-thumb,
+#adminSidebar:hover .sidebar-scroll::-webkit-scrollbar-thumb {
   background-color: #D4D4D4;
 }
 
@@ -152,17 +157,18 @@ body {
   border-bottom: none !important;
 }
 
-/* Gap-based icon spacing. Scoped to the seller sidebar: the admin sidebar
-   shares this stylesheet but still spaces its icons with .me-2 margins, and
-   would end up double-spaced. */
-#sellerSidebar .navbar-nav .nav-item .nav-link {
+/* Gap-based icon spacing. Scoped to both sidebars to avoid
+   double-spacing with .me-2 margins that may linger in templates. */
+#sellerSidebar .navbar-nav .nav-item .nav-link,
+#adminSidebar .navbar-nav .nav-item .nav-link {
   display: flex !important;
   align-items: center !important;
   gap: 0.625rem !important;
 }
 
 /* Labels truncate instead of wrapping to a second line */
-#sellerSidebar .navbar-nav .nav-link > span {
+#sellerSidebar .navbar-nav .nav-link > span,
+#adminSidebar .navbar-nav .nav-link > span {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -200,11 +206,19 @@ body {
   transition: color 0.15s ease !important;
 }
 
-/* Seller sidebar sets its own icon size; admin keeps .icon-xs (16px) */
-#sellerSidebar .navbar-nav .nav-link .nav-icon {
+/* Consistent icon sizing across both sidebars */
+#sellerSidebar .navbar-nav .nav-link .nav-icon,
+#adminSidebar .navbar-nav .nav-link .nav-icon {
   flex: 0 0 auto !important;
   width: 18px !important;
   height: 18px !important;
+}
+
+/* Lucide generates inline SVGs — override the default 24x24 */
+#sellerSidebar .navbar-nav .nav-link .nav-icon svg,
+#adminSidebar .navbar-nav .nav-link .nav-icon svg {
+  width: 100% !important;
+  height: 100% !important;
   stroke-width: 2 !important;
 }
 
@@ -253,13 +267,23 @@ body {
   height: 12px !important;
 }
 
-#sellerSidebar .navbar-nav .nav .nav-link {
+#sellerSidebar .navbar-nav .nav .nav-link,
+#adminSidebar .navbar-nav .nav .nav-link {
   gap: 0.5rem !important;
 }
 
-#sellerSidebar .navbar-nav .nav .nav-link .nav-icon {
+#sellerSidebar .navbar-nav .nav .nav-link .nav-icon,
+#adminSidebar .navbar-nav .nav .nav-link .nav-icon {
   width: 14px !important;
   height: 14px !important;
+}
+
+/* Sub-menu SVGs inherit the 14px box */
+#sellerSidebar .navbar-nav .nav .nav-link .nav-icon svg,
+#adminSidebar .navbar-nav .nav .nav-link .nav-icon svg {
+  width: 100% !important;
+  height: 100% !important;
+  stroke-width: 2 !important;
 }
 
 /* ── Section headings (list items, so they are valid <ul> children) ── */

@@ -4,16 +4,26 @@
             <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
                 <i class="fas fa-user text-sm"></i>
             </div>
-            @auth
+            @if (auth('web')->check())
                 <div>
-                    <p class="text-sm font-medium">{{ auth()->user()->name }}</p>
-                    <p class="text-[11px] text-white/70">{{ auth()->user()->email }}</p>
+                    <p class="text-sm font-medium">{{ auth('web')->user()->name }}</p>
+                    <p class="text-[11px] text-white/70">{{ auth('web')->user()->email }}</p>
+                </div>
+            @elseif (auth('seller')->check())
+                <div>
+                    <p class="text-sm font-medium">{{ auth('seller')->user()->name }}</p>
+                    <a href="{{ route('seller.dashboard') }}" class="text-[11px] text-white/90 hover:underline">Seller Panel</a>
+                </div>
+            @elseif (auth('admin')->check())
+                <div>
+                    <p class="text-sm font-medium">{{ auth('admin')->user()->name }}</p>
+                    <a href="{{ route('admin.dashboard') }}" class="text-[11px] text-white/90 hover:underline">Admin Panel</a>
                 </div>
             @else
                 <div>
                     <a href="javascript:void(0)" class="auth-btn text-sm font-medium hover:underline">Login / Register</a>
                 </div>
-            @endauth
+            @endif
         </div>
         <button type="button" onclick="document.getElementById('mobile-drawer').classList.add('-translate-x-full'); document.getElementById('mobile-drawer-overlay').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 eq">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,12 +129,38 @@
         @endauth
     </div>
 
-    @auth
+    @if (auth('web')->check())
         <div class="border-t border-[#E5E5E5] p-4">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#D93025] bg-[#FFF1EA] hover:bg-[#D93025] hover:text-white eq rounded">
                     <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </form>
+        </div>
+    @elseif (auth('seller')->check())
+        <div class="border-t border-[#E5E5E5] p-4 space-y-2">
+            <a href="{{ route('seller.dashboard') }}"
+               class="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-white bg-[#F85606] hover:bg-[#C43D00] eq rounded">
+                Seller Panel
+            </a>
+            <form method="POST" action="{{ route('seller.logout') }}">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#D93025] bg-[#FFF1EA] hover:bg-[#D93025] hover:text-white eq rounded">
+                    Logout
+                </button>
+            </form>
+        </div>
+    @elseif (auth('admin')->check())
+        <div class="border-t border-[#E5E5E5] p-4 space-y-2">
+            <a href="{{ route('admin.dashboard') }}"
+               class="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-white bg-[#F85606] hover:bg-[#C43D00] eq rounded">
+                Admin Panel
+            </a>
+            <form method="POST" action="{{ route('admin.logout') }}">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#D93025] bg-[#FFF1EA] hover:bg-[#D93025] hover:text-white eq rounded">
                     Logout
                 </button>
             </form>
@@ -137,7 +173,7 @@
                 Become a Seller
             </a>
         </div>
-    @endauth
+    @endif
 </div>
 
 <div id="mobile-drawer-overlay" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="document.getElementById('mobile-drawer').classList.add('-translate-x-full'); this.classList.add('hidden')"></div>

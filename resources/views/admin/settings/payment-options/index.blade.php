@@ -2,7 +2,7 @@
 @section('title', 'Payment Options')
 
 @section('content')
-    <div class="mb-3 d-flex justify-content-between align-items-center">
+    <div class="mb-3 flex justify-between items-center">
         <h4 class="mb-0">Payment Options</h4>
 
         @if (hasPermission('admin.settings.paymentOptions.store'))
@@ -12,8 +12,8 @@
         @endif
     </div>
 
-    <div class="table-responsive">
-        <table class="table mb-3 bg-white table-bordered">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
@@ -34,7 +34,7 @@
                                 <img src="{{ storage_url($option->image) }}" alt="{{ $option->name }}"
                                     style="max-height: 40px;">
                             @else
-                                <em class="text-muted">No Image</em>
+                                <em class="text-ink-tertiary">No Image</em>
                             @endif
                         </td>
                         <td>
@@ -45,14 +45,14 @@
                         </td>
                         <td>
                             @if ($option->status)
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-feedback-success">Active</span>
                             @else
-                                <span class="badge bg-danger">Inactive</span>
+                                <span class="badge bg-feedback-danger">Inactive</span>
                             @endif
                         </td>
                         <td>
                             @if (hasPermission('admin.settings.paymentOptions.update'))
-                                <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
+                                <button class="btn btn-light btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#editModal-{{ $option->id }}">
                                     <i data-feather="edit" class="icon-xs"></i> Edit
                                 </button>
@@ -76,27 +76,27 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input name="name" type="text" class="form-control" required>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                        <input name="name" type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Link</label>
-                        <input name="link" type="url" class="form-control">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Link</label>
+                        <input name="link" type="url" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Upload Image</label>
-                        <input name="image" type="file" class="form-control">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Upload Image</label>
+                        <input name="image" type="file" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Status</label>
-                        <select name="status" class="form-select">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
+                        <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                             <option value="1" selected>Active</option>
                             <option value="0">Inactive</option>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-theme">Save</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -116,28 +116,28 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" value="{{ $option->name }}"
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $option->name }}"
                                 required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Link</label>
-                            <input type="url" name="link" class="form-control" value="{{ $option->link }}">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Link</label>
+                            <input type="url" name="link" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $option->link }}">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Image (optional)</label>
-                            <input type="file" name="image" class="form-control">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Image (optional)</label>
+                            <input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             @if ($option->image)
                                 <div class="mt-2">
-                                    <label class="form-label">Current Image:</label><br>
+                                    <label class="block text-xs font-medium text-ink-secondary mb-1">Current Image:</label><br>
                                     <img src="{{ storage_url($option->image) }}" class="img-fluid rounded"
                                         style="max-height: 60px;">
                                 </div>
                             @endif
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
+                            <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                 <option value="1" {{ $option->status ? 'selected' : '' }}>Active</option>
                                 <option value="0" {{ !$option->status ? 'selected' : '' }}>Inactive</option>
                             </select>

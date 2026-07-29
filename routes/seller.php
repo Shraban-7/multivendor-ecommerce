@@ -14,3 +14,7 @@ Route::middleware('seller')->prefix('seller')->as('seller.')->group(function () 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
 });
+
+Route::middleware('guest:seller,employee')->prefix('seller')->as('seller.')->group(function () {
+    Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
+});

@@ -1,334 +1,440 @@
-<style>
-    .chevron-icon {
-        transition: transform 0.3s ease;
-    }
-
-    .nav-link[aria-expanded="true"] .chevron-icon {
-        transform: rotate(90deg);
-    }
-</style>
-
 <?php
-$routePath = request()->path();
 $settings = settings();
+
+$catalogsOpen = request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*');
+$sellersOpen = request()->routeIs('admin.sellers.*') || request()->routeIs('admin.seller.requests') || request()->routeIs('admin.seller.payments');
+$ordersOpen = request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') || request()->routeIs('admin.returns.*');
+$membersOpen = request()->routeIs('admin.admins.*');
+$gatewaysOpen = request()->routeIs('admin.paymentGateways.*') || request()->routeIs('admin.manualGateways.*');
+$settingsOpen = request()->routeIs('admin.settings.*') || request()->routeIs('admin.staticPages.*') || request()->routeIs('admin.banners.*');
+$subscriptionsOpen = request()->routeIs('admin.subscription-plans.*') || request()->routeIs('admin.subscriptions.*');
 ?>
 
-<nav class="navbar-vertical navbar">
-    <div class="nav-scroller">
-        <a class="navbar-brand d-flex" href="">
-            <img src="{{ storage_url($settings->logo_white) }}" alt="logo" />
-        </a>
-        <ul class="navbar-nav flex-column" id="sideNavbar">
+<nav class="navbar-vertical navbar" id="adminSidebar" aria-label="Admin navigation">
+    <a class="navbar-brand flex" href="{{ route('admin.dashboard') }}">
+        <img src="{{ storage_url($settings->logo_white) }}" alt="logo" />
+    </a>
 
-            <x-dashboard.nav-item-link :route="'admin.dashboard'">
-                <i data-feather="home" class="nav-icon icon-xs me-2"></i> Dashboard
-            </x-dashboard.nav-item-link>
+    <div class="sidebar-scroll">
+        <ul class="navbar-nav flex-col mb-0" id="sideNavbar">
+
+            {{-- ═══ 1. MAIN ═══ --}}
+            <li class="sidebar-heading">Main</li>
 
             <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
-                    data-bs-toggle="collapse" data-bs-target="#navCatalogs"
-                    aria-expanded="{{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'true' : 'false' }}"
-                    aria-controls="navCatalogs">
-
-                    <div>
-                        <i data-feather="layers" class="nav-icon icon-xs me-2"></i>
-                        Manage Catalogs
-                    </div>
-
-                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                    href="{{ route('admin.dashboard') }}"
+                    @if (request()->routeIs('admin.dashboard')) aria-current="page" @endif>
+                    <i data-lucide="layout-dashboard" class="nav-icon"></i>
+                    <span>Dashboard</span>
                 </a>
+            </li>
 
-                <div id="navCatalogs"
-                    class="collapse {{ request()->routeIs('admin.brands.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.options*') || request()->routeIs('admin.subcategories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'show' : '' }}"
-                    data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
-                        <x-dashboard.nav-item-link :route="'admin.brands.index'">
-                            Brands
-                        </x-dashboard.nav-item-link>
+            {{-- ═══ 2. CATALOG ═══ --}}
+            <li class="sidebar-heading">Catalog</li>
 
-                        <x-dashboard.nav-item-link :route="'admin.categories.index'">
-                            Categories
-                        </x-dashboard.nav-item-link>
-
-                        <x-dashboard.nav-item-link :route="'admin.subcategories.index'">
-                            Subcategories
-                        </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.options.index'">
-                            Options
-                        </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.colors.index'">
-                            Colors
-                        </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.sizes.index'">
-                            Sizes
-                        </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link nav-link-toggle {{ $catalogsOpen ? '' : 'collapsed' }}" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navCatalogs"
+                    aria-expanded="{{ $catalogsOpen ? 'true' : 'false' }}" aria-controls="navCatalogs">
+                    <i data-lucide="layers" class="nav-icon"></i>
+                    <span>Manage Catalogs</span>
+                    <i data-lucide="chevron-right" class="chevron-icon"></i>
+                </a>
+                <div id="navCatalogs" class="collapse {{ $catalogsOpen ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-col">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.brands.index') ? 'active' : '' }}"
+                                href="{{ route('admin.brands.index') }}">
+                                <i data-lucide="tag" class="nav-icon"></i>
+                                <span>Brands</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}"
+                                href="{{ route('admin.categories.index') }}">
+                                <i data-lucide="folder" class="nav-icon"></i>
+                                <span>Categories</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.subcategories.index') ? 'active' : '' }}"
+                                href="{{ route('admin.subcategories.index') }}">
+                                <i data-lucide="folder-open" class="nav-icon"></i>
+                                <span>Subcategories</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.options.index') ? 'active' : '' }}"
+                                href="{{ route('admin.options.index') }}">
+                                <i data-lucide="sliders-horizontal" class="nav-icon"></i>
+                                <span>Options</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.colors.index') ? 'active' : '' }}"
+                                href="{{ route('admin.colors.index') }}">
+                                <i data-lucide="palette" class="nav-icon"></i>
+                                <span>Colors</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.sizes.index') ? 'active' : '' }}"
+                                href="{{ route('admin.sizes.index') }}">
+                                <i data-lucide="maximize" class="nav-icon"></i>
+                                <span>Sizes</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
 
-            <x-dashboard.nav-item-link :route="'admin.products.index'">
-                <i data-feather="package" class="nav-icon icon-xs me-2"></i> Products
-            </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.products.index') ? 'active' : '' }}"
+                    href="{{ route('admin.products.index') }}"
+                    @if (request()->routeIs('admin.products.index')) aria-current="page" @endif>
+                    <i data-lucide="package" class="nav-icon"></i>
+                    <span>Products</span>
+                </a>
+            </li>
+
+            {{-- ═══ 3. CUSTOMERS ═══ --}}
+            <li class="sidebar-heading">Customers</li>
 
             @if (hasPermission('admin.customers.index'))
-                <x-dashboard.nav-item-link :route="'admin.customers.index'">
-                    <i data-feather="users" class="nav-icon icon-xs me-2"></i> Customers
-                </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.customers.index') ? 'active' : '' }}"
+                    href="{{ route('admin.customers.index') }}"
+                    @if (request()->routeIs('admin.customers.index')) aria-current="page" @endif>
+                    <i data-lucide="users" class="nav-icon"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
             @endif
 
-            <x-dashboard.nav-item-link :route="'admin.flash-sales.index'">
-                <i data-feather="zap" class="nav-icon icon-xs me-2"></i> Flash Sales
-            </x-dashboard.nav-item-link>
-
-            <x-dashboard.nav-item-link :route="'admin.coupons.index'">
-                <i data-feather="tag" class="nav-icon icon-xs me-2"></i> Coupons
-            </x-dashboard.nav-item-link>
-
-            @if (hasPermission('admin.sellers.index') ||
-                    hasPermission('admin.seller.create') ||
-                    hasPermission('admin.sellers.pending'))
-                <li class="nav-item">
-                    <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
-                        href="#!" data-bs-toggle="collapse" data-bs-target="#navSellers"
-                        aria-expanded="{{ request()->routeIs('admin.sellers.*') || request()->routeIs('admin.seller.requests') || request()->routeIs('admin.seller.payments') ? 'true' : 'false' }}"
-                        aria-controls="navSellers">
-
-                        <div>
-                            <i data-feather="users" class="nav-icon icon-xs me-2"></i>
-                            Manage Sellers
-                        </div>
-
-                        <i data-feather="chevron-right" class="chevron-icon transition"></i>
-                    </a>
-
-                    <div id="navSellers"
-                        class="collapse {{ request()->routeIs('admin.sellers.*') || request()->routeIs('admin.seller.requests') || request()->routeIs('admin.seller.payments') ? 'show' : '' }}"
-                        data-bs-parent="#sideNavbar">
-                        <ul class="nav flex-column">
-
-                            @if (hasPermission('admin.sellers.index'))
-                                <x-dashboard.nav-item-link :route="'admin.sellers.index'">
-                                    All Sellers
-                                </x-dashboard.nav-item-link>
-                            @endif
-                            @if (hasPermission('admin.sellers.pending'))
-                                <x-dashboard.nav-item-link :route="'admin.sellers.pending'">
-                                    Pending
-                                </x-dashboard.nav-item-link>
-                            @endif
-                            @if (hasPermission('admin.sellers.create'))
-                                <x-dashboard.nav-item-link :route="'admin.sellers.create'">
-                                    Add Seller
-                                </x-dashboard.nav-item-link>
-                            @endif
-                        </ul>
-                    </div>
-                </li>
-            @endif
+            {{-- ═══ 4. PROMOTIONS ═══ --}}
+            <li class="sidebar-heading">Promotions</li>
 
             <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
-                    data-bs-toggle="collapse" data-bs-target="#navOrders"
-                    aria-expanded="{{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') || request()->routeIs('admin.returns.*') ? 'true' : 'false' }}"
-                    aria-controls="navOrders">
-
-                    <div>
-                        <i data-feather="shopping-cart" class="nav-icon icon-xs me-2"></i>
-                        Manage Orders
-                    </div>
-
-                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                <a class="nav-link {{ request()->routeIs('admin.flash-sales.index') ? 'active' : '' }}"
+                    href="{{ route('admin.flash-sales.index') }}"
+                    @if (request()->routeIs('admin.flash-sales.index')) aria-current="page" @endif>
+                    <i data-lucide="zap" class="nav-icon"></i>
+                    <span>Flash Sales</span>
                 </a>
+            </li>
 
-                <div id="navOrders"
-                    class="collapse {{ request()->routeIs('admin.orders.*') || request()->routeIs('admin.payments.*') || request()->routeIs('admin.payouts.*') || request()->routeIs('admin.reviews.*') || request()->routeIs('admin.returns.*') ? 'show' : '' }}"
-                    data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
-                        <x-dashboard.nav-item-link :route="'admin.orders.index'">
-                            Orders
-                        </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.returns.index'">
-                            Returns &amp; Refunds
-                        </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.payments.index'">
-                            Payments
-                        </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.payouts.index'">
-                            Seller Payouts
-                        </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.coupons.index') ? 'active' : '' }}"
+                    href="{{ route('admin.coupons.index') }}"
+                    @if (request()->routeIs('admin.coupons.index')) aria-current="page" @endif>
+                    <i data-lucide="ticket-percent" class="nav-icon"></i>
+                    <span>Coupons</span>
+                </a>
+            </li>
+
+            {{-- ═══ 5. SELLERS ═══ --}}
+            @if (hasPermission('admin.sellers.index') || hasPermission('admin.seller.create') || hasPermission('admin.sellers.pending'))
+            <li class="sidebar-heading">Sellers</li>
+
+            <li class="nav-item">
+                <a class="nav-link nav-link-toggle {{ $sellersOpen ? '' : 'collapsed' }}" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navSellers"
+                    aria-expanded="{{ $sellersOpen ? 'true' : 'false' }}" aria-controls="navSellers">
+                    <i data-lucide="store" class="nav-icon"></i>
+                    <span>Manage Sellers</span>
+                    <i data-lucide="chevron-right" class="chevron-icon"></i>
+                </a>
+                <div id="navSellers" class="collapse {{ $sellersOpen ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-col">
+                        @if (hasPermission('admin.sellers.index'))
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.sellers.index') ? 'active' : '' }}"
+                                href="{{ route('admin.sellers.index') }}">
+                                <i data-lucide="list" class="nav-icon"></i>
+                                <span>All Sellers</span>
+                            </a>
+                        </li>
+                        @endif
+                        @if (hasPermission('admin.sellers.pending'))
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.sellers.pending') ? 'active' : '' }}"
+                                href="{{ route('admin.sellers.pending') }}">
+                                <i data-lucide="clock" class="nav-icon"></i>
+                                <span>Pending</span>
+                            </a>
+                        </li>
+                        @endif
+                        @if (hasPermission('admin.sellers.create'))
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.sellers.create') ? 'active' : '' }}"
+                                href="{{ route('admin.sellers.create') }}">
+                                <i data-lucide="user-plus" class="nav-icon"></i>
+                                <span>Add Seller</span>
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                </div>
+            </li>
+            @endif
+
+            {{-- ═══ 6. ORDERS ═══ --}}
+            <li class="sidebar-heading">Orders</li>
+
+            <li class="nav-item">
+                <a class="nav-link nav-link-toggle {{ $ordersOpen ? '' : 'collapsed' }}" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navOrders"
+                    aria-expanded="{{ $ordersOpen ? 'true' : 'false' }}" aria-controls="navOrders">
+                    <i data-lucide="shopping-cart" class="nav-icon"></i>
+                    <span>Manage Orders</span>
+                    <i data-lucide="chevron-right" class="chevron-icon"></i>
+                </a>
+                <div id="navOrders" class="collapse {{ $ordersOpen ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-col">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.orders.index') ? 'active' : '' }}"
+                                href="{{ route('admin.orders.index') }}">
+                                <i data-lucide="clipboard-list" class="nav-icon"></i>
+                                <span>Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.returns.index') ? 'active' : '' }}"
+                                href="{{ route('admin.returns.index') }}">
+                                <i data-lucide="undo-2" class="nav-icon"></i>
+                                <span>Returns &amp; Refunds</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.payments.index') ? 'active' : '' }}"
+                                href="{{ route('admin.payments.index') }}">
+                                <i data-lucide="credit-card" class="nav-icon"></i>
+                                <span>Payments</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.payouts.index') ? 'active' : '' }}"
+                                href="{{ route('admin.payouts.index') }}">
+                                <i data-lucide="banknote" class="nav-icon"></i>
+                                <span>Seller Payouts</span>
+                            </a>
+                        </li>
                         @if (hasPermission('admin.reviews.index'))
-                            <x-dashboard.nav-item-link :route="'admin.reviews.index'">
-                                Reviews
-                            </x-dashboard.nav-item-link>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.reviews.index') ? 'active' : '' }}"
+                                href="{{ route('admin.reviews.index') }}">
+                                <i data-lucide="star" class="nav-icon"></i>
+                                <span>Reviews</span>
+                            </a>
+                        </li>
                         @endif
                     </ul>
                 </div>
             </li>
 
+            {{-- ═══ 7. OPERATIONS ═══ --}}
+            <li class="sidebar-heading">Operations</li>
+
             @if (hasPermission('admin.seller-performance.index'))
-                <x-dashboard.nav-item-link :route="'admin.seller-performance.index'">
-                    <i data-feather="trending-up" class="nav-icon icon-xs me-2"></i> Seller Performance
-                </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.seller-performance.index') ? 'active' : '' }}"
+                    href="{{ route('admin.seller-performance.index') }}"
+                    @if (request()->routeIs('admin.seller-performance.index')) aria-current="page" @endif>
+                    <i data-lucide="gauge" class="nav-icon"></i>
+                    <span>Seller Performance</span>
+                </a>
+            </li>
             @endif
 
             @if (hasPermission('admin.support.index'))
-                <x-dashboard.nav-item-link :route="'admin.support.index'">
-                    <i data-feather="life-buoy" class="nav-icon icon-xs me-2"></i> Support Tickets
-                </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.support.index') ? 'active' : '' }}"
+                    href="{{ route('admin.support.index') }}"
+                    @if (request()->routeIs('admin.support.index')) aria-current="page" @endif>
+                    <i data-lucide="headset" class="nav-icon"></i>
+                    <span>Support Tickets</span>
+                </a>
+            </li>
             @endif
 
             @if (hasPermission('admin.shipping.carriers.index'))
-                <x-dashboard.nav-item-link :route="'admin.shipping.carriers.index'">
-                    <i data-feather="truck" class="nav-icon icon-xs me-2"></i> Shipping Carriers
-                </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.shipping.carriers.index') ? 'active' : '' }}"
+                    href="{{ route('admin.shipping.carriers.index') }}"
+                    @if (request()->routeIs('admin.shipping.carriers.index')) aria-current="page" @endif>
+                    <i data-lucide="truck" class="nav-icon"></i>
+                    <span>Shipping Carriers</span>
+                </a>
+            </li>
             @endif
 
+            {{-- ═══ 8. ADMINISTRATION ═══ --}}
+            <li class="sidebar-heading">Administration</li>
+
             <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                <a class="nav-link nav-link-toggle {{ $membersOpen ? '' : 'collapsed' }}" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navMembers"
-                    aria-expanded="{{ request()->routeIs('admin.admins.*') ? 'true' : 'false' }}"
-                    aria-controls="navMembers">
-
-                    <div>
-                        <i data-feather="users" class="nav-icon icon-xs me-2"></i>
-                        Manage Members
-                    </div>
-
-                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                    aria-expanded="{{ $membersOpen ? 'true' : 'false' }}" aria-controls="navMembers">
+                    <i data-lucide="users" class="nav-icon"></i>
+                    <span>Manage Members</span>
+                    <i data-lucide="chevron-right" class="chevron-icon"></i>
                 </a>
-
-                <div id="navMembers" class="collapse {{ request()->routeIs('admin.admins.*') ? 'show' : '' }}"
-                    data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
+                <div id="navMembers" class="collapse {{ $membersOpen ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-col">
                         @if (hasPermission('admin.admins.index'))
-                            <x-dashboard.nav-item-link :route="'admin.admins.index'">
-                                Admin List
-                            </x-dashboard.nav-item-link>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.admins.index') ? 'active' : '' }}"
+                                href="{{ route('admin.admins.index') }}">
+                                <i data-lucide="list" class="nav-icon"></i>
+                                <span>Admin List</span>
+                            </a>
+                        </li>
                         @endif
                         @if (hasPermission('admin.admins.create'))
-                            <x-dashboard.nav-item-link :route="'admin.admins.create'">
-                                Add Admin
-                            </x-dashboard.nav-item-link>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.admins.create') ? 'active' : '' }}"
+                                href="{{ route('admin.admins.create') }}">
+                                <i data-lucide="user-plus" class="nav-icon"></i>
+                                <span>Add Admin</span>
+                            </a>
+                        </li>
                         @endif
                     </ul>
                 </div>
             </li>
 
             @if (hasPermission('admin.roles.index'))
-                <x-dashboard.nav-item-link :route="'admin.roles.index'">
-                    <i data-feather="layers" class="nav-icon icon-xs me-2"></i>Permissions
-                </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.roles.index') ? 'active' : '' }}"
+                    href="{{ route('admin.roles.index') }}"
+                    @if (request()->routeIs('admin.roles.index')) aria-current="page" @endif>
+                    <i data-lucide="shield" class="nav-icon"></i>
+                    <span>Permissions</span>
+                </a>
+            </li>
             @endif
 
-            <?php
-            $gatewayExpanded = request()->routeIs('admin.paymentGateways.*') || request()->routeIs('admin.manualGateways.*') ? true : false;
-?>
-
             <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                <a class="nav-link nav-link-toggle {{ $gatewaysOpen ? '' : 'collapsed' }}" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navGateways"
-                    aria-expanded="{{ $gatewayExpanded ? 'true' : 'false' }}" aria-controls="navGateways">
-                    <div>
-                        <i data-feather="credit-card" class="nav-icon icon-xs me-2"></i>
-                        Payment Gateways
-                    </div>
-                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                    aria-expanded="{{ $gatewaysOpen ? 'true' : 'false' }}" aria-controls="navGateways">
+                    <i data-lucide="credit-card" class="nav-icon"></i>
+                    <span>Payment Gateways</span>
+                    <i data-lucide="chevron-right" class="chevron-icon"></i>
                 </a>
-
-                <div id="navGateways" class="collapse {{ $gatewayExpanded ? 'show' : '' }}"
-                    data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
-                        <x-dashboard.nav-item-link :route="'admin.paymentGateways.index'">
-                            Payment Gateways
-                        </x-dashboard.nav-item-link>
-                        <x-dashboard.nav-item-link :route="'admin.manualGateways.index'">
-                            Manual Gateways
-                        </x-dashboard.nav-item-link>
+                <div id="navGateways" class="collapse {{ $gatewaysOpen ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-col">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.paymentGateways.index') ? 'active' : '' }}"
+                                href="{{ route('admin.paymentGateways.index') }}">
+                                <i data-lucide="globe" class="nav-icon"></i>
+                                <span>Payment Gateways</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.manualGateways.index') ? 'active' : '' }}"
+                                href="{{ route('admin.manualGateways.index') }}">
+                                <i data-lucide="wallet" class="nav-icon"></i>
+                                <span>Manual Gateways</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center" href="#!"
+                <a class="nav-link nav-link-toggle {{ $settingsOpen ? '' : 'collapsed' }}" href="#!"
                     data-bs-toggle="collapse" data-bs-target="#navSettings"
-                    aria-expanded="{{ request()->routeIs('admin.settings.*') ? 'true' : 'false' }}"
-                    aria-controls="navSettings">
-
-                    <div>
-                        <i data-feather="settings" class="nav-icon icon-xs me-2"></i>
-                        Settings
-                    </div>
-
-                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                    aria-expanded="{{ $settingsOpen ? 'true' : 'false' }}" aria-controls="navSettings">
+                    <i data-lucide="settings" class="nav-icon"></i>
+                    <span>Settings</span>
+                    <i data-lucide="chevron-right" class="chevron-icon"></i>
                 </a>
-
-                <div id="navSettings" class="collapse {{ request()->routeIs('admin.settings.*') || request()->routeIs('admin.staticPages.*')||request()->routeIs('admin.banners.*')  ? 'show' : '' }}"
-                    data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
+                <div id="navSettings" class="collapse {{ $settingsOpen ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-col">
                         @if (hasPermission('admin.settings.socialLinks.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.socialLinks.index'">
-                                Social Links
-                            </x-dashboard.nav-item-link>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.settings.socialLinks.index') ? 'active' : '' }}"
+                                href="{{ route('admin.settings.socialLinks.index') }}">
+                                <i data-lucide="share-2" class="nav-icon"></i>
+                                <span>Social Links</span>
+                            </a>
+                        </li>
                         @endif
-
                         @if (hasPermission('admin.settings.paymentOptions.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.paymentOptions.index'">
-                                Payment Options
-                            </x-dashboard.nav-item-link>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.settings.paymentOptions.index') ? 'active' : '' }}"
+                                href="{{ route('admin.settings.paymentOptions.index') }}">
+                                <i data-lucide="credit-card" class="nav-icon"></i>
+                                <span>Payment Options</span>
+                            </a>
+                        </li>
                         @endif
-
                         @if (hasPermission('admin.settings.index'))
-                            <x-dashboard.nav-item-link :route="'admin.settings.index'">
-                                General
-                            </x-dashboard.nav-item-link>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}"
+                                href="{{ route('admin.settings.index') }}">
+                                <i data-lucide="sliders" class="nav-icon"></i>
+                                <span>General</span>
+                            </a>
+                        </li>
                         @endif
-
-                        <x-dashboard.nav-item-link :route="'admin.staticPages.index'">
-                            Static Pages
-                        </x-dashboard.nav-item-link>
-
-                        <x-dashboard.nav-item-link :route="'admin.banners.index'">
-                            Banners
-                        </x-dashboard.nav-item-link>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.staticPages.index') ? 'active' : '' }}"
+                                href="{{ route('admin.staticPages.index') }}">
+                                <i data-lucide="file-text" class="nav-icon"></i>
+                                <span>Static Pages</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.banners.index') ? 'active' : '' }}"
+                                href="{{ route('admin.banners.index') }}">
+                                <i data-lucide="image" class="nav-icon"></i>
+                                <span>Banners</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
 
-            <?php
-$subscriptionExpanded = request()->routeIs('admin.subscription-plans.*') || request()->routeIs('admin.subscriptions.*') ? true : false;
-?>
-
             <li class="nav-item">
-                <a class="nav-link has-arrow collapsed d-flex justify-content-between align-items-center"
-                    href="#!" data-bs-toggle="collapse" data-bs-target="#navSubscriptions"
-                    aria-expanded="{{ $subscriptionExpanded ? 'true' : 'false' }}" aria-controls="navSubscriptions">
-
-                    <div>
-                        <i data-feather="layers" class="nav-icon icon-xs me-2"></i>
-                        Subscriptions
-                    </div>
-
-                    <i data-feather="chevron-right" class="chevron-icon transition"></i>
+                <a class="nav-link nav-link-toggle {{ $subscriptionsOpen ? '' : 'collapsed' }}" href="#!"
+                    data-bs-toggle="collapse" data-bs-target="#navSubscriptions"
+                    aria-expanded="{{ $subscriptionsOpen ? 'true' : 'false' }}" aria-controls="navSubscriptions">
+                    <i data-lucide="crown" class="nav-icon"></i>
+                    <span>Subscriptions</span>
+                    <i data-lucide="chevron-right" class="chevron-icon"></i>
                 </a>
-
-                <div id="navSubscriptions" class="collapse {{ $subscriptionExpanded ? 'show' : '' }}"
-                    data-bs-parent="#sideNavbar">
-                    <ul class="nav flex-column">
-                        <x-dashboard.nav-item-link :route="'admin.subscription-plans.index'">
-                            Plans
-                        </x-dashboard.nav-item-link>
-
-                        <x-dashboard.nav-item-link :route="'admin.subscriptions.index'">
-                            Subscriptions
-                        </x-dashboard.nav-item-link>
+                <div id="navSubscriptions" class="collapse {{ $subscriptionsOpen ? 'show' : '' }}" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-col">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.subscription-plans.index') ? 'active' : '' }}"
+                                href="{{ route('admin.subscription-plans.index') }}">
+                                <i data-lucide="clipboard-list" class="nav-icon"></i>
+                                <span>Plans</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.subscriptions.index') ? 'active' : '' }}"
+                                href="{{ route('admin.subscriptions.index') }}">
+                                <i data-lucide="calendar" class="nav-icon"></i>
+                                <span>Subscriptions</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
 
             @if (hasPermission('admin.images.index'))
-                <x-dashboard.nav-item-link :route="'admin.images.index'">
-                    <i data-feather="image" class="nav-icon icon-xs me-2"></i>Image
-                </x-dashboard.nav-item-link>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('admin.images.index') ? 'active' : '' }}"
+                    href="{{ route('admin.images.index') }}"
+                    @if (request()->routeIs('admin.images.index')) aria-current="page" @endif>
+                    <i data-lucide="image" class="nav-icon"></i>
+                    <span>Image</span>
+                </a>
+            </li>
             @endif
 
         </ul>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Domain\Shipping\Models\Country;
 use App\Domain\Vendor\Models\Seller;
+use App\Domain\Vendor\Models\SellerEmployee;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,62 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function login(Request $request)
+    {
+        if ($request->isMethod('GET')) {
+            return view('seller.auth.login');
+        }
+
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        $seller = Seller::where('email', $request->email)->first();
+
+        if ($seller) {
+            if ($seller->status == Seller::BLOCKED) {
+                return redirect()->back()->withInput($request->only('email'))
+                    ->with('warning', 'Your account has been blocked. Contact admin.');
+            }
+
+            if ($seller->status != Seller::ACTIVE) {
+                return redirect()->back()->withInput($request->only('email'))
+                    ->with('warning', 'Your account is pending approval. Please wait for admin review.');
+            }
+
+            if (! Auth::guard('seller')->attempt($credentials, $request->boolean('remember'))) {
+                return redirect()->back()->withInput($request->only('email'))
+                    ->with('error', 'Incorrect password!');
+            }
+
+            $request->session()->regenerate();
+
+            return redirect()->route('seller.dashboard')->with('success', 'Login successful');
+        }
+
+        $employee = SellerEmployee::where('email', $request->email)->first();
+
+        if ($employee) {
+            if ((int) $employee->is_active !== 1) {
+                return redirect()->back()->withInput($request->only('email'))
+                    ->with('warning', 'Your account is inactive, contact with seller');
+            }
+
+            if (! Auth::guard('employee')->attempt($credentials, $request->boolean('remember'))) {
+                return redirect()->back()->withInput($request->only('email'))
+                    ->with('error', 'Incorrect password!');
+            }
+
+            $request->session()->regenerate();
+
+            return redirect()->route('seller.dashboard')->with('success', 'Login successful');
+        }
+
+        return redirect()->back()->withInput($request->only('email'))
+            ->with('error', 'Incorrect email!');
+    }
+
     public function signup(Request $request)
     {
         if ($request->isMethod('GET')) {
@@ -27,7 +84,7 @@ class AuthController extends Controller
 
         Seller::create($data);
 
-        return redirect()->route('home')->with('success', 'Signup successful! Please log in.');
+        return redirect()->route('seller.login')->with('success', 'Signup successful! Please log in.');
     }
 
     public function logout(Request $request)
@@ -43,7 +100,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('seller.login');
     }
 
     public function profile()

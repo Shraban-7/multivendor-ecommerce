@@ -2,12 +2,12 @@
 @section('title', 'Products')
 @section('content')
 
-    <div class="mb-3 d-flex justify-content-between align-items-end">
+    <div class="mb-3 flex justify-between items-end">
         <h4 class="mb-0">Products</h4>
     </div>
 
-    <div class="table-responsive">
-        <table id="product-table" class="table mb-3 bg-white table-bordered">
+    <div class="overflow-x-auto">
+        <table id="product-table" class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
             <thead>
                 <tr>
                     <th scope="col">Product</th>
@@ -28,11 +28,11 @@
                     @endphp
                     <tr>
                         <td>
-                            <div class="d-flex">
-                                <img src="{{ storage_url($product->thumbnail) }}" class="border rounded-circle"
+                            <div class="flex">
+                                <img src="{{ storage_url($product->thumbnail) }}" class="border rounded-full"
                                     alt="Image" style="height:64px; width:64px">
                                 <div class="ms-3">
-                                    <div class="fw-bold">{{ $product->name }}</div>
+                                    <div class="font-bold">{{ $product->name }}</div>
                                     <div class="small">
                                         Category: {{ $product->category->name }}
                                         @if ($product->brand)
@@ -51,23 +51,23 @@
                         <td>{{ $product->created_at->format('d/m/y h:i A') }} </td>
                         <td>
                             @if ($product->status == $product::STATUS_PENDING_APPROVAL)
-                                <span class="badge text-bg-secondary">Pending Approval</span>
+                                <span class="badge text-bg-surface-muted">Pending Approval</span>
                             @elseif ($product->status == $product::STATUS_ACTIVE)
-                                <span class="badge text-bg-success">Active</span>
+                                <span class="badge text-bg-feedback-success">Active</span>
                             @elseif ($product->status == $product::STATUS_INACTIVE)
-                                <span class="badge text-bg-warning">Inactive</span>
+                                <span class="badge text-bg-feedback-warning">Inactive</span>
                             @elseif ($product->status == $product::STATUS_DELETED)
-                                <span class="badge text-bg-danger">Deleted</span>
+                                <span class="badge text-bg-feedback-danger">Deleted</span>
                             @else
-                                <span class="badge text-bg-light">Unknown</span>
+                                <span class="badge text-bg-surface-muted">Unknown</span>
                             @endif
 
                         </td>
-                        <td class="d-flex">
+                        <td class="flex">
                             <x-seller :seller="$product->seller" />
                         </td>
                         <td>
-                            <button class="btn btn-primary btn-sm border d-inline-flex align-items-center gap-1"
+                            <button class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal" data-bs-target="#statusModal-{{ $product->id }}">
                                 <i data-feather="edit" class="icon-xs"></i>
                                 <span>Edit</span>
@@ -89,9 +89,9 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
-                                                    <label for="status-{{ $product->id }}" class="form-label">Select
+                                                    <label for="status-{{ $product->id }}" class="block text-xs font-medium text-ink-secondary mb-1">Select
                                                         Status</label>
-                                                    <select class="form-select" id="status-{{ $product->id }}"
+                                                    <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="status-{{ $product->id }}"
                                                         name="status">
                                                         <option value="{{ \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL }}"
                                                             {{ $product->status == \App\Domain\Product\Models\Product::STATUS_PENDING_APPROVAL ? 'selected' : '' }}>
@@ -114,7 +114,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
+                                                <button type="button" class="btn btn-light"
                                                     data-bs-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Update</button>
                                             </div>
@@ -134,16 +134,16 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">Add Product</h1>
+                    <h1 class="modal-title text-base">Add Product</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="" method="post">
                     @CSRF
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Category</label>
-                                <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                        <div class="grid grid-cols-1">
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Category</label>
+                                <select name="game_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="gameSelect" required>
                                     <option value="" selected disabled>--Choose--</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -151,9 +151,9 @@
                                 </select>
                             </div>
 
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Subcategory</label>
-                                <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Subcategory</label>
+                                <select name="game_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="gameSelect" required>
                                     <option value="" selected disabled>--Choose--</option>
 
                                     <option value=""></option>
@@ -161,9 +161,9 @@
                                 </select>
                             </div>
 
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Brand</label>
-                                <select name="game_id" class="form-select w-100" id="gameSelect" required>
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Brand</label>
+                                <select name="game_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="gameSelect" required>
                                     <option value="" selected disabled>--Choose--</option>
                                     @foreach ($brands as $brand)
                                         <option value="{{ $brand->id }}">{{ $brand->name }}</option>
@@ -171,29 +171,29 @@
                                 </select>
                             </div>
 
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Name</label>
-                                <input name="name" type="text" value="" class="form-control" required>
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                             </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Buying Price</label>
-                                <input name="name" type="text" value="" class="form-control" required>
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Buying Price</label>
+                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                             </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Selling Price</label>
-                                <input name="name" type="text" value="" class="form-control" required>
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Selling Price</label>
+                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                             </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Quantity</label>
-                                <input name="name" type="text" value="" class="form-control" required>
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Quantity</label>
+                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                             </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Stock in</label>
-                                <input name="name" type="text" value="" class="form-control" required>
+                            <div class="mb-3 md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Stock in</label>
+                                <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                             </div>
 
                         </div>
-                        <button type="submit" class="btn btn-theme">Save Contest</button>
+                        <button type="submit" class="btn btn-primary">Save Contest</button>
                     </div>
                 </form>
             </div>

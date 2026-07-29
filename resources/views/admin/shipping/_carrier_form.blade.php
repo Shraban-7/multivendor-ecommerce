@@ -1,27 +1,27 @@
 @php $c = $carrier ?? null; @endphp
 
 <div class="mb-3">
-    <label class="form-label">Carrier Name <span class="text-danger">*</span></label>
-    <input type="text" name="name" class="form-control" value="{{ old('name', $c->name ?? '') }}" required>
+    <label class="block text-xs font-medium text-ink-secondary mb-1">Carrier Name <span class="text-feedback-danger">*</span></label>
+    <input type="text" name="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ old('name', $c->name ?? '') }}" required>
 </div>
 <div class="mb-3">
-    <label class="form-label">API Endpoint</label>
-    <input type="url" name="api_endpoint" class="form-control" value="{{ old('api_endpoint', $c->api_endpoint ?? '') }}" placeholder="https://api.carrier.com/v1/">
+    <label class="block text-xs font-medium text-ink-secondary mb-1">API Endpoint</label>
+    <input type="url" name="api_endpoint" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ old('api_endpoint', $c->api_endpoint ?? '') }}" placeholder="https://api.carrier.com/v1/">
 </div>
 <div class="mb-3">
-    <label class="form-label">API Key</label>
-    <input type="text" name="api_key" class="form-control" value="{{ old('api_key', $c->api_key ?? '') }}">
+    <label class="block text-xs font-medium text-ink-secondary mb-1">API Key</label>
+    <input type="text" name="api_key" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ old('api_key', $c->api_key ?? '') }}">
 </div>
 <div class="mb-3">
-    <label class="form-label">Logo URL</label>
-    <input type="url" name="logo" class="form-control" value="{{ old('logo', $c->logo ?? '') }}">
+    <label class="block text-xs font-medium text-ink-secondary mb-1">Logo URL</label>
+    <input type="url" name="logo" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ old('logo', $c->logo ?? '') }}">
 </div>
 <div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea name="description" class="form-control" rows="3">{{ old('description', $c->description ?? '') }}</textarea>
+    <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
+    <textarea name="description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3">{{ old('description', $c->description ?? '') }}</textarea>
 </div>
-<div class="form-check">
-    <input type="checkbox" name="is_active" value="1" class="form-check-input" id="carrierActiveCheck"
+<div class="flex items-center gap-2">
+    <input type="checkbox" name="is_active" value="1" class="h-4 w-4 rounded border-border text-brand focus:ring-brand" id="carrierActiveCheck"
         {{ !$c || $c->is_active ? 'checked' : '' }}>
-    <label class="form-check-label" for="carrierActiveCheck">Active</label>
+    <label class="text-sm text-ink" for="carrierActiveCheck">Active</label>
 </div>

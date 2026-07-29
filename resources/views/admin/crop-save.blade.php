@@ -13,7 +13,7 @@
             background-color: #f8f9fa;
         }
 
-        .card {
+        .bg-white border border-border rounded-sm shadow-sm overflow-hidden {
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
@@ -50,19 +50,19 @@
     $height = $width = 100;
 ?>
 
-<body class="h-100">
+<body class="h-full">
 
     <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-xl-6">
-                <div class="card">
-                    <div class="card-body text-center">
+        <div class="grid grid-cols-1 justify-center">
+            <div class="md:col-span-2 xl:col-span-1-6">
+                <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+                    <div class="p-5 text-center">
                         <h4 class="mb-4">Upload & Crop Product Image</h4>
-                        <button class="btn btn-primary px-4 py-2" data-bs-toggle="modal" data-bs-target="#cropperModal">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cropperModal">
                             Upload & Crop
                         </button>
                         <div class="mt-5">
-                            <h5 class="text-muted mb-3">Cropped Image Preview</h5>
+                            <h5 class="text-ink-tertiary mb-3">Cropped Image Preview</h5>
                             <canvas id="croppedPreview" height="{{ $height }}"></canvas>
                         </div>
                     </div>
@@ -81,15 +81,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="uploadImage" class="form-label">Select an Image</label>
-                        <input type="file" id="uploadImage" accept="image/*" class="form-control">
+                        <label for="uploadImage" class="block text-xs font-medium text-ink-secondary mb-1">Select an Image</label>
+                        <input type="file" id="uploadImage" accept="image/*" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                     </div>
-                    <div class="d-flex justify-content-center align-items-center">
+                    <div class="flex justify-center items-center">
                         <img id="modalImage" src="#" alt="Image Preview" class="d-none">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button id="cropButton" class="btn btn-success px-4 py-2">Crop & Insert</button>
+                    <button id="cropButton" class="btn btn-success">Crop & Insert</button>
                 </div>
             </div>
         </div>

@@ -2,67 +2,67 @@
 @section('title', 'Seller Payouts')
 
 @section('content')
-<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-    <h3 class="fw-bold mb-0">Seller Payouts</h3>
+<div class="flex flex-wrap justify-between items-center mb-3">
+    <h3 class="font-bold mb-0">Seller Payouts</h3>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-bg-warning me-3">
+<div class="grid grid-cols-1 gap-3 mb-4">
+    <div class="md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="icon-bg-feedback-warning me-3">
                         <i data-feather="clock" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-0 small">Pending</p>
-                        <h4 class="fw-bold mb-0">{{ money($stats['pending']) }}</h4>
-                        <small class="text-muted">{{ $stats['total_pending_count'] }} requests</small>
+                        <p class="text-ink-tertiary mb-0 text-sm">Pending</p>
+                        <h4 class="font-bold mb-0">{{ money($stats['pending']) }}</h4>
+                        <small class="text-ink-tertiary">{{ $stats['total_pending_count'] }} requests</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-bg-info me-3">
+    <div class="md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="icon-bg-feedback-info me-3">
                         <i data-feather="loader" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-0 small">Processing</p>
-                        <h4 class="fw-bold mb-0">{{ money($stats['processing']) }}</h4>
+                        <p class="text-ink-tertiary mb-0 text-sm">Processing</p>
+                        <h4 class="font-bold mb-0">{{ money($stats['processing']) }}</h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-bg-success me-3">
+    <div class="md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="icon-bg-feedback-success me-3">
                         <i data-feather="check-circle" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-0 small">Completed</p>
-                        <h4 class="fw-bold mb-0">{{ money($stats['completed']) }}</h4>
+                        <p class="text-ink-tertiary mb-0 text-sm">Completed</p>
+                        <h4 class="font-bold mb-0">{{ money($stats['completed']) }}</h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-bg-primary me-3">
+    <div class="md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="icon-bg-brand-deep me-3">
                         <i data-feather="dollar-sign" style="width: 24px; height: 24px;"></i>
                     </div>
                     <div>
-                        <p class="text-muted mb-0 small">Total Paid Out</p>
-                        <h4 class="fw-bold mb-0">{{ money($stats['completed']) }}</h4>
+                        <p class="text-ink-tertiary mb-0 text-sm">Total Paid Out</p>
+                        <h4 class="font-bold mb-0">{{ money($stats['completed']) }}</h4>
                     </div>
                 </div>
             </div>
@@ -70,11 +70,11 @@
     </div>
 </div>
 
-<div class="card border-0 shadow-sm" style="border-radius: 12px;">
-    <div class="card-header bg-white border-bottom py-3">
-        <form method="GET" class="row g-2 align-items-end">
+<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
+    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white border-b py-3">
+        <form method="GET" class="grid grid-cols-1 gap-2 items-end">
             <div class="col-auto">
-                <select name="status" class="form-select form-select-sm">
+                <select name="status" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                     <option value="">All Status</option>
                     <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Pending</option>
                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Processing</option>
@@ -84,24 +84,24 @@
                 </select>
             </div>
             <div class="col-auto">
-                <input type="text" name="seller_id" class="form-control form-control-sm" placeholder="Seller ID" value="{{ request('seller_id') }}">
+                <input type="text" name="seller_id" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" placeholder="Seller ID" value="{{ request('seller_id') }}">
             </div>
             <div class="col-auto">
-                <input type="date" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}">
+                <input type="date" name="date_from" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" value="{{ request('date_from') }}">
             </div>
             <div class="col-auto">
-                <input type="date" name="date_to" class="form-control form-control-sm" value="{{ request('date_to') }}">
+                <input type="date" name="date_to" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" value="{{ request('date_to') }}">
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                <a href="{{ route('admin.payouts.index') }}" class="btn btn-sm btn-light border">Reset</a>
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                <a href="{{ route('admin.payouts.index') }}" class="btn btn-light btn-sm">Reset</a>
             </div>
         </form>
     </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
+    <div class="p-5 p-0">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                <thead class="bg-surface-muted">
                     <tr>
                         <th class="py-3 px-4">#</th>
                         <th class="py-3">Seller</th>
@@ -111,7 +111,7 @@
                         <th class="py-3">Method</th>
                         <th class="py-3">Status</th>
                         <th class="py-3">Date</th>
-                        <th class="py-3 text-end">Action</th>
+                        <th class="py-3 text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,38 +119,38 @@
                         <tr>
                             <td class="px-4">{{ $payout->id }}</td>
                             <td>
-                                <div class="d-flex align-items-center">
+                                <div class="flex items-center">
                                     <img src="{{ $payout->seller->businessAvatar }}" height="32" width="32" class="rounded me-2 border" style="object-fit:scale-down;">
                                     <div>
-                                        <span class="fw-semibold small">{{ $payout->seller->business_name ?? $payout->seller->name }}</span>
-                                        <small class="d-block text-muted">ID: {{ $payout->seller_id }}</small>
+                                        <span class="font-semibold text-sm">{{ $payout->seller->business_name ?? $payout->seller->name }}</span>
+                                        <small class="block text-ink-tertiary">ID: {{ $payout->seller_id }}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td class="fw-semibold">{{ money($payout->amount) }}</td>
-                            <td class="text-muted">{{ money($payout->charge) }}</td>
-                            <td class="fw-semibold">{{ money($payout->net_amount) }}</td>
+                            <td class="font-semibold">{{ money($payout->amount) }}</td>
+                            <td class="text-ink-tertiary">{{ money($payout->charge) }}</td>
+                            <td class="font-semibold">{{ money($payout->net_amount) }}</td>
                             <td>
                                 @if ($payout->payoutMethod)
-                                    <span class="badge-soft-info small">{{ $payout->payoutMethod->methodLabel() }}</span>
+                                    <span class="badge-soft-info text-sm">{{ $payout->payoutMethod->methodLabel() }}</span>
                                 @else
-                                    <span class="text-muted small">N/A</span>
+                                    <span class="text-ink-tertiary text-sm">N/A</span>
                                 @endif
                             </td>
                             <td>
                                 <span class="badge {{ $payout->statusBadge() }}">{{ $payout->statusLabel() }}</span>
                             </td>
-                            <td class="small text-muted">{{ $payout->created_at->format('d M Y') }}</td>
-                            <td class="text-end">
-                                <a href="{{ route('admin.payouts.show', $payout) }}" class="btn btn-sm btn-primary">
+                            <td class="text-sm text-ink-tertiary">{{ $payout->created_at->format('d M Y') }}</td>
+                            <td class="text-right">
+                                <a href="{{ route('admin.payouts.show', $payout) }}" class="btn btn-primary btn-sm">
                                     <i data-feather="eye" class="icon-xs"></i>
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center py-5 text-muted">
-                                <i data-feather="credit-card" style="width: 48px; height: 48px;" class="mb-3"></i>
+                            <td colspan="9" class="text-center py-5 text-ink-tertiary">
+                                <i data-feather="credit-bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="width: 48px; height: 48px;" class="mb-3"></i>
                                 <p class="mb-0">No payouts found.</p>
                             </td>
                         </tr>
@@ -160,7 +160,7 @@
         </div>
     </div>
     @if ($payouts->hasPages())
-        <div class="card-footer bg-white border-top d-flex justify-content-end">
+        <div class="px-5 py-3 border-t border-border bg-surface-muted bg-white border-t flex justify-end">
             {{ $payouts->links() }}
         </div>
     @endif

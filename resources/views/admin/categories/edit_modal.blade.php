@@ -9,19 +9,19 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control" value="{{ $category->name }}" required>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                        <input type="text" name="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $category->name }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Icon</label>
-                        <input type="text" name="icon" class="form-control" value="{{ $category->icon }}" required>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Icon</label>
+                        <input type="text" name="icon" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $category->icon }}" required>
                     </div>
 
                     @if($category->category_id)
                     <div class="mb-3">
-                        <label class="form-label">Parent Category (Optional)</label>
-                        <select name="category_id" class="form-control">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Parent Category (Optional)</label>
+                        <select name="category_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             <option value="">None (Root)</option>
                             @foreach($categories as $parentOption)
                             @if($parentOption->id != $category->id)
@@ -36,26 +36,26 @@
 
                     @if(!$category->category_id)
                     <div class="mb-3">
-                        <label class="form-label">Current Image</label>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Current Image</label>
                         <div class="mb-2">
                             @if($category->image)
                             <img src="{{ storage_url($category->image) }}" width="80" class="img-thumbnail">
                             @else
-                            <span class="text-muted">No image uploaded</span>
+                            <span class="text-ink-tertiary">No image uploaded</span>
                             @endif
                         </div>
-                        <input type="file" name="image" class="form-control">
+                        <input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                     </div>
                     @endif
 
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="status" value="1"
+                    <div class="flex items-center gap-2 form-switch">
+                        <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="status" value="1"
                             id="active{{ $category->id }}" {{ $category->status ? 'checked' : '' }}>
-                        <label class="form-check-label" for="active{{ $category->id }}">Is Active</label>
+                        <label class="text-sm text-ink" for="active{{ $category->id }}">Is Active</label>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Update Category</button>
                 </div>
             </div>

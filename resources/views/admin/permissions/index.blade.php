@@ -4,17 +4,17 @@
     <?php
     $isSuperAdmin = admin()->role->name == 'super_admin';
     ?>
-    <div class="d-flex justify-content-between align-items-end mb-2">
+    <div class="flex justify-between items-end mb-2">
         <h4 class="mb-0">Permissions</h4>
         @if ($isSuperAdmin)
-            <button class="btn btn-theme btn-sm" data-bs-toggle="modal" data-bs-target="#addModal">
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i data-feather="plus" class="icon-xs"></i> Add Role
             </button>
         @endif
     </div>
 
-    <div class="table-responsive text-nowrap">
-        <table class="table table-bordered bg-white">
+    <div class="overflow-x-auto whitespace-nowrap">
+        <table class="w-full text-left text-sm text-ink border-collapse table-bordered bg-white">
             <thead>
                 <tr>
                     <th>Role Name</th>
@@ -29,19 +29,19 @@
                 @foreach ($roles as $role)
                     <tr>
                         <td>{{ $role->title }}</td>
-                        <td class="d-flex flex-wrap gap-1">
+                        <td class="flex flex-wrap gap-1">
                             @foreach ($role->permissions as $permission)
-                                <span class="badge bg-primary me-1">{{ $permission->title }}</span>
+                                <span class="badge bg-brand-deep me-1">{{ $permission->title }}</span>
                             @endforeach
                         </td>
 
                         <td>{{ $role->created_at->format('d/m/Y') }}</td>
                         @if ($isSuperAdmin)
                             <td>
-                                <div class="d-flex gap-2">
+                                <div class="flex gap-2">
                                     @if ($role->title != 'Super Admin')
                                         <a href="{{ route('admin.roles.edit', $role->id) }}"
-                                            class="btn btn-light btn-sm border edit-btn">
+                                            class="btn btn-light btn-sm edit-btn">
                                             <i class="bx bx-edit"></i> Edit
                                         </a>
                                     @endif
@@ -65,12 +65,12 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Role Name</label>
-                            <input type="text" class="form-control" name="title" required>
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Role Name</label>
+                            <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" name="title" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Create Role</button>
                     </div>
                 </form>

@@ -4,7 +4,7 @@
 @section('content')
 <div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="flex justify-between items-center mb-3">
         <h3>Banners</h3>
         <!-- Add New Banner Button -->
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBannerModal">
@@ -12,8 +12,8 @@
         </button>
     </div>
 
-    <table class="table bg-white table-bordered align-middle">
-        <thead class="table-white">
+    <table class="w-full text-left text-sm text-ink border-collapse bg-white table-bordered align-middle">
+        <thead class="bg-white">
             <tr>
                 <th>#</th>
                 <th>Preview</th>
@@ -32,31 +32,31 @@
                     @if($banner->image)
                     <img src="{{ asset('storage/' . $banner->image) }}" width="80" class="rounded">
                     @else
-                    <span class="text-muted">No Image</span>
+                    <span class="text-ink-tertiary">No Image</span>
                     @endif
                 </td>
                 <!-- <td>{{ $banner->title ?? '—' }}</td> -->
-                <td><span class="badge bg-secondary">{{ $banner->section }}</span></td>
+                <td><span class="badge bg-surface-muted">{{ $banner->section }}</span></td>
                 <td>
                     @if($banner->is_active)
-                    <span class="badge bg-success">Active</span>
+                    <span class="badge bg-feedback-success">Active</span>
                     @else
-                    <span class="badge bg-danger">Inactive</span>
+                    <span class="badge bg-feedback-danger">Inactive</span>
                     @endif
                 </td>
                 <td>{{ $banner->sort_order }}</td>
                 <td>
                     <!-- Edit Button -->
-                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                         data-bs-target="#bannerEditModal{{ $banner->id }}">
                         Edit
                     </button>
 
                     <!-- Delete Form -->
-                    <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST"  class="d-inline"
+                    <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST"  class="inline"
                         onsubmit="return confirm('Delete this banner?')">
                         @csrf @method('DELETE')
-                        <button class="btn btn-sm btn-danger">Delete</button>
+                        <button class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </td>
             </tr>
@@ -81,7 +81,7 @@
 
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-success">Update</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
@@ -89,7 +89,7 @@
             </div>
             @empty
             <tr>
-                <td colspan="7" class="text-center text-muted">No banners found</td>
+                <td colspan="7" class="text-center text-ink-tertiary">No banners found</td>
             </tr>
             @endforelse
         </tbody>
@@ -113,7 +113,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>

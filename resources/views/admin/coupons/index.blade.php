@@ -2,43 +2,43 @@
 @section('title', 'Coupons')
 
 @section('content')
-<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-    <h3 class="fw-bold mb-0">Coupons</h3>
-    <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary d-inline-flex align-items-center gap-1">
+<div class="flex flex-wrap justify-between items-center mb-3">
+    <h3 class="font-bold mb-0">Coupons</h3>
+    <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary">
         <i data-feather="plus" style="width: 16px; height: 16px;"></i> Create Coupon
     </a>
 </div>
 
-<div class="card border-0 shadow-sm" style="border-radius: 12px;">
-    <div class="card-header bg-white border-bottom py-3">
-        <form method="GET" class="row g-2 align-items-end">
+<div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm" style="border-radius: 12px;">
+    <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white border-b py-3">
+        <form method="GET" class="grid grid-cols-1 gap-2 items-end">
             <div class="col-auto">
-                <select name="type" class="form-select form-select-sm">
+                <select name="type" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                     <option value="">All Types</option>
                     <option value="global" {{ request('type') === 'global' ? 'selected' : '' }}>Global</option>
                     <option value="seller" {{ request('type') === 'seller' ? 'selected' : '' }}>Seller</option>
                 </select>
             </div>
             <div class="col-auto">
-                <select name="status" class="form-select form-select-sm">
+                <select name="status" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                     <option value="">All Status</option>
                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>
                     <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
             <div class="col-auto">
-                <input type="text" name="search" class="form-control form-control-sm" placeholder="Search code/title..." value="{{ request('search') }}">
+                <input type="text" name="search" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" placeholder="Search code/title..." value="{{ request('search') }}">
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                <a href="{{ route('admin.coupons.index') }}" class="btn btn-sm btn-light border">Reset</a>
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                <a href="{{ route('admin.coupons.index') }}" class="btn btn-light btn-sm">Reset</a>
             </div>
         </form>
     </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
+    <div class="p-5 p-0">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                <thead class="bg-surface-muted">
                     <tr>
                         <th class="py-3 px-4">Code</th>
                         <th class="py-3">Discount</th>
@@ -47,16 +47,16 @@
                         <th class="py-3">Uses</th>
                         <th class="py-3">Validity</th>
                         <th class="py-3">Status</th>
-                        <th class="py-3 text-end">Actions</th>
+                        <th class="py-3 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($coupons as $coupon)
                         <tr>
                             <td class="px-4">
-                                <span class="fw-semibold">{{ $coupon->code }}</span>
+                                <span class="font-semibold">{{ $coupon->code }}</span>
                                 @if ($coupon->title)
-                                    <small class="d-block text-muted">{{ $coupon->title }}</small>
+                                    <small class="block text-ink-tertiary">{{ $coupon->title }}</small>
                                 @endif
                             </td>
                             <td>
@@ -75,7 +75,7 @@
                                 @if ($coupon->seller)
                                     <small>{{ $coupon->seller->business_name ?? $coupon->seller->name }}</small>
                                 @else
-                                    <small class="text-muted">-</small>
+                                    <small class="text-ink-tertiary">-</small>
                                 @endif
                             </td>
                             <td>
@@ -93,15 +93,15 @@
                                     {{ $coupon->status ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
-                            <td class="text-end">
-                                <a href="{{ route('admin.coupons.edit', $coupon) }}" class="btn btn-sm btn-light border">
+                            <td class="text-right">
+                                <a href="{{ route('admin.coupons.edit', $coupon) }}" class="btn btn-light btn-sm">
                                     <i data-feather="edit" class="icon-xs"></i>
                                 </a>
-                                <form method="POST" action="{{ route('admin.coupons.destroy', $coupon) }}" class="d-inline"
+                                <form method="POST" action="{{ route('admin.coupons.destroy', $coupon) }}" class="inline"
                                       onsubmit="return confirm('Delete this coupon?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-light border text-danger">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
                                         <i data-feather="trash-2" class="icon-xs"></i>
                                     </button>
                                 </form>
@@ -109,7 +109,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center py-5 text-muted">
+                            <td colspan="8" class="text-center py-5 text-ink-tertiary">
                                 <i data-feather="tag" style="width: 48px; height: 48px;" class="mb-3"></i>
                                 <p class="mb-0">No coupons found.</p>
                             </td>
@@ -120,7 +120,7 @@
         </div>
     </div>
     @if ($coupons->hasPages())
-        <div class="card-footer bg-white border-top d-flex justify-content-end">
+        <div class="px-5 py-3 border-t border-border bg-surface-muted bg-white border-t flex justify-end">
             {{ $coupons->links() }}
         </div>
     @endif

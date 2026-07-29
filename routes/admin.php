@@ -69,7 +69,7 @@ Route::middleware('admin')->prefix('admin')->as('admin.')->group(function () {
 
 });
 
-Route::middleware('guest')->prefix('admin')->as('admin.')->group(function () {
+Route::middleware('guest:admin')->prefix('admin')->as('admin.')->group(function () {
     Route::match(['get', 'post'], '/signup', [AuthController::class, 'signup'])->name('signup');
     Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
 });

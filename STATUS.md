@@ -1,10 +1,65 @@
-# Seller Panel Tailwind CSS Migration — Status
+# Panel Tailwind CSS Migrations — Status
 
-## Documents
+## Seller Panel
 
 - **Audit Report**: `docs/seller-panel-bootstrap-audit.md`
 - **Redesign Spec**: `docs/seller-panel-redesign.md`
 - **Task Roadmap**: `tasks/12-seller-panel-tailwind-migration.md`
+- **Status**: COMPLETED
+
+---
+
+## Admin Panel
+
+- **Audit Report**: `docs/admin-panel-bootstrap-audit.md`
+- **Status**: Phase 2 & 3 COMPLETED — Phase 4 pending
+- **Total Templates**: 68 (67 active + 1 old/backup)
+- **`data-bs-*` Elements**: 168 (all preserved)
+- **Third-Party Plugins**: Select2 (with Bootstrap 5 theme CSS), DataTables, Quill, Dropzone, Cropper.js, Chart.js
+
+### Phase 2 — Tailwind CDN & Theme Setup (COMPLETED)
+
+- [x] Added Tailwind CDN + theme config to `admin/layouts/app.blade.php` & `auth.blade.php`
+- [x] Same design tokens as Seller panel (brand, ink, surface, border, feedback, Noto Sans, borderRadius)
+- [x] `preflight: false` (Bootstrap CSS retained)
+- [x] `bootstrap.bundle.min.js` retained
+- [x] Added `blocklist: ['collapse']` to both layouts (prevents Tailwind collapsing Bootstrap sidebar submenus)
+
+### Layout & Sidebar Alignment with Seller Panel (COMPLETED)
+
+- [x] Added `csrf-token` meta tag to admin layout
+- [x] Replaced Feather Icons with Lucide + icon fallback shim (same as seller panel)
+- [x] Changed content wrapper from `container my-3` → `page-inner-content px-4 py-3` with `container-fluid` section support
+- [x] Added `sidebarBackdrop` div + JS for mobile sidebar toggle
+- [x] Rewrote sidebar with seller panel patterns: `sidebar-scroll`, section headings, `nav-link-toggle`, `aria-current`, Lucide icons
+- [x] Added `#adminSidebar` CSS rules to `custom.css` matching `#sellerSidebar` (scrollbar, gap spacing, label truncation, icon sizing)
+- [x] Fixed broken `credit-bg-white border...` icon on Payment Gateways nav item
+- [x] Removed duplicate `confirmDelete` function and unused `feather.js` include
+
+### Phase 3 — Page-by-Page Conversion (COMPLETED)
+
+- [x] All 67 active templates converted via bulk PowerShell replacement + targeted fixes
+- [x] Utility classes: `d-flex`→`flex`, `align-items-*`→`items-*`, `justify-content-*`→`justify-*`, `fw-*`→`font-*`, `text-muted`→`text-ink-tertiary`, `text-dark`→`text-ink`, etc.
+- [x] Component classes: `card`, `btn`, `form-control`, `form-select`, `table`, `badge`, `alert`, `list-group`, `input-group`, `progress`, `spinner-border`
+- [x] Grid classes: `row`/`col-*`→`grid`/`col-span-*`
+- [x] Fixed `btn btn-sm btn-*` pattern ordering variants
+- [x] Fixed duplicated `form-control`/`form-select` class strings
+- [x] Fixed `transition-colors-sm`/`transition-colors-color` suffixes
+- [x] Fixed `row-cols-*` and `g-*` gutter classes (dashboard, sellers/profile, customers/profile)
+- [x] Fixed dynamic PHP ternary `btn btn-sm` patterns (returns/index, brands/index, subcategories/index)
+- [x] Fixed `btn btn-info` variants (flash_sales, static_pages, subscription)
+- [x] Fixed `list-unstyled`→`list-none` (subscription/plans)
+- [x] Fixed missing `col-md-1` and `col-lg-10` (support, static_pages)
+- [x] Fixed `auth/login.blade.php` `btn btn-primary`
+- [x] **Excluded**: `sellers/index_old.blade.php` (old backup file)
+
+### Phase 4 — Cleanup (PENDING)
+
+- [ ] Verify all `data-bs-*` components function correctly
+- [ ] Verify third-party plugins (Select2, DataTables, Quill) render correctly
+- [ ] Remove Bootstrap core CSS from admin layout (keep plugin-specific CSS)
+- [ ] Retain `bootstrap.bundle.min.js`
+- [ ] Full responsive visual & functional QA pass
 
 ---
 

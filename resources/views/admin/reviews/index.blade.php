@@ -2,12 +2,12 @@
 @section('title', 'Reviews')
 
 @section('content')
-<div class="mb-3 d-flex justify-content-between align-items-center">
+<div class="mb-3 flex justify-between items-center">
     <h4 class="mb-0">Reviews</h4>
 </div>
 
-<div class="table-responsive ">
-    <table id="review-table" class="table mb-3 bg-white table-bordered">
+<div class="overflow-x-auto ">
+    <table id="review-table" class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
         <thead>
             <tr>
                 <th>#</th>
@@ -23,12 +23,12 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>
-                    <div class="d-flex flex-column">
-                        <strong class="text-dark fs-6">{{ $review->product->name }}</strong>
-                        <small class="text-muted">{{ $review->product->seller->business_name }}</small>
+                    <div class="flex flex-col">
+                        <strong class="text-ink text-sm">{{ $review->product->name }}</strong>
+                        <small class="text-ink-tertiary">{{ $review->product->seller->business_name }}</small>
                     </div>
                     @if ($review->reports->count() > 0)
-                    <span class="badge bg-danger mt-1">
+                    <span class="badge bg-feedback-danger mt-1">
                         {{ $review->reports->count() }}
                         {{ Str::plural('Report', $review->reports->count()) }}
                     </span>
@@ -36,7 +36,7 @@
                 </td>
 
                 <td>
-                    <div class="d-flex gap-2 overflow-auto">
+                    <div class="flex gap-2 overflow-auto">
                         @foreach ($review->images as $image)
                         <img src="{{ storage_url($image->image) }}"
                             class="img-fluid rounded-lg border shadow-sm" alt="Review Image"
@@ -49,7 +49,7 @@
                 </td>
                 <td>
                     @if ($review->reports->isNotEmpty())
-                    <ul class="list-unstyled mb-0">
+                    <ul class="list-none mb-0">
                         @foreach ($review->reports as $report)
                         <li>
                             @if ($report->user)
@@ -66,7 +66,7 @@
 
                 <td>
                     <!-- Delete Button -->
-                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{ $review->id }}">
                         <i data-feather="trash" class="icon-xs"></i> Delete
                     </button>
@@ -90,7 +90,7 @@
                                         method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                                        <button type="button" class="btn btn-secondary"
+                                        <button type="button" class="btn btn-light"
                                             data-bs-dismiss="modal">Cancel</button>
                                     </form>
                                 </div>

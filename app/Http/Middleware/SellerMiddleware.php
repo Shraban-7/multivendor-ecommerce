@@ -25,6 +25,6 @@ class SellerMiddleware
             return $next($request);
         }
 
-        return redirect()->route('home');
+        return redirect()->route('seller.login');
     }
 }

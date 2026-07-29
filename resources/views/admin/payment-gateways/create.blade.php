@@ -3,32 +3,32 @@
 
 @section('content')
     <h5 class="mb-3">Add Payment Gateway</h5>
-    <div class="row col-md-6">
-        <div class="card card-body">
+    <div class="grid grid-cols-1 md:col-span-1">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5">
             <form action="{{ route('admin.paymentGateways.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">
-                    <label class="form-label">Gateway Name</label>
-                    <input type="text" name="name" class="form-control" required>
+                    <label class="block text-xs font-medium text-ink-secondary mb-1">Gateway Name</label>
+                    <input type="text" name="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Payment URL</label>
-                    <input type="text" name="payment_url" class="form-control" placeholder="https://secure.gateway.com"
+                    <label class="block text-xs font-medium text-ink-secondary mb-1">Payment URL</label>
+                    <input type="text" name="payment_url" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="https://secure.gateway.com"
                         required>
                 </div>
 
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-surface-muted p-3 mb-3">
                     <h5>API Credentials</h5>
                     <div id="credentials-container">
-                        <div class="row mb-2 credential-row">
+                        <div class="grid grid-cols-1 mb-2 credential-row">
                             <div class="col">
-                                <input type="text" name="credentials_keys[]" class="form-control"
+                                <input type="text" name="credentials_keys[]" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                     placeholder="Key (e.g. store_id)">
                             </div>
                             <div class="col">
-                                <input type="text" name="credentials_values[]" class="form-control" placeholder="Value">
+                                <input type="text" name="credentials_values[]" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Value">
                             </div>
                             <div class="col-auto">
                                 <button type="button" class="btn btn-danger remove-credential">&times;</button>
@@ -41,33 +41,33 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Is Default?</label><br>
-                    <div class="form-check form-check-inline">
-                        <input type="radio" name="is_default" value="1" class="form-check-input" id="default_yes">
-                        <label class="form-check-label" for="default_yes">Yes</label>
+                    <label class="block text-xs font-medium text-ink-secondary mb-1">Is Default?</label><br>
+                    <div class="flex items-center gap-2 flex items-center gap-2-inline">
+                        <input type="radio" name="is_default" value="1" class="h-4 w-4 rounded border-border text-brand focus:ring-brand" id="default_yes">
+                        <label class="text-sm text-ink" for="default_yes">Yes</label>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input type="radio" name="is_default" value="0" class="form-check-input" id="default_no"
+                    <div class="flex items-center gap-2 flex items-center gap-2-inline">
+                        <input type="radio" name="is_default" value="0" class="h-4 w-4 rounded border-border text-brand focus:ring-brand" id="default_no"
                             checked>
-                        <label class="form-check-label" for="default_no">No</label>
+                        <label class="text-sm text-ink" for="default_no">No</label>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Status</label><br>
-                    <div class="form-check form-check-inline">
-                        <input type="radio" name="is_enabled" value="1" class="form-check-input" id="enabled">
-                        <label class="form-check-label" for="enabled">Enabled</label>
+                    <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label><br>
+                    <div class="flex items-center gap-2 flex items-center gap-2-inline">
+                        <input type="radio" name="is_enabled" value="1" class="h-4 w-4 rounded border-border text-brand focus:ring-brand" id="enabled">
+                        <label class="text-sm text-ink" for="enabled">Enabled</label>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input type="radio" name="is_enabled" value="0" class="form-check-input" id="disabled"
+                    <div class="flex items-center gap-2 flex items-center gap-2-inline">
+                        <input type="radio" name="is_enabled" value="0" class="h-4 w-4 rounded border-border text-brand focus:ring-brand" id="disabled"
                             checked>
-                        <label class="form-check-label" for="disabled">Disabled</label>
+                        <label class="text-sm text-ink" for="disabled">Disabled</label>
                     </div>
                 </div>
 
-                <div class="mb-3 col-12">
-                    <label class="form-label">Image</label>
+                <div class="mb-3 col-span-full">
+                    <label class="block text-xs font-medium text-ink-secondary mb-1">Image</label>
                     <x-image-input name="image" />
                 </div>
 
@@ -81,12 +81,12 @@
             $(document).ready(function() {
                 $('#add-credential').on('click', function() {
                     const row = `
-                <div class="row mb-2 credential-row">
+                <div class="grid grid-cols-1 mb-2 credential-row">
                     <div class="col">
-                        <input type="text" name="credentials_keys[]" class="form-control" placeholder="Key (e.g. store_id)">
+                        <input type="text" name="credentials_keys[]" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Key (e.g. store_id)">
                     </div>
                     <div class="col">
-                        <input type="text" name="credentials_values[]" class="form-control" placeholder="Value">
+                        <input type="text" name="credentials_values[]" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Value">
                     </div>
                     <div class="col-auto">
                         <button type="button" class="btn btn-danger remove-credential">&times;</button>
@@ -101,7 +101,7 @@
                     if (totalRows > 1) {
                         $(this).closest('.credential-row').remove();
                     } else {
-                        alert('At least one credential row is required.');
+                        alert('At least one credential grid grid-cols-1 is required.');
                     }
                 });
             });

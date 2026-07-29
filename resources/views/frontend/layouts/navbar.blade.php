@@ -1,6 +1,13 @@
+@php
+    $isCustomer = auth('web')->check();
+    $isSeller = auth('seller')->check();
+    $isAdmin = auth('admin')->check();
+    $isGuest = ! $isCustomer && ! $isSeller && ! $isAdmin;
+@endphp
+
 <div class="hidden lg:block bg-[#191919] text-white text-xs">
     <div class="max-w-[1400px] mx-auto px-4 flex items-center justify-end h-9 gap-5">
-        @if (auth('web')->check())
+        @if ($isCustomer)
             <a href="{{ route('profile') }}" class="hover:text-[#F85606] eq">My Account</a>
             <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
             <form method="POST" action="{{ route('logout') }}" class="inline">
@@ -8,8 +15,8 @@
                 <button type="submit" class="hover:text-[#F85606] eq">Logout</button>
             </form>
         @endif
-        @if (auth('seller')->check())
-            <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+
+        @if ($isSeller)
             <a href="{{ route('seller.dashboard') }}" class="hover:text-[#F85606] eq font-medium">Seller Panel</a>
             <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
             <form method="POST" action="{{ route('seller.logout') }}" class="inline">
@@ -17,13 +24,25 @@
                 <button type="submit" class="hover:text-[#F85606] eq">Logout</button>
             </form>
         @endif
-        @if (!auth('web')->check() && !auth('seller')->check())
-            <a href="javascript:void(0)" class="auth-btn hover:text-[#F85606] eq">Login</a>
+
+        @if ($isAdmin)
+            <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F85606] eq font-medium">Admin Panel</a>
+            <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+            <form method="POST" action="{{ route('admin.logout') }}" class="inline">
+                @csrf
+                <button type="submit" class="hover:text-[#F85606] eq">Logout</button>
+            </form>
         @endif
-        @unless(auth('seller')->check())
-        <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
-        <a href="{{ route('seller.signup') }}" class="hover:text-[#F85606] eq font-medium">Become a Seller</a>
-        @endunless
+
+        @if ($isGuest)
+            <a href="javascript:void(0)" class="auth-btn hover:text-[#F85606] eq">Login</a>
+            <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+            <a href="{{ route('seller.signup') }}" class="hover:text-[#F85606] eq font-medium">Become a Seller</a>
+        @elseif (! $isSeller && ! $isAdmin)
+            <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
+            <a href="{{ route('seller.signup') }}" class="hover:text-[#F85606] eq font-medium">Become a Seller</a>
+        @endif
+
         <span class="w-[1px] h-3 bg-[#2A2A2A]"></span>
         <a href="{{ route('pages.show', 'help-center') }}" class="hover:text-[#F85606] eq">Help & Support</a>
     </div>

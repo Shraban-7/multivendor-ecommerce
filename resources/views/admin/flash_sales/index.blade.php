@@ -2,16 +2,16 @@
 @section('title', 'flash sales')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="flex justify-between items-center mb-3">
         <h4>Flash Sales</h4>
         <a href="{{ route('admin.flash-sales.create') }}" class="btn btn-primary">
             <i class="bi bi-plus"></i> Add Flash Sale
         </a>
     </div>
 
-    <div class="card">
-        <div class="card-body p-0">
-            <table class="table bg-white table-hover mb-0">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="p-5 p-0">
+            <table class="w-full text-left text-sm text-ink border-collapse bg-white table-hover mb-0">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -37,14 +37,14 @@
                             <td>{{ $sale->end_time }}</td>
                             <td>
                                 @if ($sale->is_active)
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-feedback-success">Active</span>
                                 @else
-                                    <span class="badge bg-secondary">Inactive</span>
+                                    <span class="badge bg-surface-muted">Inactive</span>
                                 @endif
                             </td>
                             <td>
-                                <div class="d-flex gap-2">
-                                    <a href="{{ route('admin.flash-sales.show', $sale->id) }}" class="btn btn-info btn-sm">
+                                <div class="flex gap-2">
+                                    <a href="{{ route('admin.flash-sales.show', $sale->id) }}" class="btn btn-info btn-sm hover:bg-blue-700">
                                         View
                                     </a>
                                     <a href="{{ route('admin.flash-sales.edit', $sale->id) }}"

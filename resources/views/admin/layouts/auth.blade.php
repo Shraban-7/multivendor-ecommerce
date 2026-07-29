@@ -5,6 +5,58 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/frontend/images/favicon.ico') }}">
+
+    {{-- Tailwind CSS CDN — Phase 2 setup (Bootstrap CSS retained until Phase 4) --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            blocklist: ['collapse'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans"', '-apple-system', 'BlinkMacSystemFont', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#F85606',
+                            deep: '#C43D00',
+                            tint: '#FFF1EA'
+                        },
+                        ink: {
+                            DEFAULT: '#191919',
+                            secondary: '#595959',
+                            tertiary: '#767676'
+                        },
+                        surface: {
+                            muted: '#F5F5F5',
+                            strong: '#191919'
+                        },
+                        border: {
+                            DEFAULT: '#E5E5E5',
+                            strong: '#C7C7C7'
+                        },
+                        feedback: {
+                            success: '#1D8A45',
+                            danger: '#D93025',
+                            warning: '#B7791A',
+                            info: '#0F6FC5'
+                        }
+                    },
+                    borderRadius: {
+                        xs: '4px',
+                        sm: '8px',
+                        md: '12px'
+                    }
+                }
+            }
+        }
+    </script>
+    {{-- End Tailwind setup --}}
+
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/theme.css')}}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/custom.css')}}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/libs/bootstrap-icons/font/bootstrap-icons.css')}}">
@@ -14,9 +66,9 @@
 </head>
 
 <body>
-    <main class="container d-flex flex-column">
-        <div class="row align-items-center justify-content-center g-0 min-vh-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xxl-4 py-8 py-xl-0">
+    <main class="container flex flex-col">
+        <div class="grid grid-cols-1 items-center justify-center g-0 min-vh-full">
+            <div class="col-span-full md:col-span-2 lg:col-span-1 2xl:col-span-4 py-8 py-xl-0">
                 @yield('content')
             </div>
         </div>

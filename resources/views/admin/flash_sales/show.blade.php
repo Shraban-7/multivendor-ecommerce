@@ -4,8 +4,8 @@
 @section('content')
     <h4>Flash Sale Details</h4>
 
-    <div class="card mt-3">
-        <div class="card-body">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mt-3">
+        <div class="p-5">
 
             <h5>{{ $sale->title }}</h5>
 
@@ -21,20 +21,20 @@
             <p>
                 <strong>Status: </strong>
                 @if ($sale->is_active)
-                    <span class="badge bg-success">Active</span>
+                    <span class="badge bg-feedback-success">Active</span>
                 @else
-                    <span class="badge bg-secondary">Inactive</span>
+                    <span class="badge bg-surface-muted">Inactive</span>
                 @endif
             </p>
         </div>
     </div>
 
-    <div class="card mt-4">
-        <div class="card-header">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mt-4">
+        <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between">
             <h6>Flash Sale Products</h6>
         </div>
-        <div class="card-body p-0">
-            <table class="table mb-0">
+        <div class="p-5 p-0">
+            <table class="w-full text-left text-sm text-ink border-collapse mb-0">
                 <thead>
                     <tr>
                         <th>Vendor</th>
@@ -52,16 +52,16 @@
                             <td>{{ $item->sold }}</td>
                             <td id="status-badge-{{ $item->id }}">
                                 @if ($item->status == 1)
-                                    <span class="badge bg-success">Approved</span>
+                                    <span class="badge bg-feedback-success">Approved</span>
                                 @elseif ($item->status == 2)
-                                    <span class="badge bg-danger">Rejected</span>
+                                    <span class="badge bg-feedback-danger">Rejected</span>
                                 @else
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge bg-feedback-warning text-ink">Pending</span>
                                 @endif
                             </td>
 
                             <td>
-                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#reviewModal-{{ $item->id }}">
                                     Review
                                 </button>
@@ -93,8 +93,8 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <select name="status" class="form-control">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
+                                <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                                     <option value="0" {{ $item->status == 0 ? 'selected' : '' }}>Pending</option>
                                     <option value="1" {{ $item->status == 1 ? 'selected' : '' }}>Approved</option>
                                     <option value="2" {{ $item->status == 2 ? 'selected' : '' }}>Rejected</option>
@@ -134,11 +134,11 @@
                         let badge;
 
                         if (status == 1) {
-                            badge = '<span class="badge bg-success">Approved</span>';
+                            badge = '<span class="badge bg-feedback-success">Approved</span>';
                         } else if (status == 2) {
-                            badge = '<span class="badge bg-danger">Rejected</span>';
+                            badge = '<span class="badge bg-feedback-danger">Rejected</span>';
                         } else {
-                            badge = '<span class="badge bg-warning text-dark">Pending</span>';
+                            badge = '<span class="badge bg-feedback-warning text-ink">Pending</span>';
                         }
 
                         $("#status-badge-" + productId).html(badge);

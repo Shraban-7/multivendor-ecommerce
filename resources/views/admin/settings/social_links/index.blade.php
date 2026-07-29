@@ -2,7 +2,7 @@
 @section('title', 'Social Links')
 
 @section('content')
-    <div class="mb-3 d-flex justify-content-between align-items-center">
+    <div class="mb-3 flex justify-between items-center">
         <h4 class="mb-0">Social Links</h4>
 
         @if (hasPermission('admin.settings.socialLinks.store'))
@@ -12,8 +12,8 @@
         @endif
     </div>
 
-    <div class="table-responsive ">
-        <table class="table mb-3 bg-white table-bordered">
+    <div class="overflow-x-auto ">
+        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
@@ -33,14 +33,14 @@
                         <td><a href="{{ $socialLink->link }}" target="_blank">{{ $socialLink->link }}</a></td>
                         <td>
                             @if ($socialLink->status)
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-feedback-success">Active</span>
                             @else
-                                <span class="badge bg-danger">Inactive</span>
+                                <span class="badge bg-feedback-danger">Inactive</span>
                             @endif
                         </td>
                         <td>
                             @if (hasPermission('admin.settings.socialLinks.update'))
-                                <button class="btn btn-light border btn-sm" data-bs-toggle="modal"
+                                <button class="btn btn-light btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#editModal-{{ $socialLink->id }}">
                                     <i data-feather="edit" class="icon-xs"></i> Edit
                                 </button>
@@ -61,16 +61,16 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label class="form-label">Name</label>
-                                            <input type="text" name="name" class="form-control"
+                                            <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                                            <input type="text" name="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                                 value="{{ $socialLink->name }}" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Icon Name (FontAwesome)</label>
-                                            <input name="icon_name" type="text" class="form-control"
+                                            <label class="block text-xs font-medium text-ink-secondary mb-1">Icon Name (FontAwesome)</label>
+                                            <input name="icon_name" type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                                 value="{{ $socialLink->icon_name }}" placeholder="e.g. fa-facebook-f"
                                                 required>
-                                            <small class="text-muted">
+                                            <small class="text-ink-tertiary">
                                                 Browse icons at
                                                 <a href="https://fontawesome.com/search" target="_blank"
                                                     rel="noopener noreferrer">
@@ -79,13 +79,13 @@
                                             </small>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Link</label>
-                                            <input type="url" name="link" class="form-control"
+                                            <label class="block text-xs font-medium text-ink-secondary mb-1">Link</label>
+                                            <input type="url" name="link" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                                 value="{{ $socialLink->link }}" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Status</label>
-                                            <select name="status" class="form-select">
+                                            <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
+                                            <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                                 <option value="1" {{ $socialLink->status ? 'selected' : '' }}>Active
                                                 </option>
                                                 <option value="0" {{ !$socialLink->status ? 'selected' : '' }}>
@@ -116,14 +116,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input name="name" type="text" class="form-control" required>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                        <input name="name" type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Icon Name (FontAwesome)</label>
-                        <input name="icon_name" type="text" class="form-control" placeholder="e.g. fa-facebook-f"
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Icon Name (FontAwesome)</label>
+                        <input name="icon_name" type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="e.g. fa-facebook-f"
                             required>
-                        <small class="text-muted">
+                        <small class="text-ink-tertiary">
                             Browse icons at
                             <a href="https://fontawesome.com/search" target="_blank" rel="noopener noreferrer">
                                 Font Awesome Icons
@@ -132,12 +132,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Link</label>
-                        <input name="link" type="url" class="form-control" required>
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Link</label>
+                        <input name="link" type="url" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-theme">Save</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>

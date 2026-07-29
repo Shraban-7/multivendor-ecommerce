@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex justify-between items-center mb-4">
             <h4 class="mb-0">Manual Payment Methods</h4>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditModal" onclick="openAddModal()">
                 <i class="bi bi-plus-circle me-1"></i> Add New
@@ -11,11 +11,11 @@
         </div>
 
         <!-- Table Card -->
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden shadow-sm">
+            <div class="p-5 p-0">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-ink border-collapse table-hover align-middle mb-0">
+                        <thead class="bg-surface-muted">
                             <tr>
                                 <th>#</th>
                                 <th>Logo</th>
@@ -41,23 +41,23 @@
                                     </td>
                                     <td>
                                         <strong>{{ $method->name }}</strong><br />
-                                        <small class="text-muted">{{ $method->slug }}</small>
+                                        <small class="text-ink-tertiary">{{ $method->slug }}</small>
                                     </td>
                                     <td>{{ $method->account_name }}</td>
                                     <td>{{ $method->account_number }}</td>
                                     <td>
                                         @if ($method->is_active)
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-feedback-success">Active</span>
                                         @else
-                                            <span class="badge bg-secondary">Inactive</span>
+                                            <span class="badge bg-surface-muted">Inactive</span>
                                         @endif
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal"
+                                        <button class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal"
                                             data-bs-target="#addEditModal" onclick="openEditModal({{ $method }})">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
                                             onclick="confirmDelete('{{ route('admin.manualGateways.delete', $method->id) }}')">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -66,7 +66,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4 text-muted">
+                                    <td colspan="7" class="text-center py-4 text-ink-tertiary">
                                         No manual payment methods found.
                                     </td>
                                 </tr>
@@ -93,50 +93,50 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" required />
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                                <input type="text" name="name" id="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required />
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Active</label>
-                                <select name="is_active" id="is_active" class="form-select">
+                            <div class="md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Active</label>
+                                <select name="is_active" id="is_active" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                                     <option value="1">Yes</option>
                                     <option value="0">No</option>
                                 </select>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Description</label>
-                                <textarea name="description" id="description" rows="2" class="form-control"></textarea>
+                            <div class="md:col-span-full">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Description</label>
+                                <textarea name="description" id="description" rows="2" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></textarea>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Account Name</label>
-                                <input type="text" name="account_name" id="account_name" class="form-control" required />
+                            <div class="md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Account Name</label>
+                                <input type="text" name="account_name" id="account_name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required />
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Account Number</label>
-                                <input type="text" name="account_number" id="account_number" class="form-control"
+                            <div class="md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Account Number</label>
+                                <input type="text" name="account_number" id="account_number" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                     required />
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Logo</label>
-                                <input type="file" name="image" id="image" class="form-control" accept="image/*" />
-                                <small class="text-muted">Upload small logo image.</small>
+                            <div class="md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">Logo</label>
+                                <input type="file" name="image" id="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" accept="image/*" />
+                                <small class="text-ink-tertiary">Upload text-sm logo image.</small>
                                 <img id="methodPreviewImage" src="" alt="Preview" class="rounded-lg border mt-2"
                                     width="55" height="55" style="display:none;">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">QR Image</label>
-                                <input type="file" name="qr_image" id="qr_image" class="form-control"
+                            <div class="md:col-span-1">
+                                <label class="block text-xs font-medium text-ink-secondary mb-1">QR Image</label>
+                                <input type="file" name="qr_image" id="qr_image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                     accept="image/*" />
-                                <small class="text-muted">Upload small QR image.</small>
+                                <small class="text-ink-tertiary">Upload text-sm QR image.</small>
                                 <img id="methodPreviewQRImage" src="" alt="Preview"
                                     class="rounded-lg border mt-2" width="55" height="55" style="display:none;">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit" class="btn btn-primary">

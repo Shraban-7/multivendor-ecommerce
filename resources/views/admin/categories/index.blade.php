@@ -2,12 +2,12 @@
 @section('title', 'Categories')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-end mb-3">
+<div class="flex justify-between items-end mb-3">
     <h3 class="mb-0">Categories</h3>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">+ Add Category</button>
 </div>
 
-<table class="table table-bordered align-middle bg-white">
+<table class="w-full text-left text-sm text-ink border-collapse table-bordered align-middle bg-white">
     <thead>
         <tr>
             <th>Image</th>
@@ -23,9 +23,9 @@
             <td><img src="{{ storage_url($category->image) }}" width="50"></td>
             <td><strong>{{ $category->name }}</strong></td>
             <td>{{ $category->icon }}</td>
-            <td>@if($category->status)<span class="badge bg-primary">Active</span> @else <span class="badge bg-secondary">Inactive</span> @endif</td>
+            <td>@if($category->status)<span class="badge bg-brand-deep">Active</span> @else <span class="badge bg-surface-muted">Inactive</span> @endif</td>
             <td>
-                <button class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#editModal{{ $category->id }}">
+                <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $category->id }}">
                     Edit
                 </button>
             </td>
@@ -33,10 +33,10 @@
         @foreach($category->subcategories as $sub)
         <tr>
             <td></td>
-            <td><span class="text-muted ms-4">— {{ $sub->name }}</span></td>
-            <td>@if($sub->status)<span class="badge bg-primary">Active</span> @else <span class="badge bg-secondary">Inactive</span> @endif</td>
+            <td><span class="text-ink-tertiary ms-4">— {{ $sub->name }}</span></td>
+            <td>@if($sub->status)<span class="badge bg-brand-deep">Active</span> @else <span class="badge bg-surface-muted">Inactive</span> @endif</td>
             <td>
-                <button class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#editModal{{ $sub->id }}">
+                <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $sub->id }}">
                     Edit
                 </button>
             </td>
@@ -65,11 +65,11 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Name</label>
-                        <input type="text" name="name" id="cat_name" class="form-control" required>
+                        <input type="text" name="name" id="cat_name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                     </div>
                     <div class="mb-3">
                         <label>Parent Category (Optional)</label>
-                        <select name="category_id" id="cat_parent" class="form-control">
+                        <select name="category_id" id="cat_parent" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                             <option value="">None (Main)</option>
                             @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -78,11 +78,11 @@
                     </div>
                     <div class="mb-3">
                         <label>Image</label>
-                        <input type="file" name="image" class="form-control">
+                        <input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                     </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="status" value="1" id="cat_status" checked>
-                        <label class="form-check-label">Is Active</label>
+                    <div class="flex items-center gap-2 form-switch">
+                        <input class="h-4 w-4 rounded border-border text-brand focus:ring-brand" type="checkbox" name="status" value="1" id="cat_status" checked>
+                        <label class="text-sm text-ink">Is Active</label>
                     </div>
                 </div>
                 <div class="modal-footer">

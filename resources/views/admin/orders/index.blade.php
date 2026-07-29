@@ -4,8 +4,8 @@
 
     <h4 class="mb-3">Orders </h4>
 
-    <div class="table-responsive">
-        <table id="order-table" class="table table-bordered bg-white mb-3 text-nowrap">
+    <div class="overflow-x-auto">
+        <table id="order-table" class="w-full text-left text-sm text-ink border-collapse table-bordered bg-white mb-3 whitespace-nowrap">
             <thead>
                 <tr>
                     <th scope="col">InvoiceId</th>

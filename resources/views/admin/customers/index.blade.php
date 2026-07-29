@@ -2,12 +2,12 @@
 @section('title', 'Customers')
 @section('content')
 
-<div class="d-flex justify-content-between align-items-end mb-3">
+<div class="flex justify-between items-end mb-3">
     <h4 class="mb-0">Customers</h4>
 </div>
 
-<div class="table-responsive">
-    <table id="customer-table" class="table table-bordered bg-white mb-3">
+<div class="overflow-x-auto">
+    <table id="customer-table" class="w-full text-left text-sm text-ink border-collapse table-bordered bg-white mb-3">
         <thead>
             <tr>
                 <th scope="col">Customer</th>

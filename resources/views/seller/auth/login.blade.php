@@ -1,51 +1,52 @@
-@extends('frontend.layouts.app')
+@extends('seller.layouts.auth')
 @section('title', 'Seller Login')
 
 @section('content')
-    <section class="max-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-md space-y-4 border border-gray-300 rounded bg-white">
-            <h2 class="sm:text-base text-sm font-medium border-b px-3 py-1.5 md:px-5 md:py-3 uppercase text-center">
-                Login to Seller Account
-            </h2>
-            <form spellcheck="false" action="{{ route('seller.login') }}" method="POST" class="flex flex-col gap-y-3 sm:gap-y-5 px-3 py-1.5 md:px-5 md:py-2">
+    <div class="max-w-md mx-auto w-full px-4">
+        <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden" style="border-radius: 12px;">
+            <div class="px-6 py-5 border-b border-border">
+                <h1 class="text-xl font-bold text-ink mb-1">Seller Login</h1>
+                <p class="text-sm text-ink-tertiary mb-0">Sign in to your seller panel</p>
+            </div>
+
+            <form method="POST" action="{{ route('seller.login') }}" class="px-6 py-5 space-y-4">
                 @csrf
-                <div class="from-ctrl space-y-1 sm:space-y-2">
-                    <label for="login-email" class="block text-sm">Email</label>
-                    <input required type="email" name="email" id="login-email"
-                        class="eq w-full px-3 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-brand focus:border-brand-deep text-sm md:text-base" />
+
+                @foreach (['success', 'error', 'warning'] as $flash)
+                    @if (session($flash))
+                        <div class="text-sm rounded-xs px-3 py-2
+                            {{ $flash === 'success' ? 'text-feedback-success bg-emerald-50 border border-emerald-100' : '' }}
+                            {{ $flash === 'error' ? 'text-feedback-danger bg-red-50 border border-red-100' : '' }}
+                            {{ $flash === 'warning' ? 'text-feedback-warning bg-amber-50 border border-amber-100' : '' }}">
+                            {{ session($flash) }}
+                        </div>
+                    @endif
+                @endforeach
+
+                <div>
+                    <label for="login-email" class="block text-sm font-medium text-ink mb-1">Email</label>
+                    <input required type="email" name="email" id="login-email" value="{{ old('email') }}" autofocus
+                        class="w-full px-3 py-2 text-sm border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep">
                 </div>
 
-                <div class="from-ctrl space-y-1 sm:space-y-2">
-                    <label for="login-password" class="block text-sm">Password</label>
-                    <div class="relative">
-                        <input required type="password" name="password" id="login-password"
-                            class="eq w-full pl-3 pr-10 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-brand focus:border-brand-deep text-sm md:text-base" />
-                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
-                            onclick="togglePassword('login-password', this)">
-                            <i data-lucide="eye"></i>
-                            <i data-lucide="eye-off" class="hidden"></i>
-                        </button>
-                    </div>
+                <div>
+                    <label for="login-password" class="block text-sm font-medium text-ink mb-1">Password</label>
+                    <input required type="password" name="password" id="login-password"
+                        class="w-full px-3 py-2 text-sm border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep">
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input type="checkbox" id="remember-me" class="h-4 w-4 text-brand border-gray-300 rounded" />
-                        <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
-                    </div>
-                    <a href="#" class="text-sm text-brand hover:text-brand-deep">Forgot password?</a>
-                </div>
+                <label class="inline-flex items-center gap-2 text-sm text-ink-secondary">
+                    <input type="checkbox" name="remember" value="1" class="rounded-xs border-border">
+                    Remember me
+                </label>
 
-                <button type="submit"
-                    class="btn btn-primary btn-lg w-full">
-                    Login
-                </button>
+                <button type="submit" class="btn btn-primary w-full">Login</button>
 
-                <p class="text-center text-sm">
+                <p class="text-center text-sm text-ink-tertiary mb-0">
                     Don't have an account?
                     <a href="{{ route('seller.signup') }}" class="text-brand hover:text-brand-deep">Register here</a>
                 </p>
             </form>
         </div>
-    </section>
+    </div>
 @endsection

@@ -23,7 +23,7 @@
         }
     }
 
-    .progress {
+    .w-full h-2 bg-surface-muted rounded-full overflow-hidden {
         background: #e5e7eb;
     }
 </style>
@@ -32,101 +32,101 @@
 
 <form id="sellerForm" enctype="multipart/form-data" class="needs-validation" novalidate>
     @csrf
-    <div class="card border-0 shadow-sm mx-auto">
-        <div class="card-header bg-white py-3 border-bottom">
-            <div class="d-flex justify-content-between align-items-end">
-                <h4 class="fw-semibold mb-0 text-center">
-                    <i data-feather="user-check" class="me-2 text-primary"></i> Seller Registration Form
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden border-0 shadow-sm mx-auto">
+        <div class="px-5 py-4 border-b border-border bg-white flex items-center justify-between bg-white py-3 border-b">
+            <div class="flex justify-between items-end">
+                <h4 class="font-semibold mb-0 text-center">
+                    <i data-feather="user-check" class="me-2 text-brand"></i> Seller Registration Form
                 </h4>
-                <a href="{{ route('admin.sellers.index') }}" class="btn btn-outline-secondary btn-sm">
+                <a href="{{ route('admin.sellers.index') }}" class="btn btn-light btn-sm">
                     <i data-feather="arrow-left" class="icon-xs"></i> Back to Sellers
                 </a>
             </div>
         </div>
 
         <!-- Progress Bar -->
-        <div class="progress rounded-0" style="height: 6px;">
-            <div class="progress-bar bg-primary" id="formProgress" style="width: 33%;"></div>
+        <div class="w-full h-2 bg-surface-muted rounded-full overflow-hidden rounded-0" style="height: 6px;">
+            <div class="h-full bg-brand-deep rounded-full transition-all bg-brand-deep" id="formProgress" style="width: 33%;"></div>
         </div>
 
-        <div class="card-body p-4">
+        <div class="p-5 p-4">
             <!-- STEP 1 -->
             <div class="form-step form-step-active" id="step1">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Select Plan</label>
-                        <select name="plan_id" class="form-select" required>
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Select Plan</label>
+                        <select name="plan_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
                             @foreach ($plans as $plan)
                             <option value="{{ $plan->id }}">{{ $plan->name }} | {{ money($plan->price) }}/{{ $plan->duration_type}}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-6"><label class="form-label">Full Name</label><input type="text" name="name" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Phone</label><input type="text" name="phone" class="form-control" required></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Full Name</label><input type="text" name="name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Email</label><input type="email" name="email" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Phone</label><input type="text" name="phone" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required></div>
 
-                    <div class="col-md-6"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Confirm Password</label><input type="password" name="password_confirmation" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Profile Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Password</label><input type="password" name="password" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Confirm Password</label><input type="password" name="password_confirmation" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Profile Image</label><input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" accept="image/*"></div>
                 </div>
-                <div class="text-end mt-4"><button type="button" class="btn btn-primary nextBtn px-4">Next →</button></div>
+                <div class="text-right mt-4"><button type="button" class="btn btn-primary nextBtn">Next →</button></div>
             </div>
 
             <!-- STEP 2 -->
             <div class="form-step" id="step2">
-                <h5 class="fw-semibold mb-3 text-primary"><i data-feather="briefcase" class="me-2"></i> Business Information</h5>
-                <div class="row g-3">
-                    <div class="col-md-6"><label class="form-label">Business Name</label><input type="text" name="business_name" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label">Business Email</label><input type="email" name="business_email" class="form-control"></div>
-                    <div class="col-12"><label class="form-label">Business Address</label><textarea name="business_address" class="form-control" rows="2" required></textarea></div>
-                    <div class="col-12"><label class="form-label">Shop Description</label><textarea name="business_description" class="form-control" rows="3"></textarea></div>
-                    <div class="col-md-6">
-                        <label class="form-label">Shop Type</label>
-                        <select name="shop_type" class="form-select">
+                <h5 class="font-semibold mb-3 text-brand"><i data-feather="briefcase" class="me-2"></i> Business Information</h5>
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Business Name</label><input type="text" name="business_name" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Business Email</label><input type="email" name="business_email" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></div>
+                    <div class="col-span-full"><label class="block text-xs font-medium text-ink-secondary mb-1">Business Address</label><textarea name="business_address" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="2" required></textarea></div>
+                    <div class="col-span-full"><label class="block text-xs font-medium text-ink-secondary mb-1">Shop Description</label><textarea name="business_description" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3"></textarea></div>
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Shop Type</label>
+                        <select name="shop_type" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
                             <option value="individual">Individual</option>
                             <option value="business">Business</option>
                             <option value="company">Company</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Division</label>
-                        <select name="division_id" class="form-select" required>
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">Division</label>
+                        <select name="division_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
                             <option value="">Select Division</option>
                             @foreach ($divisions as $division)
                             <option value="{{ $division->id }}">{{ $division->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">District</label>
-                        <select name="district_id" class="form-select" required>
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-medium text-ink-secondary mb-1">District</label>
+                        <select name="district_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
                             <option value="">Select District</option>
                         </select>
                     </div>
-                    <div class="col-12"><label class="form-label">Business Logo</label><input type="file" name="business_logo" class="form-control" accept="image/*"></div>
+                    <div class="col-span-full"><label class="block text-xs font-medium text-ink-secondary mb-1">Business Logo</label><input type="file" name="business_logo" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" accept="image/*"></div>
                 </div>
-                <div class="mt-4 d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary prevBtn px-4">← Back</button>
-                    <button type="button" class="btn btn-primary nextBtn px-4">Next →</button>
+                <div class="mt-4 flex justify-between">
+                    <button type="button" class="btn btn-light prevBtn">← Back</button>
+                    <button type="button" class="btn btn-primary nextBtn">Next →</button>
                 </div>
             </div>
 
             <!-- STEP 3 -->
             <div class="form-step" id="step3">
-                <h5 class="fw-semibold mb-3 text-primary"><i data-feather="file-text" class="me-2"></i> Documents Upload</h5>
-                <div class="row g-3">
-                    <div class="col-md-6"><label class="form-label">Trade License No</label><input type="text" name="trade_license_no" class="form-control"></div>
-                    <div class="col-md-6"><label class="form-label">NID Number</label><input type="text" name="nid_no" class="form-control"></div>
+                <h5 class="font-semibold mb-3 text-brand"><i data-feather="file-text" class="me-2"></i> Documents Upload</h5>
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Trade License No</label><input type="text" name="trade_license_no" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">NID Number</label><input type="text" name="nid_no" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"></div>
 
-                    <div class="col-md-6"><label class="form-label">Trade License Image</label><input type="file" name="trade_license_image" class="form-control" accept="image/*"></div>
-                    <div class="col-md-6"><label class="form-label">Shop Image</label><input type="file" name="shop_image" class="form-control" accept="image/*"></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Trade License Image</label><input type="file" name="trade_license_image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" accept="image/*"></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">Shop Image</label><input type="file" name="shop_image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" accept="image/*"></div>
 
-                    <div class="col-md-6"><label class="form-label">NID Front</label><input type="file" name="nid_front_image" class="form-control" accept="image/*"></div>
-                    <div class="col-md-6"><label class="form-label">NID Back</label><input type="file" name="nid_back_image" class="form-control" accept="image/*"></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">NID Front</label><input type="file" name="nid_front_image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" accept="image/*"></div>
+                    <div class="md:col-span-1"><label class="block text-xs font-medium text-ink-secondary mb-1">NID Back</label><input type="file" name="nid_back_image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" accept="image/*"></div>
                 </div>
-                <div class="mt-4 d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary prevBtn px-4">← Back</button>
-                    <button type="button" id="submitButton" class="btn btn-success px-5">
+                <div class="mt-4 flex justify-between">
+                    <button type="button" class="btn btn-light prevBtn">← Back</button>
+                    <button type="button" id="submitButton" class="btn btn-success">
                         <i data-feather="save" class="me-2"></i>Register Seller
                     </button>
                 </div>
@@ -142,12 +142,12 @@
         const nextBtns = document.querySelectorAll(".nextBtn");
         const prevBtns = document.querySelectorAll(".prevBtn");
         const steps = document.querySelectorAll(".form-step");
-        const progress = document.querySelector("#formProgress");
+        const w-full h-2 bg-surface-muted rounded-full overflow-hidden = document.querySelector("#formProgress");
         let actStep = 0;
 
         function showStep(index) {
             steps.forEach((step, i) => step.classList.toggle("form-step-active", i === index));
-            progress.style.width = `${((index + 1) / steps.length) * 100}%`;
+            w-full h-2 bg-surface-muted rounded-full overflow-hidden.style.width = `${((index + 1) / steps.length) * 100}%`;
         }
 
         nextBtns.forEach(btn => btn.addEventListener("click", () => {

@@ -1,64 +1,64 @@
 @extends('admin.layouts.app')
 @section('title', 'Add Subcategory')
 @section('content')
-    <div class="mb-3 d-flex justify-content-between align-items-end">
+    <div class="mb-3 flex justify-between items-end">
         <h4 class="mb-0">Add Subcategory</h4>
     </div>
 
-    <div class="row">
-        <div class="col-8">
-            <div class="card card-body">
+    <div class="grid grid-cols-1">
+        <div class="col-span-2">
+            <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden p-5">
                 <form id="form" action="{{ route('admin.subcategories.store') }}" method="POST"
                     enctype="multipart/form-data">
                     @CSRF
-                    <div class="row">
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Select Category</label>
-                            <select name="category_id" class="form-select select2" required>
+                    <div class="grid grid-cols-1">
+                        <div class="mb-3 md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Select Category</label>
+                            <select name="category_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors select2" required>
                                 <option value="">-- Select Category --</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Name</label>
-                            <input name="name" type="text" value="" class="form-control" required>
+                        <div class="mb-3 md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Name</label>
+                            <input name="name" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Cover Title</label>
-                            <input name="cover_title" type="text" value="" class="form-control" required>
+                        <div class="mb-3 md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Title</label>
+                            <input name="cover_title" type="text" value="" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="mb-3 col-md-12">
-                            <label class="form-label">Cover Description</label>
+                        <div class="mb-3 md:col-span-full">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Description</label>
                             <x-textarea-input name="cover_description" value="" />
                         </div>
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Cover Background Color</label>
+                        <div class="mb-3 md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Background Color</label>
                             <input name="cover_bg_color" type="color" value=""
-                                class="form-control form-control-color" required>
+                                class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Cover Text Color</label>
+                        <div class="mb-3 md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Text Color</label>
                             <input name="cover_text_color" type="color" value=""
-                                class="form-control form-control-color" required>
+                                class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Cover Button Color</label>
+                        <div class="mb-3 md:col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Button Color</label>
                             <input name="cover_button_color" type="color" value=""
-                                class="form-control form-control-color" required>
+                                class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
 
-                        <div class="mb-3 col-6">
-                            <label class="form-label">Image</label>
+                        <div class="mb-3 col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Image</label>
                             <x-image-input name="image" />
                         </div>
-                        <div class="mb-3 col-6">
-                            <label class="form-label">Cover Photo</label>
+                        <div class="mb-3 col-span-1">
+                            <label class="block text-xs font-medium text-ink-secondary mb-1">Cover Photo</label>
                             <x-image-input name="cover_image" />
                         </div>
                     </div>
-                    <button type="submit" id="submitBtn" class="btn btn-theme">Save</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary">Save</button>
                 </form>
             </div>
         </div>

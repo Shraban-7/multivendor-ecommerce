@@ -2,12 +2,12 @@
 @section('title', 'Admin List')
 @section('content')
 
-    <div class="d-flex justify-content-between align-items-end mb-2">
+    <div class="flex justify-between items-end mb-2">
         <h4 class="mb-0">Admin List</h4>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered bg-white mb-3">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-ink border-collapse table-bordered bg-white mb-3">
             <thead>
                 <tr>
                     <th scope="col">Id</th>
@@ -25,13 +25,13 @@
                         <td>{{ $admin->role->title }}</td>
                         <td>{{ $admin->created_at->format('d M y h:i A') }}</td>
                         <td>
-                            <div class="d-flex">
-                                <a class="btn btn-sm btn-light border me-1"
+                            <div class="flex">
+                                <a class="btn btn-light btn-sm me-1"
                                     href="{{ route('admin.admins.edit', $admin->id) }}">
                                     <i class="ri-edit-box-line icon-xs me-1"></i>Edit
                                 </a>
                                 @if ($admin->name != 'Super Admin')
-                                    <button class="btn btn-sm btn-danger" type="button"
+                                    <button class="btn btn-danger btn-sm" type="button"
                                         onclick="confirmDelete('{{ route('admin.admins.delete', $admin->id) }}')">
                                         <i class="ri-delete-bin-7-line icon-xs me-1"></i> Delete
                                     </button>

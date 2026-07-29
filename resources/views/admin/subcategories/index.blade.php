@@ -2,15 +2,15 @@
 @section('title', 'Subcategories')
 
 @section('content')
-    <div class="mb-3 d-flex justify-content-between align-items-center">
+    <div class="mb-3 flex justify-between items-center">
         <h4 class="mb-0">Subcategories</h4>
         <a href="{{ route('admin.subcategories.create') }}" class="btn btn-primary">
             <i data-feather="plus" class="icon-xs"></i> Add Subcategory
         </a>
     </div>
 
-    <div class="table-responsive ">
-        <table class="table mb-3 bg-white table-bordered">
+    <div class="overflow-x-auto ">
+        <table class="w-full text-left text-sm text-ink border-collapse mb-3 bg-white table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
@@ -24,8 +24,8 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <img src="{{ storage_url($subcategory->image) }}" class="border rounded-circle"
+                            <div class="flex items-center">
+                                <img src="{{ storage_url($subcategory->image) }}" class="border rounded-full"
                                     alt="Image" style="height:80px; width:80px">
                                 <div class="mt-2 ms-3">
                                     <div>{{ $subcategory->name }}</div>
@@ -33,12 +33,12 @@
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <img src="{{ storage_url($subcategory->cover_image) }}" class="border rounded-circle"
+                            <div class="flex items-center">
+                                <img src="{{ storage_url($subcategory->cover_image) }}" class="border rounded-full"
                                     alt="Cover Image" style="height:80px; width:80px">
                                 <div class="mt-2 ms-3">
                                     <div>{{ $subcategory->cover_title }}</div>
-                                    <div class="mt-1 d-flex align-items-center">
+                                    <div class="mt-1 flex items-center">
                                         <span class="me-1">BG Color:</span>
                                         <div
                                             style="width: 20px; height: 20px; background-color: {{ $subcategory->cover_bg_color }}; border: 1px solid #ccc; border-radius: 3px;">
@@ -47,11 +47,11 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="d-flex align-items-center gap-2">
+                        <td class="flex items-center gap-2">
 
                             @if (hasPermission('admin.subcategories.toggleStatus'))
                                 <button type="button"
-                                    class="btn btn-sm {{ $subcategory->status ? 'btn-danger' : 'btn-success' }}"
+                                    class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xs {{ $subcategory->status ? 'btn-danger' : 'btn-success' }}"
                                     data-bs-toggle="modal" data-bs-target="#toggleStatusModal{{ $subcategory->id }}">
                                     {{ $subcategory->status ? 'Inactive' : 'Active' }}
                                 </button>
@@ -79,7 +79,7 @@
                                                 method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary">Yes, Confirm</button>
-                                                <button type="button" class="btn btn-secondary"
+                                                <button type="button" class="btn btn-light"
                                                     data-bs-dismiss="modal">Cancel</button>
                                             </form>
                                         </div>
@@ -89,7 +89,7 @@
 
                             @if (hasPermission('admin.subcategories.edit'))
                                 <a href="{{ route('admin.subcategories.edit', $subcategory->id) }}"
-                                    class="btn btn-light border btn-sm">
+                                    class="btn btn-light btn-sm">
                                     <i data-feather="edit" class="icon-xs"></i> Edit
                                 </a>
                             @endif
@@ -101,7 +101,7 @@
         </table>
     </div>
 
-    <div class="d-flex justify-content-end">
+    <div class="flex justify-end">
         {{ $subcategories->links() }}
     </div>
 @endsection
