@@ -98,7 +98,7 @@
                     <!-- Card 2 -->
                     <div class="relative rounded-lg shadow cashback-card bg-jet-gray/5">
                         <div class="px-6 pt-2 pb-3 space-y-1 sm:px-8 sm:pt-6 sm:pb-4 sm:space-y-2">
-                            <h3 class="font-medium sm:text-lg text-primary/80">SlashMart 40</h3>
+                            <h3 class="font-medium sm:text-lg text-primary/80">{{ app_name() }} 40</h3>
                             <p class="text-xs text-davy-gray sm:text-sm">
                                 Add Items Worth $100 More To Unlock
                             </p>
@@ -109,7 +109,7 @@
                                 <span class="text-sm text-theme-teal">Up To 40% Discount on 2 Products</span>
                             </div>
                             <!-- Hidden input with the actual code to copy -->
-                            <input type="hidden" class="coupon-code" value="SlashMart40" />
+                            <input type="hidden" class="coupon-code" value="{{ str_replace(' ', '', app_name()) }}40" />
                         </div>
                         <div class="relative">
                             <button

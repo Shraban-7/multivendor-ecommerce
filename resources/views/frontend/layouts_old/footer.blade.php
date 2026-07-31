@@ -41,7 +41,7 @@
 
                     ?>
                     <a href="/" class="block w-24 mb-4">
-                        <img src="{{ storage_url($settings->logo_white) }}" alt="SlashMart Logo" class="w-full h-auto object-contain" />
+                        <img src="{{ storage_url($settings->logo_white) }}" alt="{{ app_name() }} Logo" class="w-full h-auto object-contain" />
                     </a>
                     <p class="text-black/60 mb-4">
                         {{ $settings->footer_text }}

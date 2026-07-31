@@ -413,8 +413,8 @@
                                         class="w-4 h-4 text-light-yellow focus:ring-light-yellow border-gray-300 rounded" />
                                 </div>
                                 <label for="terms" class="ml-2 text-sm">By signing up, you are creating
-                                    a SlashMart seller account, and you
-                                    agree to SlashMart's
+                                    a {{ app_name() }} seller account, and you
+                                    agree to {{ app_name() }}'s
                                     <a href="#" class="text-light-yellow hover:underline eq">Term
                                         of Use</a>
                                     and

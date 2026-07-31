@@ -162,7 +162,7 @@
         <!-- Footer -->
         <div class="bg-gray-50 px-8 py-4 text-center border-t border-gray-100">
             <p class="text-[10px] text-gray-400 leading-tight">
-                By continuing, you agree to SlashMart's <a href="#" class="text-gray-600 hover:underline">Terms of Service</a> & <a href="#" class="text-gray-600 hover:underline">Privacy Policy</a>.
+                By continuing, you agree to {{ app_name() }}'s <a href="#" class="text-gray-600 hover:underline">Terms of Service</a> & <a href="#" class="text-gray-600 hover:underline">Privacy Policy</a>.
             </p>
         </div>
     </div>
