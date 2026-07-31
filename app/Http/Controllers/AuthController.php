@@ -110,22 +110,26 @@ class AuthController extends Controller
             'admin' => [
                 'model' => Admin::class,
                 'guard' => 'admin',
+                'redirect' => 'admin.dashboard',
                 'check' => fn ($admin) => true,
             ],
             'user' => [
                 'model' => User::class,
                 'guard' => 'web',
+                'redirect' => null,
                 'check' => fn ($user) => true,
             ],
             'seller' => [
                 'model' => Seller::class,
                 'guard' => 'seller',
+                'redirect' => 'seller.dashboard',
                 'check' => fn ($seller) => $seller->status == Seller::ACTIVE,
                 'inactiveMessage' => 'Your account is inactive, contact with admin',
             ],
             'employee' => [
                 'model' => SellerEmployee::class,
                 'guard' => 'employee',
+                'redirect' => 'seller.dashboard',
                 'check' => fn ($employee) => $employee->is_active == 1,
                 'inactiveMessage' => 'Your account is inactive, contact with seller',
             ],
@@ -158,7 +162,11 @@ class AuthController extends Controller
                 return errorResponse('Incorrect password!');
             }
 
-            return successResponse('Login successful');
+            return apiResponse([
+                'redirect' => $config['redirect']
+                    ? route($config['redirect'])
+                    : null,
+            ], 'Login successful');
         }
 
         return errorResponse('Incorrect password!');
@@ -189,6 +197,8 @@ class AuthController extends Controller
 
         session()->flash('success', 'Registration successful');
 
-        return successResponse('Registration successful', 201);
+        return apiResponse([
+            'redirect' => null,
+        ], 'Registration successful', 201);
     }
 }

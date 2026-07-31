@@ -432,7 +432,12 @@
                     btnElement.classList.add('bg-green-600', 'cursor-default');
                     btnElement.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${successText}`;
                     setTimeout(() => {
-                        window.location.reload();
+                        const redirect = data.data && data.data.redirect;
+                        if (redirect) {
+                            window.location.href = redirect;
+                        } else {
+                            this.toggleModal(false);
+                        }
                     }, 1000);
                 } else {
                     alert(data.data.message || 'Authentication failed. Please check your credentials.');
