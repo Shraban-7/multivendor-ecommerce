@@ -30,6 +30,21 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::preventLazyLoading(! $this->app->isProduction());
 
+        // Laravel 11.55 dropped hasAnyFilled() from InteractsWithData; restore it
+        // as a Request macro so existing views calling request()->hasAnyFilled([...])
+        // keep working across the codebase.
+        Request::macro('hasAnyFilled', function ($keys) {
+            $keys = is_array($keys) ? $keys : func_get_args();
+
+            foreach ($keys as $key) {
+                if ($this->filled($key)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });

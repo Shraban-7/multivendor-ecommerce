@@ -18,6 +18,8 @@ interface ProductRepositoryInterface
 
     public function getForSeller(int $sellerId, array $filters = [], int $perPage = 25): LengthAwarePaginator;
 
+    public function getStatusCountsForSeller(int $sellerId): array;
+
     public function store(array $data): Product;
 
     public function update(Product $product, array $data): bool;

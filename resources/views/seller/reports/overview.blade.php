@@ -16,40 +16,46 @@
 @endpush
 
 {{-- ═══ HERO ═══ --}}
-<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
-    <div class="p-5 lg:p-6">
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #F85606, #fb923c, #fbbf24);"></div>
+    <div class="p-5 lg:p-6 pt-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="min-w-0">
                 <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
-                    <i data-lucide="folder" style="width:12px;height:12px;"></i>
+                    <i data-lucide="chart-pie" class="text-feedback-warning" style="width:12px;height:12px;"></i>
                     <span>Reports</span>
                     <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
-                    <span class="text-ink font-medium">Business Overview</span>
+                    <span class="text-ink-soft font-semibold">Business Overview</span>
                 </nav>
-                <h1 class="text-xl font-bold text-ink mb-1">Business Overview</h1>
-                <p class="text-sm text-ink-secondary mb-0">High-level snapshot of your store's performance for <strong>{{ $rangeText }}</strong>.</p>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Business Overview</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-feedback-warning/15 text-feedback-warning">
+                        <i data-lucide="chart-pie" style="width:11px;height:11px;" class="me-1"></i> {{ $rangeText }}
+                    </span>
+                </div>
+                <p class="text-sm text-ink-secondary mb-0">High-level snapshot of your store's performance.</p>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 shrink-0">
                 <a href="{{ route('seller.reports.sales') }}" class="btn btn-light btn-sm"><i data-lucide="shopping-cart" style="width:14px;height:14px;"></i> Sales Report</a>
                 <a href="{{ route('seller.reports.financial') }}" class="btn btn-light btn-sm"><i data-lucide="banknote" style="width:14px;height:14px;"></i> Financial</a>
                 <a href="{{ route('seller.reports.customers') }}" class="btn btn-light btn-sm"><i data-lucide="users" style="width:14px;height:14px;"></i> Customers</a>
             </div>
         </div>
         <div class="mt-4 flex flex-wrap gap-2 text-sm items-center text-ink-secondary">
-            <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-            <span class="mr-1 font-medium text-ink">Quick ranges:</span>
-            <a href="{{ route('seller.reports.overview', ['range' => 'daily']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'daily' ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">Today</a>
-            <a href="{{ route('seller.reports.overview', ['range' => 'weekly']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'weekly' ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">This Week</a>
-            <a href="{{ route('seller.reports.overview', ['range' => 'monthly']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'monthly' ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">This Month</a>
-            <a href="{{ route('seller.reports.overview', ['range' => 'yearly']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'yearly' ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">This Year</a>
-            <a href="{{ route('seller.reports.overview') }}" class="px-2 py-0.5 rounded-xs transition-colors {{ !request('range') ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">All Time</a>
+            <i data-lucide="calendar" style="width:14px;height:14px;" class="text-ink-tertiary"></i>
+            <span class="mr-1 font-medium text-ink-emphasis">Quick ranges:</span>
+            <a href="{{ route('seller.reports.overview', ['range' => 'daily']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'daily' ? 'bg-brand-tint text-brand-deep font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">Today</a>
+            <a href="{{ route('seller.reports.overview', ['range' => 'weekly']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'weekly' ? 'bg-brand-tint text-brand-deep font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">This Week</a>
+            <a href="{{ route('seller.reports.overview', ['range' => 'monthly']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'monthly' ? 'bg-brand-tint text-brand-deep font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">This Month</a>
+            <a href="{{ route('seller.reports.overview', ['range' => 'yearly']) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ request('range') == 'yearly' ? 'bg-brand-tint text-brand-deep font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">This Year</a>
+            <a href="{{ route('seller.reports.overview') }}" class="px-2 py-0.5 rounded-xs transition-colors {{ !request('range') ? 'bg-brand-tint text-brand-deep font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">All Time</a>
             <span class="text-ink-tertiary mx-1">|</span>
             <form method="GET" action="{{ route('seller.reports.overview') }}" class="flex items-center gap-2 flex-wrap">
                 <input type="hidden" name="range" value="custom">
-                <input type="date" name="date_from" value="{{ request('date_from') }}" class="px-2 py-1 text-sm bg-white text-ink border border-border rounded-xs focus:outline-none focus:border-brand transition-colors">
+                <input type="date" name="date_from" value="{{ request('date_from') }}" class="px-2 py-1 text-sm bg-surface-muted text-ink-emphasis rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
                 <span class="text-ink-tertiary">to</span>
-                <input type="date" name="date_to" value="{{ request('date_to') }}" class="px-2 py-1 text-sm bg-white text-ink border border-border rounded-xs focus:outline-none focus:border-brand transition-colors">
-                <button type="submit" class="btn btn-primary btn-sm"><i data-lucide="funnel" style="width:12px;height:12px;"></i> Apply</button>
+                <input type="date" name="date_to" value="{{ request('date_to') }}" class="px-2 py-1 text-sm bg-surface-muted text-ink-emphasis rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
+                <button type="submit" class="btn btn-primary btn-sm"><i data-lucide="funnel" style="width:14px;height:14px;"></i> Apply</button>
             </form>
         </div>
     </div>

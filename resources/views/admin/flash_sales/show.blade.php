@@ -122,7 +122,7 @@
 
                             <div class="mb-3">
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
-                                <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                                <select name="status" class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
                                     <option value="0" {{ $item->status == 0 ? 'selected' : '' }}>Pending</option>
                                     <option value="1" {{ $item->status == 1 ? 'selected' : '' }}>Approved</option>
                                     <option value="2" {{ $item->status == 2 ? 'selected' : '' }}>Rejected</option>

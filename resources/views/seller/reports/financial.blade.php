@@ -28,35 +28,41 @@
 @endpush
 
 {{-- ═══ HERO ═══ --}}
-<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
-    <div class="p-5 lg:p-6">
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #16a34a, #22c55e, #86efac);"></div>
+    <div class="p-5 lg:p-6 pt-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="min-w-0">
                 <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
-                    <i data-lucide="folder" style="width:12px;height:12px;"></i>
+                    <i data-lucide="banknote" class="text-feedback-success" style="width:12px;height:12px;"></i>
                     <span>Reports</span>
                     <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
-                    <span class="text-ink font-medium">Financial</span>
+                    <span class="text-ink-soft font-semibold">Financial</span>
                 </nav>
-                <h1 class="text-xl font-bold text-ink mb-1">Financial Report</h1>
-                <p class="text-sm text-ink-secondary mb-0">Profit & loss, expenses, inventory value & income sources for <strong>{{ $rangeText }}</strong>.</p>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Financial Report</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-feedback-success/15 text-feedback-success">
+                        <i data-lucide="banknote" style="width:11px;height:11px;" class="me-1"></i> {{ $rangeText }}
+                    </span>
+                </div>
+                <p class="text-sm text-ink-secondary mb-0">Profit & loss, expenses, inventory value & income sources.</p>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 shrink-0">
                 <a href="{{ route('seller.reports.overview') }}" class="btn btn-light btn-sm"><i data-lucide="layout-dashboard" style="width:14px;height:14px;"></i> Overview</a>
                 <a href="{{ route('seller.reports.sales') }}" class="btn btn-light btn-sm"><i data-lucide="shopping-cart" style="width:14px;height:14px;"></i> Sales</a>
                 <a href="{{ route('seller.reports.customers') }}" class="btn btn-light btn-sm"><i data-lucide="users" style="width:14px;height:14px;"></i> Customers</a>
             </div>
         </div>
         <div class="mt-4 flex flex-wrap gap-2 text-sm items-center text-ink-secondary">
-            <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-            <span class="mr-1 font-medium text-ink">Quick ranges:</span>
+            <i data-lucide="calendar" style="width:14px;height:14px;" class="text-ink-tertiary"></i>
+            <span class="mr-1 font-medium text-ink-emphasis">Quick ranges:</span>
             @foreach ($rangeLabels as $key => $label)
                 @if ($key === 'custom')
                     <form method="GET" action="{{ route('seller.reports.financial') }}" class="flex items-center gap-2 flex-wrap">
                         <input type="hidden" name="range" value="custom">
-                        <input type="date" name="date_from" value="{{ request('date_from') }}" class="fin-dash__filter-input px-2 py-1 text-sm border rounded-xs focus:outline-none transition-colors" placeholder="From">
+                        <input type="date" name="date_from" value="{{ request('date_from') }}" class="px-2 py-1 text-sm bg-surface-muted text-ink-emphasis rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" placeholder="From">
                         <span class="text-ink-tertiary">to</span>
-                        <input type="date" name="date_to" value="{{ request('date_to') }}" class="fin-dash__filter-input px-2 py-1 text-sm border rounded-xs focus:outline-none transition-colors" placeholder="To">
+                        <input type="date" name="date_to" value="{{ request('date_to') }}" class="px-2 py-1 text-sm bg-surface-muted text-ink-emphasis rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" placeholder="To">
                         <button type="submit" class="btn btn-primary btn-sm"><i data-lucide="funnel" style="width:12px;height:12px;"></i> Apply</button>
                     </form>
                 @else

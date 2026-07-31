@@ -12,9 +12,10 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $roles = Role::get();
+        $roles = Role::with('permissions')->get();
+        $permissions = Permission::get();
 
-        return view('admin.permissions.index', compact('roles'));
+        return view('admin.permissions.index', compact('roles', 'permissions'));
     }
 
     public function store(Request $request)
@@ -35,6 +36,7 @@ class PermissionController extends Controller
 
     public function edit(Role $role)
     {
+        $role->loadMissing('permissions');
         $permissions = Permission::get();
 
         return view('admin.permissions.edit', compact('role', 'permissions'));

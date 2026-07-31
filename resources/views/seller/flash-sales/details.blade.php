@@ -246,7 +246,7 @@
                     @php
                         $alreadySubmittedIds = ($submitted ?? collect())->pluck('product_id')->toArray();
                     @endphp
-                    <select name="product_id" required class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand-deep transition-colors product-select">
+                    <select name="product_id" required class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors product-select">
                         @foreach (($myProducts ?? collect()) as $p)
                             <option value="{{ $p->id }}" {{ in_array($p->id, $alreadySubmittedIds) ? 'disabled' : '' }}>
                                 {{ $p->name }}@if(filled($p->sku)) · {{ $p->sku }}@endif · (Stock: {{ (int) ($p->totalStock ?? 0) }})

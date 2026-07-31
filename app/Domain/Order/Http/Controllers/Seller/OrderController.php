@@ -57,7 +57,19 @@ class OrderController extends Controller
             ['billing_address', 'user', 'items'],
         );
 
-        return view('seller.orders.index', compact('orders', 'type'));
+        $sellerId = get_seller_id();
+        $base = Order::where('seller_id', $sellerId);
+        $counts = [
+            'total'     => (clone $base)->count(),
+            'pending'   => (clone $base)->where('status', OrderStatus::PENDING->value)->count(),
+            'accepted'  => (clone $base)->where('status', OrderStatus::ACCEPTED->value)->count(),
+            'shipped'   => (clone $base)->where('status', OrderStatus::SHIPPED->value)->count(),
+            'delivered' => (clone $base)->where('status', OrderStatus::DELIVERED->value)->count(),
+            'completed' => (clone $base)->where('status', OrderStatus::COMPLETED->value)->count(),
+            'cancelled' => (clone $base)->where('status', OrderStatus::CANCELLED->value)->count(),
+        ];
+
+        return view('seller.orders.index', compact('orders', 'type', 'counts'));
     }
 
     public function details($invoice_id)

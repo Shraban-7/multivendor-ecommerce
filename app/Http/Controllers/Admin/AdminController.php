@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admins = Admin::get();
+        $admins = Admin::with('role')->get();
 
         return view('admin.members.index', compact('admins'));
     }
@@ -49,6 +49,7 @@ class AdminController extends Controller
 
     public function edit(Admin $admin)
     {
+        $admin->loadMissing('role');
         $roles = Role::get();
 
         return view('admin.members.edit', compact('admin', 'roles'));

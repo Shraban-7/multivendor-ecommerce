@@ -162,12 +162,14 @@ class Seller extends Authenticatable
 
     public function getAvatarAttribute()
     {
-        return is_null($this->attributes['image']) ? asset('assets/frontend/images/user-avatar-1.png') : storage_url($this->attributes['image']);
+        $image = $this->attributes['image'] ?? null;
+        return is_null($image) ? asset('assets/frontend/images/user-avatar-1.png') : storage_url($image);
     }
 
     public function getBusinessAvatarAttribute()
     {
-        return is_null($this->attributes['business_logo']) ? asset('assets/frontend/images/provider-logo-2.png') : storage_url($this->attributes['business_logo']);
+        $logo = $this->attributes['business_logo'] ?? null;
+        return is_null($logo) ? asset('assets/frontend/images/provider-logo-2.png') : storage_url($logo);
     }
 
     public function followers(): HasMany

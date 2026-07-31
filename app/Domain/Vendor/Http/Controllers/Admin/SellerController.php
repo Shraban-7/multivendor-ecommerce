@@ -34,7 +34,15 @@ class SellerController extends Controller
             status: $request->get('status')
         )->appends($request->query());
 
-        return view('admin.sellers.index', compact('sellers'));
+        $counts = [
+            'total'   => Seller::count(),
+            'active'  => Seller::where('status', Seller::ACTIVE)->count(),
+            'pending' => Seller::where('status', Seller::PENDING)->count(),
+            'blocked' => Seller::where('status', Seller::BLOCKED)->count(),
+            'deleted' => Seller::where('status', Seller::DELETED)->count(),
+        ];
+
+        return view('admin.sellers.index', compact('sellers', 'counts'));
     }
 
     public function pending(Request $request)

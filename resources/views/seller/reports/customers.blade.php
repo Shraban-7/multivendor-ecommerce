@@ -25,31 +25,37 @@
 @endpush
 
 {{-- ═══ HERO ═══ --}}
-<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
-    <div class="p-5 lg:p-6">
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #0ea5e9, #38bdf8, #7dd3fc);"></div>
+    <div class="p-5 lg:p-6 pt-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="min-w-0">
                 <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
-                    <i data-lucide="folder" style="width:12px;height:12px;"></i>
+                    <i data-lucide="users" class="text-feedback-info" style="width:12px;height:12px;"></i>
                     <span>Reports</span>
                     <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
-                    <span class="text-ink font-medium">Customers</span>
+                    <span class="text-ink-soft font-semibold">Customers</span>
                 </nav>
-                <h1 class="text-xl font-bold text-ink mb-1">Customer Report</h1>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Customer Report</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-feedback-info/15 text-feedback-info">
+                        <i data-lucide="users" style="width:11px;height:11px;" class="me-1"></i> Customer Insights
+                    </span>
+                </div>
                 <p class="text-sm text-ink-secondary mb-0">Customer lifetime value, retention, segments and growth over the last <strong>12 months</strong>.</p>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 shrink-0">
                 <a href="{{ route('seller.reports.overview') }}" class="btn btn-light btn-sm"><i data-lucide="layout-dashboard" style="width:14px;height:14px;"></i> Overview</a>
                 <a href="{{ route('seller.reports.sales') }}" class="btn btn-light btn-sm"><i data-lucide="shopping-cart" style="width:14px;height:14px;"></i> Sales</a>
                 <a href="{{ route('seller.reports.financial') }}" class="btn btn-light btn-sm"><i data-lucide="banknote" style="width:14px;height:14px;"></i> Financial</a>
             </div>
         </div>
         <div class="mt-4 flex flex-wrap gap-2 text-sm items-center text-ink-secondary">
-            <i data-lucide="calendar" style="width:14px;height:14px;"></i>
-            <span class="mr-1 font-medium text-ink">Period focus:</span>
-            <a href="{{ route('seller.reports.customers') }}" class="px-2 py-0.5 rounded-xs transition-colors {{ empty($fValue) ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">All Time</a>
+            <i data-lucide="calendar" style="width:14px;height:14px;" class="text-ink-tertiary"></i>
+            <span class="mr-1 font-medium text-ink-emphasis">Period focus:</span>
+            <a href="{{ route('seller.reports.customers') }}" class="px-2 py-0.5 rounded-xs transition-colors {{ empty($fValue) ? 'bg-brand-tint text-brand-deep font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">All Time</a>
             @foreach ($filterLabels as $key => $label)
-                <a href="{{ route('seller.reports.customers', ['filter' => $key]) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ $fValue == $key ? 'bg-brand-tint text-brand font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">{{ $label }}</a>
+                <a href="{{ route('seller.reports.customers', ['filter' => $key]) }}" class="px-2 py-0.5 rounded-xs transition-colors {{ $fValue == $key ? 'bg-brand-tint text-brand-deep font-semibold' : 'hover:bg-surface-muted text-ink-secondary' }}">{{ $label }}</a>
             @endforeach
         </div>
     </div>

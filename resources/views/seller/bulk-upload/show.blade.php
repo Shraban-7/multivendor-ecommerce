@@ -2,12 +2,33 @@
 @section('title', 'Import Details')
 @section('content')
 
-<div class="flex justify-between items-center mb-3">
-    <h4 class="font-bold mb-0 text-ink">Import Details</h4>
-    <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light btn-sm">
-        <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back to Imports
-    </a>
-</div>
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #16a34a, #22c55e, #86efac);"></div>
+    <div class="p-5 lg:p-6 pt-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="upload-cloud" class="text-feedback-success" style="width:12px;height:12px;"></i>
+                    <a href="{{ route('seller.bulk-upload.index') }}" class="hover:text-ink transition-colors">Bulk Upload</a>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold">Import Details</span>
+                </nav>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Import Details</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-feedback-success/15 text-feedback-success">
+                        <i data-lucide="upload-cloud" style="width:11px;height:11px;" class="me-1"></i> {{ $bulkUpload->original_filename }}
+                    </span>
+                </div>
+                <p class="text-sm text-ink-secondary mb-0">Review the results of your product import.</p>
+            </div>
+            <div class="flex flex-wrap gap-2 shrink-0">
+                <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light btn-sm">
+                    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to Imports
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
     <div class="p-4">
@@ -39,17 +60,23 @@
             <div class="md:col-span-3">
                 <div class="p-3 bg-surface-muted rounded-xs text-center">
                     <p class="text-sm text-ink-tertiary mb-1">Status</p>
-                    @if($bulkUpload->status === 'pending')
-                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-secondary">Pending</span>
-                    @elseif($bulkUpload->status === 'processing')
-                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-warning">
-                            <i data-lucide="loader" class="icon-xs"></i> Processing...
-                        </span>
-                    @elseif($bulkUpload->status === 'completed')
-                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-success">Completed</span>
-                    @elseif($bulkUpload->status === 'failed')
-                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-danger">Failed</span>
-                    @endif
+                    @php
+                        $statusPill = match ($bulkUpload->status) {
+                            'pending'    => ['bg-amber-50 text-amber-700', 'bg-amber-400', 'Pending'],
+                            'processing' => ['bg-sky-50 text-sky-700', 'bg-sky-400', 'Processing...'],
+                            'completed'  => ['bg-emerald-50 text-emerald-700', 'bg-emerald-400', 'Completed'],
+                            'failed'     => ['bg-rose-50 text-rose-700', 'bg-rose-400', 'Failed'],
+                            default      => ['bg-neutral-100 text-neutral-600', 'bg-neutral-400', ucfirst((string) $bulkUpload->status)],
+                        };
+                    @endphp
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $statusPill[0] }}">
+                        @if ($bulkUpload->status === 'processing')
+                            <i data-lucide="loader" class="icon-xs me-1.5"></i>
+                        @else
+                            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5" style="background: {{ $statusPill[1] }};"></span>
+                        @endif
+                        {{ $statusPill[2] }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -92,11 +119,11 @@
 
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm text-ink border-collapse">
-                <thead class="bg-surface-muted">
-                    <tr>
-                        <th class="text-sm font-semibold text-ink-tertiary">Row</th>
-                        <th class="text-sm font-semibold text-ink-tertiary">SKU</th>
-                        <th class="text-sm font-semibold text-ink-tertiary">Errors</th>
+                <thead>
+                    <tr class="bg-surface-muted/50">
+                        <th class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Row</th>
+                        <th class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">SKU</th>
+                        <th class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Errors</th>
                     </tr>
                 </thead>
                 <tbody>

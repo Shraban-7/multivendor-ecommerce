@@ -584,6 +584,14 @@ svg[class*="icon-"] {
   --btn-border-hover: #C43D00;
   --btn-bg-active: #9E3100;
   --btn-ring: rgba(248, 86, 6, 0.35);
+
+  --bs-btn-bg: #F85606;
+  --bs-btn-hover-bg: #C43D00;
+  --bs-btn-active-bg: #9E3100;
+  --bs-btn-border-color: #F85606;
+  --bs-btn-hover-border-color: #C43D00;
+  --bs-btn-active-border-color: #9E3100;
+  --bs-btn-focus-shadow-rgb: 248, 86, 6;
 }
 
 /* ── Solid: danger / success / warning / info / dark ── */
@@ -596,6 +604,14 @@ svg[class*="icon-"] {
   --btn-border-hover: #B71C1C;
   --btn-bg-active: #9E1414;
   --btn-ring: rgba(217, 48, 37, 0.35);
+
+  --bs-btn-bg: #D93025;
+  --bs-btn-hover-bg: #B71C1C;
+  --bs-btn-active-bg: #9E1414;
+  --bs-btn-border-color: #D93025;
+  --bs-btn-hover-border-color: #B71C1C;
+  --bs-btn-active-border-color: #9E1414;
+  --bs-btn-focus-shadow-rgb: 217, 48, 37;
 }
 
 .btn-success {
@@ -607,6 +623,14 @@ svg[class*="icon-"] {
   --btn-border-hover: #156F36;
   --btn-bg-active: #10592B;
   --btn-ring: rgba(29, 138, 69, 0.35);
+
+  --bs-btn-bg: #1D8A45;
+  --bs-btn-hover-bg: #156F36;
+  --bs-btn-active-bg: #10592B;
+  --bs-btn-border-color: #1D8A45;
+  --bs-btn-hover-border-color: #156F36;
+  --bs-btn-active-border-color: #10592B;
+  --bs-btn-focus-shadow-rgb: 29, 138, 69;
 }
 
 .btn-warning {
@@ -618,6 +642,14 @@ svg[class*="icon-"] {
   --btn-border-hover: #8C5E14;
   --btn-bg-active: #714C10;
   --btn-ring: rgba(183, 121, 26, 0.35);
+
+  --bs-btn-bg: #B7791A;
+  --bs-btn-hover-bg: #8C5E14;
+  --bs-btn-active-bg: #714C10;
+  --bs-btn-border-color: #B7791A;
+  --bs-btn-hover-border-color: #8C5E14;
+  --bs-btn-active-border-color: #714C10;
+  --bs-btn-focus-shadow-rgb: 183, 121, 26;
 }
 
 .btn-info {
@@ -629,6 +661,14 @@ svg[class*="icon-"] {
   --btn-border-hover: #0C5AA0;
   --btn-bg-active: #094880;
   --btn-ring: rgba(15, 111, 197, 0.35);
+
+  --bs-btn-bg: #0F6FC5;
+  --bs-btn-hover-bg: #0C5AA0;
+  --bs-btn-active-bg: #094880;
+  --bs-btn-border-color: #0F6FC5;
+  --bs-btn-hover-border-color: #0C5AA0;
+  --bs-btn-active-border-color: #094880;
+  --bs-btn-focus-shadow-rgb: 15, 111, 197;
 }
 
 .btn-dark {
@@ -640,6 +680,14 @@ svg[class*="icon-"] {
   --btn-border-hover: #3D3D3D;
   --btn-bg-active: #000000;
   --btn-ring: rgba(25, 25, 25, 0.3);
+
+  --bs-btn-bg: #191919;
+  --bs-btn-hover-bg: #3D3D3D;
+  --bs-btn-active-bg: #000000;
+  --bs-btn-border-color: #191919;
+  --bs-btn-hover-border-color: #3D3D3D;
+  --bs-btn-active-border-color: #000000;
+  --bs-btn-focus-shadow-rgb: 25, 25, 25;
 }
 
 /* ── Neutral: the default "secondary action" button ── */
@@ -654,6 +702,17 @@ svg[class*="icon-"] {
   --btn-border-hover: #C7C7C7;
   --btn-bg-active: #EBEBEB;
   --btn-ring: rgba(25, 25, 25, 0.15);
+
+  --bs-btn-bg: #ffffff;
+  --bs-btn-hover-bg: #F5F5F5;
+  --bs-btn-active-bg: #EBEBEB;
+  --bs-btn-border-color: #E5E5E5;
+  --bs-btn-hover-border-color: #C7C7C7;
+  --bs-btn-active-border-color: #C7C7C7;
+  --bs-btn-color: #454f5b;
+  --bs-btn-hover-color: #191919;
+  --bs-btn-active-color: #191919;
+  --bs-btn-focus-shadow-rgb: 25, 25, 25;
 }
 
 /* ── Outline variants ── */
@@ -666,6 +725,17 @@ svg[class*="icon-"] {
   --btn-border-hover: #F85606;
   --btn-bg-active: #C43D00;
   --btn-ring: rgba(248, 86, 6, 0.35);
+
+  --bs-btn-color: #C43D00;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #F85606;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #F85606;
+  --bs-btn-hover-border-color: #F85606;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #C43D00;
+  --bs-btn-active-border-color: #C43D00;
+  --bs-btn-focus-shadow-rgb: 248, 86, 6;
 }
 
 .btn-outline-danger {
@@ -677,6 +747,17 @@ svg[class*="icon-"] {
   --btn-border-hover: #D93025;
   --btn-bg-active: #B71C1C;
   --btn-ring: rgba(217, 48, 37, 0.35);
+
+  --bs-btn-color: #D93025;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #D93025;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #D93025;
+  --bs-btn-hover-border-color: #D93025;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #B71C1C;
+  --bs-btn-active-border-color: #B71C1C;
+  --bs-btn-focus-shadow-rgb: 217, 48, 37;
 }
 
 .btn-outline-success {
@@ -688,6 +769,17 @@ svg[class*="icon-"] {
   --btn-border-hover: #1D8A45;
   --btn-bg-active: #156F36;
   --btn-ring: rgba(29, 138, 69, 0.35);
+
+  --bs-btn-color: #1D8A45;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #1D8A45;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #1D8A45;
+  --bs-btn-hover-border-color: #1D8A45;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #156F36;
+  --bs-btn-active-border-color: #156F36;
+  --bs-btn-focus-shadow-rgb: 29, 138, 69;
 }
 
 .btn-outline-warning {
@@ -699,6 +791,17 @@ svg[class*="icon-"] {
   --btn-border-hover: #B7791A;
   --btn-bg-active: #8C5E14;
   --btn-ring: rgba(183, 121, 26, 0.35);
+
+  --bs-btn-color: #B7791A;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #B7791A;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #B7791A;
+  --bs-btn-hover-border-color: #B7791A;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #8C5E14;
+  --bs-btn-active-border-color: #8C5E14;
+  --bs-btn-focus-shadow-rgb: 183, 121, 26;
 }
 
 .btn-outline-info {
@@ -710,6 +813,17 @@ svg[class*="icon-"] {
   --btn-border-hover: #0F6FC5;
   --btn-bg-active: #0C5AA0;
   --btn-ring: rgba(15, 111, 197, 0.35);
+
+  --bs-btn-color: #0F6FC5;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #0F6FC5;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #0F6FC5;
+  --bs-btn-hover-border-color: #0F6FC5;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #0C5AA0;
+  --bs-btn-active-border-color: #0C5AA0;
+  --bs-btn-focus-shadow-rgb: 15, 111, 197;
 }
 
 .btn-outline-secondary {
@@ -721,6 +835,17 @@ svg[class*="icon-"] {
   --btn-border-hover: #767676;
   --btn-bg-active: #EBEBEB;
   --btn-ring: rgba(25, 25, 25, 0.15);
+
+  --bs-btn-color: #595959;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #C7C7C7;
+  --bs-btn-hover-color: #191919;
+  --bs-btn-hover-bg: #F5F5F5;
+  --bs-btn-hover-border-color: #767676;
+  --bs-btn-active-color: #191919;
+  --bs-btn-active-bg: #EBEBEB;
+  --bs-btn-active-border-color: #767676;
+  --bs-btn-focus-shadow-rgb: 25, 25, 25;
 }
 
 /* ── Low-emphasis: ghost & link ── */
@@ -1217,6 +1342,422 @@ label:has(+ textarea[required])::after {
 .text-main { color: var(--bs-text-main) !important; }
 .text-sub { color: var(--bs-text-sub) !important; }
 .text-muted-2 { color: var(--bs-text-muted) !important; }
+
+/* ── Softer ink (no pure black) ── */
+.text-ink-soft     { color: #374151 !important; }   /* primary body */
+.text-ink-emphasis { color: #2D3748 !important; }   /* headings */
+
+
+
+/* ═══════════════════════════════════════════
+   GLOBAL: REMOVE BLACK BORDERS EVERYWHERE
+   Wipes the default Bootstrap border color
+   and every Tailwind border-* utility used
+   on containers, cards, dividers, tabs, etc.
+   Layouts are differentiated via shadow +
+   surface tone instead of outlines.
+   ═══════════════════════════════════════════ */
+
+:root {
+  --bs-border-color: transparent !important;
+  --bs-border-color-translucent: transparent !important;
+  --bs-card-border-color: transparent !important;
+  --bs-table-border-color: transparent !important;
+  --bs-table-bg: transparent !important;
+  --bs-dropdown-border-color: transparent !important;
+  --bs-dropdown-divider-bg: transparent !important;
+  --bs-navbar-toggler-border-color: transparent !important;
+  --bs-accordion-border-color: transparent !important;
+  --bs-accordion-button-focus-border-color: transparent !important;
+  --bs-toast-border-color: transparent !important;
+  --bs-modal-border-color: transparent !important;
+  --bs-modal-header-border-color: transparent !important;
+  --bs-modal-footer-border-color: transparent !important;
+  --bs-popover-border-color: transparent !important;
+  --bs-popover-header-border-color: transparent !important;
+  --bs-offcanvas-border-color: transparent !important;
+  --bs-list-group-border-color: transparent !important;
+  --bs-pagination-border-color: transparent !important;
+  --bs-progress-border-radius: 0 !important;
+  --color-border: transparent !important;
+}
+
+/* Tailwind utility border-color -> transparent (every direction + total) */
+.border-border          { border-color: transparent !important; }
+.border-t-border-border { border-top-color: transparent !important; }
+.border-b-border-border { border-bottom-color: transparent !important; }
+.border-l-border-border { border-left-color: transparent !important; }
+.border-r-border-border { border-right-color: transparent !important; }
+.border-x-border-border { border-left-color: transparent !important; border-right-color: transparent !important; }
+.border-y-border-border { border-top-color: transparent !important; border-bottom-color: transparent !important; }
+
+/* Bootstrap .border / .border-top / .border-bottom / .border-start / .border-end */
+.border          { border-color: transparent !important; }
+.border-top      { border-top-color: transparent !important; }
+.border-bottom   { border-bottom-color: transparent !important; }
+.border-start    { border-left-color: transparent !important; }
+.border-end      { border-right-color: transparent !important; }
+.border-0        { border: 0 !important; }
+
+/* Bootstrap default border on common markup */
+.dropdown-menu,
+.modal-content,
+.card,
+.card-header,
+.card-footer,
+.list-group-item,
+.list-group-item-action,
+.accordion-item,
+.accordion-button,
+.accordion-header,
+.toast,
+.popover,
+.offcanvas,
+.nav-tabs .nav-link,
+.nav-pills .nav-link {
+  border-color: transparent !important;
+}
+
+/* Card + KPI tile hairline shadow fallback (replaces visible border) */
+.bg-white.rounded-sm,
+.card.bg-white,
+.bg-white.shadow-sm,
+.border.border-border {
+  border: 0 !important;
+  border-color: transparent !important;
+}
+
+/* Tables: row separators replaced by row padding + stripe tone */
+table.w-full.text-left.text-sm.text-ink.border-collapse,
+table.table,
+.table > :not(caption) > * > * {
+  border-color: transparent !important;
+}
+table.w-full.text-left.text-sm.text-ink.border-collapse tbody tr td,
+table.w-full.text-left.text-sm.text-ink.border-collapse tbody tr th {
+  border-bottom: 0 !important;
+  border-top:    0 !important;
+}
+
+/* Date picker / date range picker / select2 — usually have a dark border */
+.daterangepicker,
+.daterangepicker .calendar,
+.table-condensed,
+.select2-container .select2-selection--single,
+.select2-container--bootstrap-5 .select2-selection {
+  border-color: transparent !important;
+}
+
+/* Keep intentional brand-tint dividers that we drew in custom.css
+   (table header underline, table footer accent) — they are NOT
+   the hard black border the user targeted. */
+table.w-full.text-left.text-sm.text-ink.border-collapse thead tr {
+  border-bottom: 2px solid #FFD5B8 !important;
+}
+table.w-full.text-left.text-sm.text-ink.border-collapse tbody tr:hover {
+  background-color: #FAFAFA !important;
+}
+
+/* ═══════════════════════════════════════════
+   GLOBAL: TABS / BUTTONS / BADGES FIX
+   Removes remaining borders on .nav-tabs,
+   every .btn-* variant (solid AND outline),
+   and forces badges / progress / alerts to
+   render without a hairline.
+   ═══════════════════════════════════════════ */
+
+/* Tabs (.nav-tabs): no underline rule, no frame around active tab */
+.nav-tabs {
+  --bs-nav-tabs-border-color: transparent !important;
+  --bs-nav-tabs-link-hover-border-color: transparent !important;
+  --bs-nav-tabs-link-active-border-color: transparent !important;
+  border-bottom: 0 !important;
+}
+.nav-tabs .nav-link,
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  border: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+/* Keep active tab visually distinct via tint instead of frame */
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  background-color: var(--bs-light-primary, #FFF1EA) !important;
+  color: var(--bs-primary, #F85606) !important;
+}
+
+/* Pills: come borders-free already; ensure no leakage */
+.nav-pills .nav-link,
+.nav-pills .nav-link.active,
+.nav-pills .nav-link:hover {
+  border: 0 !important;
+  border-color: transparent !important;
+}
+
+/* Buttons — strip border on EVERY variant (solid + outline + check) */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info,
+.btn-dark,
+.btn-light,
+.btn-white,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-outline-info,
+.btn-outline-dark,
+.btn-outline-light,
+.btn-ghost,
+.btn-link,
+.btn-close {
+  border: var(--bs-btn-border-width, 1px) solid transparent !important;
+  --bs-btn-border-color: transparent !important;
+  --bs-btn-hover-border-color: transparent !important;
+  --bs-btn-active-border-color: transparent !important;
+  --bs-btn-focus-border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Badges: ensure no border */
+.badge,
+.alert,
+.alert-primary,
+.alert-secondary,
+.alert-success,
+.alert-danger,
+.alert-warning,
+.alert-info,
+.progress,
+.progress-bar,
+.toast,
+.toast-header,
+.toast-body {
+  border: 0 !important;
+  border-color: transparent !important;
+}
+
+/* Pill groups / segmented controls / input groups — drop dividers */
+.btn-group > .btn-group:not(:last-child) > .btn,
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle),
+.btn-group > .btn:not(:first-child),
+.btn-toolbar .btn-group + .btn-group {
+  border-color: transparent !important;
+}
+
+/* Pagination: keep token shape but no chrome border */
+.pagination .page-link,
+.pagination .page-link:hover,
+.pagination .page-link:focus {
+  border: 0 !important;
+  border-color: transparent !important;
+}
+
+/* List groups: keep but render borderless */
+.list-group,
+.list-group-item,
+.list-group-item:first-child,
+.list-group-item:last-child {
+  border-color: transparent !important;
+  border-width: 0 !important;
+}
+
+/* Breadcrumbs separator tone kept; no borders */
+.breadcrumb,
+.breadcrumb-item {
+  border: 0 !important;
+}
+
+/* Status pills and "rates" (e.g. status badge with text-ink border-border) */
+.bg-surface-muted.text-ink.border.border-border,
+.bg-surface-muted.border.border-border,
+.bg-white.border.border-border {
+  border: 0 !important;
+  border-color: transparent !important;
+}
+
+/* ═══════════════════════════════════════════
+   GLOBAL INPUT NORMALIZATION
+   Removes the hard blackish border + focus
+   halo on every form field (Bootstrap, raw
+   <input>, Tailwind focus:ring-* inputs).
+   Surfaces use --bs-surface-muted so the
+   field is identified by background, not by
+   an outline.
+   ═══════════════════════════════════════════ */
+
+/* 1) Bootstrap .form-control / .form-select / textarea */
+input.form-control,
+input.form-control.form-control-sm,
+input.form-control.form-control-lg,
+textarea.form-control,
+select.form-control,
+.form-select,
+.lux-file-input {
+  border: 1px solid transparent !important;
+  border-color: transparent !important;
+  background-color: var(--bs-surface-muted, #F5F5F5) !important;
+  box-shadow: none !important;
+  transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+}
+input.form-control:hover,
+textarea.form-control:hover,
+.form-select:hover,
+.lux-file-input:hover {
+  border-color: rgba(248, 86, 6, .12) !important;
+}
+input.form-control:focus,
+textarea.form-control:focus,
+.form-select:focus,
+.lux-file-input:focus {
+  border-color: rgba(248, 86, 6, .35) !important;
+  background-color: var(--bs-surface-muted, #F5F5F5) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+input.form-control::placeholder,
+textarea.form-control::placeholder,
+.form-select,
+.lux-file-input::placeholder {
+  color: var(--bs-text-muted, #767676) !important;
+}
+input.form-control:disabled,
+textarea.form-control:disabled,
+.form-select:disabled,
+.lux-file-input:disabled {
+  background-color: var(--bs-surface, #FAFAFA) !important;
+  color: var(--bs-text-muted, #767676) !important;
+  cursor: not-allowed;
+}
+
+/* 2) Raw <input>, <textarea>, <select> outside Bootstrap markup */
+input[type="text"]:not(.form-control):not(.lux-file-input),
+input[type="email"]:not(.form-control):not(.lux-file-input),
+input[type="number"]:not(.form-control):not(.lux-file-input),
+input[type="password"]:not(.form-control):not(.lux-file-input),
+input[type="tel"]:not(.form-control):not(.lux-file-input),
+input[type="url"]:not(.form-control):not(.lux-file-input),
+input[type="date"]:not(.form-control):not(.lux-file-input),
+input[type="time"]:not(.form-control):not(.lux-file-input),
+input[type="search"]:not(.form-control):not(.lux-file-input),
+input[type="file"]:not(.form-control):not(.lux-file-input),
+input:not([type]):not(.form-control):not(.lux-file-input),
+textarea:not(.form-control),
+select:not(.form-control):not(.form-select) {
+  background-color: var(--bs-surface-muted, #F5F5F5) !important;
+  border: 1px solid transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+input[type="text"]:focus:not(.form-control):not(.lux-file-input),
+input[type="email"]:focus:not(.form-control):not(.lux-file-input),
+input[type="number"]:focus:not(.form-control):not(.lux-file-input),
+input[type="password"]:focus:not(.form-control):not(.lux-file-input),
+input[type="tel"]:focus:not(.form-control):not(.lux-file-input),
+input[type="url"]:focus:not(.form-control):not(.lux-file-input),
+input[type="date"]:focus:not(.form-control):not(.lux-file-input),
+input[type="time"]:focus:not(.form-control):not(.lux-file-input),
+input[type="search"]:focus:not(.form-control):not(.lux-file-input),
+input[type="file"]:focus:not(.form-control):not(.lux-file-input),
+input:not([type]):focus:not(.form-control):not(.lux-file-input),
+textarea:not(.form-control):focus,
+select:not(.form-control):not(.form-select):focus {
+  border-color: rgba(248, 86, 6, .35) !important;
+  background-color: var(--bs-surface-muted, #F5F5F5) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 3) Tailwind bg-surface-muted inputs: kill focus ring + ring-shadow */
+.bg-surface-muted:focus,
+input.bg-surface-muted:focus,
+textarea.bg-surface-muted:focus,
+select.bg-surface-muted:focus,
+.bg-surface-muted:focus-visible {
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-color: transparent !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-color: transparent !important;
+}
+
+/* 4) Form-check toggle (radio + checkbox) — suppress dark focus frame */
+.form-check-input {
+  border-color: #D4D4D4 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.form-check-input:focus,
+.form-check-input:active,
+.form-check-input:focus-visible {
+  border-color: #F85606 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.form-check-input:checked {
+  background-color: #F85606 !important;
+  border-color: #F85606 !important;
+}
+.form-switch .form-check-input:focus {
+  border-color: #F85606 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 5) Tailwind utility-class inputs that may use focus:ring-* elsewhere */
+.focus\:ring-1:focus,
+.focus\:ring-2:focus,
+.focus\:ring-0:focus,
+.focus\:ring:focus {
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 6) Special: <x-textarea-input> + datepicker inner <input> */
+[x-textarea-input] textarea,
+.form-floating > textarea,
+.form-floating > input {
+  background-color: var(--bs-surface-muted, #F5F5F5) !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+[x-textarea-input] textarea:focus,
+.form-floating > textarea:focus,
+.form-floating > input:focus {
+  border-color: rgba(248, 86, 6, .35) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 7) Custom-luxury upload/file thumbnails */
+.lux-file-input,
+input[type="file"] {
+  cursor: pointer;
+}
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+  background: #F85606 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: .35rem .75rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  margin-right: .5rem !important;
+}
 
 /* ── Background utilities ── */
 .bg-primary-tint { background-color: var(--bs-light-primary) !important; }

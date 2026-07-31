@@ -24,15 +24,22 @@
 @endif
 
 {{-- ═══ HERO ═══ --}}
-<section class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
-    <div class="p-5 lg:p-6">
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #F85606, #fb923c, #fbbf24);"></div>
+    <div class="p-5 lg:p-6 pt-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="min-w-0">
-                <small class="text-ink-tertiary">{{ $greeting }},</small>
-                <h1 class="text-xl font-semibold text-ink mb-1">{{ $seller->business_name }}</h1>
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="gauge" class="text-feedback-warning" style="width:12px;height:12px;"></i>
+                    <span>Workspace</span>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold">Dashboard</span>
+                </nav>
+                <span class="inline-block text-ink-tertiary text-sm">{{ $greeting }},</span>
+                <h1 class="text-xl font-bold text-ink-emphasis mb-1">{{ $seller->business_name }}</h1>
                 <p class="text-sm text-ink-secondary">Performance for <strong>{{ $periodLabel }}</strong></p>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 shrink-0">
                 <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add Product</a>
                 <a href="{{ route('seller.orders.pending') }}" class="btn btn-light btn-sm"><i data-lucide="inbox" style="width:14px;height:14px;"></i> Pending Orders</a>
                 <a href="{{ route('seller.performance.dashboard') }}" class="btn btn-light btn-sm"><i data-lucide="gauge" style="width:14px;height:14px;"></i> Performance</a>
@@ -42,16 +49,16 @@
             <i data-lucide="calendar" style="width:14px;height:14px;"></i>
             <span>Custom range:</span>
             <form method="GET" action="{{ route('seller.dashboard') }}" class="flex items-center gap-2 flex-wrap">
-                <input type="date" name="start_date" value="{{ $start_date }}" class="px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                <input type="date" name="start_date" value="{{ $start_date }}" class="px-2 py-1 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
                 <span class="text-ink-tertiary">to</span>
-                <input type="date" name="end_date" value="{{ $end_date }}" class="px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                <input type="date" name="end_date" value="{{ $end_date }}" class="px-2 py-1 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
                 <button type="submit" class="btn btn-primary btn-sm"><i data-lucide="funnel" style="width:14px;height:14px;"></i> Apply</button>
             </form>
             <span class="text-ink-tertiary mx-1">·</span>
-            <a href="{{ route('seller.dashboard', ['start_date' => now()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">Today</a>
-            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfWeek()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">This Week</a>
-            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfMonth()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">This Month</a>
-            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->subDays(30)->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink hover:bg-brand-tint hover:text-brand transition-colors">Last 30d</a>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink-emphasis hover:bg-brand-tint hover:text-brand-deep transition-colors">Today</a>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfWeek()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink-emphasis hover:bg-brand-tint hover:text-brand-deep transition-colors">This Week</a>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->startOfMonth()->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink-emphasis hover:bg-brand-tint hover:text-brand-deep transition-colors">This Month</a>
+            <a href="{{ route('seller.dashboard', ['start_date' => now()->copy()->subDays(30)->toDateString(), 'end_date' => now()->toDateString()]) }}" class="px-2 py-0.5 rounded-xs bg-surface-muted text-ink-emphasis hover:bg-brand-tint hover:text-brand-deep transition-colors">Last 30d</a>
         </div>
     </div>
 </section>
@@ -465,20 +472,23 @@
                         </td>
                         <td class="px-4 py-3 text-right font-semibold">{{ money($order->total) }}</td>
                         <td class="px-4 py-3 text-center">
-                            @php $label = $order->status->label(); @endphp
-                            @if ($label === 'pending')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500 text-white">Pending</span>
-                            @elseif ($label === 'shipped')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-white">Shipped</span>
-                            @elseif ($label === 'cancelled')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">Cancelled</span>
-                            @elseif ($label === 'delivered' || $label === 'completed')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500 text-white">{{ ucfirst($label) }}</span>
-                            @elseif ($label === 'refunded')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500 text-white">Refunded</span>
-                            @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-500 text-white">{{ ucfirst($label) }}</span>
-                            @endif
+                            @php
+                                $label = $order->status->label();
+                                $pillBg = match (true) {
+                                    in_array($label, ['completed','delivered'])  => 'bg-feedback-success/15 text-feedback-success',
+                                    in_array($label, ['accepted'])                 => 'bg-surface-muted text-ink-emphasis',
+                                    in_array($label, ['shipped'])                  => 'bg-[#a855f7]/15 text-[#a855f7]',
+                                    in_array($label, ['pending','return_requested']) => 'bg-feedback-info/15 text-feedback-info',
+                                    in_array($label, ['cancelled'])                => 'bg-feedback-danger/15 text-feedback-danger',
+                                    in_array($label, ['return_approved'])          => 'bg-feedback-info/15 text-feedback-info',
+                                    in_array($label, ['returned','refunded'])       => 'bg-surface-muted text-ink-secondary',
+                                    default                                          => 'bg-surface-muted text-ink-tertiary',
+                                };
+                            @endphp
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $pillBg }}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>
+                                {{ ucfirst($order->status->title()) }}
+                            </span>
                         </td>
                         <td class="px-4 py-3 text-sm text-ink-tertiary">{{ optional($order->created_at)->format('Y-m-d H:i') ?? 'N/A' }}</td>
                         <td class="px-4 py-3 text-right">

@@ -15,46 +15,60 @@
 @endpush
 
 @section('content')
-<div class="flex flex-wrap justify-between items-start gap-2 mb-3">
-    <div class="flex items-start gap-2">
-        <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light btn-sm mt-1" title="Back to Details">
-            <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
-        </a>
-        <div>
-            <div class="flex items-center gap-2 mb-1">
-                <h4 class="font-bold mb-0">Edit Product</h4>
-                @php
-                    $statusPill = match($product->status) {
-                        $product::STATUS_ACTIVE => 'bg-emerald-500',
-                        $product::STATUS_PENDING_APPROVAL => 'bg-amber-500',
-                        $product::STATUS_INACTIVE => 'bg-gray-500',
-                        $product::STATUS_DRAFT => 'bg-blue-500',
-                        default => 'bg-gray-500',
-                    };
-                @endphp
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-white {{ $statusPill }}">{{ $product->statusName }}</span>
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #F85606, #fb923c, #fbbf24);"></div>
+    <div class="p-5 lg:p-6 pt-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="package" class="text-brand-deep" style="width:12px;height:12px;"></i>
+                    <a href="{{ route('seller.products.index') }}" class="hover:text-ink transition-colors">Products</a>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold">Edit Product</span>
+                </nav>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Edit Product</h1>
+                    @php
+                        $statusKey = (string) $product->status;
+                        $pillMap = [
+                            $product::STATUS_ACTIVE => ['bg-emerald-50 text-emerald-700', 'bg-emerald-400'],
+                            $product::STATUS_PENDING_APPROVAL => ['bg-amber-50 text-amber-700', 'bg-amber-400'],
+                            $product::STATUS_INACTIVE => ['bg-neutral-100 text-neutral-600', 'bg-neutral-400'],
+                            $product::STATUS_DRAFT => ['bg-sky-50 text-sky-700', 'bg-sky-400'],
+                        ];
+                        [$pillBg, $dotBg] = $pillMap[$statusKey] ?? ['bg-neutral-100 text-neutral-600', 'bg-neutral-400'];
+                    @endphp
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $pillBg }}">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5" style="background: {{ $dotBg }};"></span>{{ $product->statusName }}
+                    </span>
+                </div>
+                <div class="text-sm text-ink-tertiary flex items-center gap-3 flex-wrap mt-1">
+                    <span>SKU: <strong>{{ $product->sku }}</strong></span>
+                    <span>Barcode: <strong class="font-mono">{{ $product->barcode }}</strong>
+                        <button type="button" class="copy-btn text-ink-secondary hover:text-brand ms-1" data-copy="{{ $product->barcode }}" title="Copy">
+                            <i data-lucide="copy" style="width:12px;height:12px;"></i>
+                        </button>
+                        <button type="button" class="text-ink-secondary hover:text-brand ms-1 regen-barcode-btn" data-url="{{ route('seller.products.regenerate-barcode', $product) }}" data-csrf="{{ csrf_token() }}" title="Generate new barcode">
+                            <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+                        </button>
+                    </span>
+                    <a href="{{ route('seller.products.printBarcode') }}?sku={{ $product->sku }}" target="_blank" class="text-brand hover:text-brand-deep no-underline">
+                        <i data-lucide="barcode" style="width:14px;height:14px;"></i> Print labels
+                    </a>
+                    <span>Added: {{ $product->created_at->format('d M, Y') }}</span>
+                </div>
             </div>
-            <div class="text-sm text-ink-tertiary flex items-center gap-3 flex-wrap">
-                <span>SKU: <strong>{{ $product->sku }}</strong></span>
-                <span>Barcode: <strong class="font-mono">{{ $product->barcode }}</strong>
-                    <button type="button" class="copy-btn text-ink-secondary hover:text-brand ms-1" data-copy="{{ $product->barcode }}" title="Copy">
-                        <i data-lucide="copy" style="width:12px;height:12px;"></i>
-                    </button>
-                    <button type="button" class="text-ink-secondary hover:text-brand ms-1 regen-barcode-btn" data-url="{{ route('seller.products.regenerate-barcode', $product) }}" data-csrf="{{ csrf_token() }}" title="Generate new barcode">
-                        <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
-                    </button>
-                </span>
-                <a href="{{ route('seller.products.printBarcode') }}?sku={{ $product->sku }}" target="_blank" class="text-brand hover:text-brand-deep no-underline">
-                    <i data-lucide="barcode" style="width:14px;height:14px;"></i> Print labels
+            <div class="flex flex-wrap gap-2 shrink-0">
+                <a href="{{ route('seller.products.show', $product->slug) }}" class="btn btn-light btn-sm" title="Back to Details">
+                    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Details
                 </a>
-                <span>Added: {{ $product->created_at->format('d M, Y') }}</span>
+                <button type="submit" form="productUpdateForm" id="updateBtn" class="btn btn-primary btn-sm">
+                    <i data-lucide="save" style="width:14px;height:14px;"></i> Update Product
+                </button>
             </div>
         </div>
     </div>
-    <button type="submit" form="productUpdateForm" id="updateBtn" class="btn btn-primary">
-        <i data-lucide="save" style="width:16px;height:16px;"></i> Update Product
-    </button>
-</div>
+</section>
 
 <form id="productUpdateForm" enctype="multipart/form-data" method="POST">
     @csrf
@@ -68,11 +82,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div class="col-span-full">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Product Name</label>
-                            <input type="text" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->name }}" name="name" required>
+                            <input type="text" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->name }}" name="name" required>
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Brand</label>
-                            <select name="brand" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors brand-select">
+                            <select name="brand" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors brand-select">
                                 <option value="">—</option>
                                 @foreach ($brands as $brand)
                                 <option value="{{ $brand->id }}" {{ $product->brand_id == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
@@ -81,7 +95,7 @@
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Category</label>
-                            <select name="category_id" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="categorySelect" required>
+                            <select name="category_id" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" id="categorySelect" required>
                                 <option value="" disabled>—</option>
                                 @foreach ($categories as $category)
                                 <option value="{{ $category->id }}" @selected($category->id == $product->category_id)>{{ $category->name }}</option>
@@ -90,7 +104,7 @@
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Subcategory</label>
-                            <select name="subcategory_id" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="subcategorySelect" {{ $product->subcategory_id ? '' : 'disabled' }}>
+                            <select name="subcategory_id" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" id="subcategorySelect" {{ $product->subcategory_id ? '' : 'disabled' }}>
                                 <option value="" disabled>—</option>
                                 @foreach ($categories as $category)
                                 @foreach ($category->subcategories as $subcategory)
@@ -102,8 +116,8 @@
                         <div class="md:col-span-6">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Unit</label>
                             <div class="flex gap-2">
-                                <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Value" style="max-width:120px;" required>
-                                <select name="unit_id" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
+                                <input type="number" step="0.01" name="unit_value" value="{{ $product->unit_value }}" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Value" style="max-width:120px;" required>
+                                <select name="unit_id" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" required>
                                     <option value="" disabled {{ $product->unit_id === null ? 'selected' : '' }}>—</option>
                                     @foreach ($units as $unit)
                                     <option value="{{ $unit->id }}" {{ $product->unit_id == $unit->id ? 'selected' : '' }}>{{ $unit->short_name }}</option>
@@ -113,7 +127,7 @@
                         </div>
                         <div class="md:col-span-6">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Tags <span class="text-ink-tertiary">(comma sep.)</span></label>
-                            <input type="text" name="tags" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->tags->pluck('name')->implode(', ') }}" placeholder="e.g. cotton, summer">
+                            <input type="text" name="tags" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->tags->pluck('name')->implode(', ') }}" placeholder="e.g. cotton, summer">
                         </div>
                     </div>
                 </div>
@@ -127,23 +141,23 @@
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Cost Price</label>
-                            <input type="number" name="cost_price" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->cost_price }}" required>
+                            <input type="number" name="cost_price" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->cost_price }}" required>
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Selling Price</label>
-                            <input type="number" name="price" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->price }}" required>
+                            <input type="number" name="price" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->price }}" required>
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Compare Price <span class="text-ink-tertiary">(sale)</span></label>
-                            <input name="compare_price" type="number" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->compare_price }}" placeholder="Optional">
+                            <input name="compare_price" type="number" step="0.01" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->compare_price }}" placeholder="Optional">
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Low Stock Qty</label>
-                            <input name="low_stock_quantity" type="number" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->low_stock_quantity }}" required>
+                            <input name="low_stock_quantity" type="number" min="0" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->low_stock_quantity }}" required>
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Payment Type</label>
-                            <select name="payment_type" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                            <select name="payment_type" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
                                 @foreach (App\Enums\PaymentType::cases() as $paymentType)
                                 <option value="{{ $paymentType->value }}" @selected($paymentType->value == $product->payment_type->value)>{{ $paymentType->title() }}</option>
                                 @endforeach
@@ -169,7 +183,7 @@
                         </div>
                         <div class="col-span-full">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Specifications <span class="text-ink-tertiary">(key:value per line)</span></label>
-                            <textarea name="specifications" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3">@if($product->specifications)@foreach($product->specifications as $key => $value){{ $key }}: {{ $value }}
+                            <textarea name="specifications" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3">@if($product->specifications)@foreach($product->specifications as $key => $value){{ $key }}: {{ $value }}
 @endforeach @endif</textarea>
                         </div>
                     </div>
@@ -186,31 +200,31 @@
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Weight (kg)</label>
-                            <input type="number" step="0.01" name="weight" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->weight }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="weight" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->weight }}" placeholder="0.00">
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Height (cm)</label>
-                            <input type="number" step="0.01" name="height" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->height }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="height" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->height }}" placeholder="0.00">
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Width (cm)</label>
-                            <input type="number" step="0.01" name="width" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->width }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="width" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->width }}" placeholder="0.00">
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Length (cm)</label>
-                            <input type="number" step="0.01" name="length" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->length }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="length" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->length }}" placeholder="0.00">
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Country of Origin</label>
-                            <input type="text" name="country_of_origin" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->country_of_origin }}" placeholder="e.g. Bangladesh">
+                            <input type="text" name="country_of_origin" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->country_of_origin }}" placeholder="e.g. Bangladesh">
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Manufacturer</label>
-                            <input type="text" name="manufacturer_name" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->manufacturer_name }}" placeholder="Name">
+                            <input type="text" name="manufacturer_name" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->manufacturer_name }}" placeholder="Name">
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Manufacturer Details</label>
-                            <input type="text" name="manufacturer_details" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->manufacturer_details }}" placeholder="Address / contact">
+                            <input type="text" name="manufacturer_details" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $product->manufacturer_details }}" placeholder="Address / contact">
                         </div>
                     </div>
                 </div>
@@ -252,32 +266,32 @@
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                             <div class="md:col-span-6">
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">Meta Title <span class="text-ink-tertiary">(max 70)</span></label>
-                                <input type="text" name="meta_title" maxlength="70" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->meta_title }}" placeholder="e.g. Red Cotton T-Shirt – Buy Online">
+                                <input type="text" name="meta_title" maxlength="70" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->meta_title }}" placeholder="e.g. Red Cotton T-Shirt – Buy Online">
                             </div>
                             <div class="md:col-span-6">
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">Meta Keywords <span class="text-ink-tertiary">(comma sep.)</span></label>
-                                <input type="text" name="meta_keywords" maxlength="255" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->meta_keywords }}" placeholder="e.g. t-shirt, cotton">
+                                <input type="text" name="meta_keywords" maxlength="255" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->meta_keywords }}" placeholder="e.g. t-shirt, cotton">
                             </div>
                             <div class="col-span-full">
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">Meta Description <span class="text-ink-tertiary">(max 160)</span></label>
-                                <textarea name="meta_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Shown in search results.">{{ $seo?->meta_description }}</textarea>
+                                <textarea name="meta_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Shown in search results.">{{ $seo?->meta_description }}</textarea>
                             </div>
                             <hr class="my-1">
                             <h6 class="text-sm font-semibold">Open Graph</h6>
                             <div class="md:col-span-6">
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">OG Title</label>
-                                <input type="text" name="og_title" maxlength="70" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->og_title }}" placeholder="Social sharing title">
+                                <input type="text" name="og_title" maxlength="70" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" value="{{ $seo?->og_title }}" placeholder="Social sharing title">
                             </div>
                             <div class="md:col-span-6">
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">OG Image</label>
-                                <input type="file" name="og_image" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
+                                <input type="file" name="og_image" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                                 @if (!empty($seo->og_image))
                                 <div class="mt-1"><img src="{{ storage_url($seo->og_image) }}" alt="OG" class="img-thumbnail" style="max-width:100px;"></div>
                                 @endif
                             </div>
                             <div class="col-span-full">
                                 <label class="block text-xs font-medium text-ink-secondary mb-1">OG Description</label>
-                                <textarea name="og_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Appears below the title when shared.">{{ $seo?->og_description }}</textarea>
+                                <textarea name="og_description" maxlength="160" rows="2" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Appears below the title when shared.">{{ $seo?->og_description }}</textarea>
                             </div>
                             <div class="col-span-full">
                                 <button type="button" id="seoUpdateBtn" class="btn btn-outline-primary btn-sm"><i data-lucide="save"></i> Save SEO</button>
@@ -349,7 +363,7 @@
         <div class="modal-content border-0">
             <div class="modal-header"><h5 class="modal-title">Crop Thumbnail</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeCropperModalBtn"></button></div>
             <div class="modal-body text-center">
-                <input type="file" id="thumbnailUploadInput" accept="image/*" class="w-full px-3 py-1.5 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors mb-3">
+                <input type="file" id="thumbnailUploadInput" accept="image/*" class="w-full px-3 py-1.5 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors mb-3">
                 <img id="thumbnailCropperImage" src="#" class="d-none img-fluid" style="max-height:400px;">
             </div>
             <div class="modal-footer"><button type="button" class="btn btn-success btn-sm" id="cropThumbnailBtn"><i data-lucide="check" class="me-1"></i>Crop &amp; Insert</button></div>

@@ -30,24 +30,35 @@
     $destroyTemplate    = route('seller.products.media.destroy', [$product, $imgPlaceholder]);
     $replaceTemplate    = route('seller.products.media.replace', [$product, $imgPlaceholder]);
 @endphp
-<div class="flex flex-wrap justify-between items-start gap-2 mb-3">
-    <div class="flex items-start gap-2">
-        <a href="{{ route('seller.products.edit', $product->slug) }}"
-            class="btn btn-light btn-sm mt-1">
-            <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
-        </a>
-        <div>
-            <div class="flex items-center gap-2 mb-1">
-                <h4 class="font-bold mb-0">Product Media</h4>
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-3 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #a855f7, #c084fc, #e879f9);"></div>
+    <div class="p-5 lg:p-6 pt-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="package" class="text-[#a855f7]" style="width:12px;height:12px;"></i>
+                    <a href="{{ route('seller.products.edit', $product->slug) }}" class="hover:text-ink-emphasis">{{ $product->name }}</a>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold">Media</span>
+                </nav>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0 truncate max-w-[420px]">Product Media</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#a855f7]/15 text-[#a855f7]">
+                        <i data-lucide="gallery-horizontal" style="width:11px;height:11px;" class="me-1"></i> Gallery
+                    </span>
+                </div>
+                <p class="text-sm text-ink-secondary mb-0 inline-flex flex-wrap gap-2 items-center">
+                    <span>{{ $product->name }}</span>
+                    <span class="text-ink-tertiary">·</span>
+                    <span>SKU: <strong class="text-ink-emphasis">{{ $product->sku }}</strong></span>
+                </p>
             </div>
-            <div class="text-sm text-ink-tertiary flex items-center gap-3">
-                <span>{{ $product->name }}</span>
-                <span>|</span>
-                <span>SKU: <strong>{{ $product->sku }}</strong></span>
-            </div>
+            <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-light shrink-0">
+                <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to Product
+            </a>
         </div>
     </div>
-</div>
+</section>
 
 <div class="grid grid-cols-1 gap-4">
     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">

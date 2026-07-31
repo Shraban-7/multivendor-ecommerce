@@ -3,6 +3,7 @@
 namespace App\Domain\Vendor\Repositories;
 
 use App\Domain\Vendor\Models\SellerEmployee;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 interface SellerEmployeeRepositoryInterface
@@ -13,6 +14,20 @@ interface SellerEmployeeRepositoryInterface
      * @return Collection<int, SellerEmployee>
      */
     public function getEmployeesForSeller(int $sellerId): Collection;
+
+    /**
+     * Paginate, search and filter employees for a given seller.
+     *
+     * @param  array{search?:string, status?:string, sort?:string}  $filters
+     */
+    public function paginateForSeller(int $sellerId, array $filters = [], int $perPage = 25): LengthAwarePaginator;
+
+    /**
+     * Aggregate counts for the employee list KPIs.
+     *
+     * @return array{total:int, active:int, inactive:int, with_permissions:int}
+     */
+    public function getStatusCountsForSeller(int $sellerId): array;
 
     public function store(array $data): SellerEmployee;
 

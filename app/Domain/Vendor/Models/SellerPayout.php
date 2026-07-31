@@ -107,4 +107,35 @@ class SellerPayout extends Model
     {
         return $this->status === self::STATUS_CANCELLED;
     }
+
+    public static function statusMetas(): array
+    {
+        return [
+            self::STATUS_PENDING => [
+                'label' => 'Pending', 'pill' => 'bg-amber-500 text-white', 'icon' => 'hourglass',
+                'tone' => 'warning', 'msg' => 'Waiting for approval', 'sub' => 'Your request is being reviewed',
+            ],
+            self::STATUS_PROCESSING => [
+                'label' => 'Processing', 'pill' => 'bg-blue-500 text-white', 'icon' => 'loader',
+                'tone' => 'info', 'msg' => 'Processing', 'sub' => 'Payout is being processed',
+            ],
+            self::STATUS_COMPLETED => [
+                'label' => 'Completed', 'pill' => 'bg-emerald-500 text-white', 'icon' => 'check-circle',
+                'tone' => 'success', 'msg' => 'Completed', 'sub' => 'Funds have been sent',
+            ],
+            self::STATUS_CANCELLED => [
+                'label' => 'Cancelled', 'pill' => 'bg-rose-500 text-white', 'icon' => 'x-circle',
+                'tone' => 'danger', 'msg' => 'Cancelled', 'sub' => 'Amount has been returned to your balance',
+            ],
+            self::STATUS_FAILED => [
+                'label' => 'Failed', 'pill' => 'bg-rose-600 text-white', 'icon' => 'alert-triangle',
+                'tone' => 'danger', 'msg' => 'Failed', 'sub' => 'Amount has been returned to your balance',
+            ],
+        ];
+    }
+
+    public static function statusMeta(int $status): array
+    {
+        return self::statusMetas()[$status] ?? self::statusMetas()[self::STATUS_PENDING];
+    }
 }

@@ -19,12 +19,22 @@ class SellerEmployeeController extends Controller
         private readonly SellerEmployeeRepositoryInterface $employeeRepo,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $employees = $this->employeeRepo->getEmployeesForSeller(get_seller_id());
+        $sellerId = get_seller_id();
+
+        $filters = [
+            'search'    => trim((string) $request->query('search', '')),
+            'status'    => $request->query('status'),
+            'sort'      => $request->query('sort'),
+            'direction' => $request->query('direction'),
+        ];
+
+        $employees   = $this->employeeRepo->paginateForSeller($sellerId, $filters, (int) $request->query('per_page', 25));
+        $counts      = $this->employeeRepo->getStatusCountsForSeller($sellerId);
         $permissions = get_seller_routes();
 
-        return view('seller.employees.index', compact('employees', 'permissions'));
+        return view('seller.employees.index', compact('employees', 'counts', 'filters', 'permissions'));
     }
 
     public function create()
@@ -96,6 +106,20 @@ class SellerEmployeeController extends Controller
         $this->vendorService->toggleEmployeeActive($employee);
 
         return redirect()->route('seller.employees.index')->with('success', 'Employee status updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        $employee = $this->employeeRepo->findById($id);
+
+        if (! $employee || $employee->seller_id !== get_seller_id()) {
+            abort(404);
+        }
+
+        $employeeName = $employee->name;
+        $this->employeeRepo->delete($employee);
+
+        return redirect()->route('seller.employees.index')->with('success', "Employee {$employeeName} removed");
     }
 
     public function setPermissions(SellerEmployee $employee, Request $request)

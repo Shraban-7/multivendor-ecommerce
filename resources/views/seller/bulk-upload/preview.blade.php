@@ -2,12 +2,33 @@
 @section('title', 'Preview Import')
 @section('content')
 
-<div class="flex justify-between items-center mb-3">
-    <h4 class="font-bold mb-0 text-ink">Preview Import</h4>
-    <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light btn-sm">
-        <i data-lucide="arrow-left" class="icon-xs me-1"></i> Back
-    </a>
-</div>
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #16a34a, #22c55e, #86efac);"></div>
+    <div class="p-5 lg:p-6 pt-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="upload-cloud" class="text-feedback-success" style="width:12px;height:12px;"></i>
+                    <a href="{{ route('seller.bulk-upload.index') }}" class="hover:text-ink transition-colors">Bulk Upload</a>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold">Preview Import</span>
+                </nav>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Preview Import</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-feedback-success/15 text-feedback-success">
+                        <i data-lucide="eye" style="width:11px;height:11px;" class="me-1"></i> Pre-import
+                    </span>
+                </div>
+                <p class="text-sm text-ink-secondary mb-0">Confirm the columns and rows before importing.</p>
+            </div>
+            <div class="flex flex-wrap gap-2 shrink-0">
+                <a href="{{ route('seller.bulk-upload.index') }}" class="btn btn-light btn-sm">
+                    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
 <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
     <div class="p-4">
@@ -33,7 +54,7 @@
             <div class="md:col-span-1">
                 <div class="p-3 bg-surface-muted rounded-xs text-center">
                     <p class="text-sm text-ink-tertiary mb-1">Status</p>
-                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs badge-soft-secondary">Pending</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700"><span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>Pending</span>
                 </div>
             </div>
         </div>
@@ -41,7 +62,7 @@
         <h6 class="font-semibold mb-2">Columns Detected</h6>
         <div class="mb-3">
             @foreach($headers as $header)
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-xs bg-surface-muted text-ink border border-border me-1 mb-1">{{ $header }}</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-surface-muted text-ink-secondary me-1 mb-1">{{ $header }}</span>
             @endforeach
         </div>
 
@@ -50,9 +71,9 @@
             <table class="w-full text-left text-sm text-ink border-collapse">
                 <thead class="bg-surface-muted sticky top-0">
                     <tr>
-                        <th class="text-sm font-semibold">#</th>
+                        <th class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">#</th>
                         @foreach($headers as $header)
-                            <th class="text-sm font-semibold text-ink-tertiary whitespace-nowrap">{{ $header }}</th>
+                            <th class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary whitespace-nowrap">{{ $header }}</th>
                         @endforeach
                     </tr>
                 </thead>

@@ -18,45 +18,93 @@
     $seo = $product->seo;
 ?>
 
-<div class="flex justify-between items-center mb-3 flex-wrap gap-2">
-    <div>
-        <h4 class="font-bold mb-1">{{ $product->name }}</h4>
-        <div class="flex items-center gap-2 text-sm text-ink-tertiary">
-            <span>SKU: <strong>{{ $product->sku }}</strong></span>
-            <span>|</span>
-            <span>Added: {{ $product->created_at->format('d M, Y h:i A') }}</span>
-            <span>|</span>
-            <span class="flex items-center gap-1">
-                @if ($product->status == $product::STATUS_ACTIVE)
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white">Active</span>
-                @elseif ($product->status == $product::STATUS_PENDING_APPROVAL)
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500 text-white">Pending Approval</span>
-                @elseif ($product->status == $product::STATUS_INACTIVE)
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white">Inactive</span>
-                @elseif ($product->status == $product::STATUS_DELETED)
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white">Deleted</span>
-                @endif
-                @if ($product->is_visible)
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white">Visible</span>
-                @else
-                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white">Hidden</span>
-                @endif
-            </span>
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-3 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #F85606, #fb923c, #fbbf24);"></div>
+    <div class="p-5 lg:p-6 pt-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="package" class="text-feedback-info" style="width:12px;height:12px;"></i>
+                    <a href="{{ route('seller.products.index') }}" class="hover:text-ink-emphasis">Catalog</a>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold truncate">{{ $product->name }}</span>
+                </nav>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0 truncate max-w-[420px]">{{ $product->name }}</h1>
+                    @php
+                        $pillBg = match ((int) $product->status) {
+                            (int) $product::STATUS_ACTIVE            => 'bg-feedback-success/15 text-feedback-success',
+                            (int) $product::STATUS_PENDING_APPROVAL  => 'bg-feedback-warning/15 text-feedback-warning',
+                            (int) $product::STATUS_INACTIVE          => 'bg-surface-muted text-ink-tertiary',
+                            (int) $product::STATUS_DELETED           => 'bg-feedback-danger/15 text-feedback-danger',
+                            default                                  => 'bg-surface-muted text-ink-tertiary',
+                        };
+                        $pillLabel = match ((int) $product->status) {
+                            (int) $product::STATUS_ACTIVE            => 'Active',
+                            (int) $product::STATUS_PENDING_APPROVAL  => 'Pending',
+                            (int) $product::STATUS_INACTIVE          => 'Inactive',
+                            (int) $product::STATUS_DELETED           => 'Deleted',
+                            default                                  => ucfirst((string) $product->status),
+                        };
+                    @endphp
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $pillBg }}">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>
+                        {{ $pillLabel }}
+                    </span>
+                    @if ($product->is_visible)
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-feedback-info/15 text-feedback-info"><i data-lucide="eye" style="width:11px;height:11px;" class="me-1"></i> Visible</span>
+                    @else
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-surface-muted text-ink-tertiary"><i data-lucide="eye-off" style="width:11px;height:11px;" class="me-1"></i> Hidden</span>
+                    @endif
+                </div>
+                <p class="text-sm text-ink-secondary mb-0 inline-flex flex-wrap items-center gap-2">
+                    <span>SKU: <strong class="text-ink-emphasis">{{ $product->sku }}</strong></span>
+                    <span class="text-ink-tertiary">·</span>
+                    <span><i data-lucide="calendar" style="width:11px;height:11px;" class="me-1 align-text-bottom text-ink-tertiary"></i>Added {{ $product->created_at->format('d M, Y h:i A') }}</span>
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-2 shrink-0">
+                <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-light">
+                    <i data-lucide="pencil" style="width:14px;height:14px;"></i> Edit
+                </a>
+                <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-light">
+                    <i data-lucide="layers" style="width:14px;height:14px;"></i> Variants
+                </a>
+                <button type="button" class="btn btn-light text-feedback-danger" style="color:#dc2625;"
+                        data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
+                    <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Delete
+                </button>
+            </div>
         </div>
     </div>
-    <div class="flex gap-2 flex-wrap">
-        <a href="{{ route('seller.products.edit', $product->slug) }}" class="btn btn-primary btn-sm">
-            <i data-lucide="edit" class="icon-xs"></i> Edit Product
-        </a>
-        <a href="{{ route('seller.products.edit', $product->slug) }}#variantSection" class="btn btn-outline-primary btn-sm">
-            <i data-lucide="layers" class="icon-xs"></i> Manage Variants
-        </a>
-        <button type="button" class="btn btn-outline-danger btn-sm"
-            data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $product->id }}">
-            <i data-lucide="trash-2" class="icon-xs"></i> Delete
-        </button>
-    </div>
-</div>
+</section>
+
+@php
+    $variantCount   = $product->variants->count();
+    $totalStock     = $product->variants->sum('stock_in') - $product->variants->sum('stock_out');
+    $margin         = $product->price - $product->cost_price;
+    $marginPercent  = $product->cost_price > 0 ? round(($margin / $product->cost_price) * 100, 1) : 0;
+    $tiles = [
+        ['label' => 'Variants',  'value' => $variantCount,                                      'icon' => 'layers',       'top' => '#F85606', 'text' => 'text-brand-deep',        'display' => 'number'],
+        ['label' => 'Stock',     'value' => $totalStock,                                        'icon' => 'cubes',        'top' => '#0ea5e9', 'text' => 'text-feedback-info',     'display' => 'number'],
+        ['label' => 'Selling',   'value' => money($product->price),                           'icon' => 'dollar-sign',  'top' => '#10b981', 'text' => 'text-feedback-success',  'display' => 'text'],
+        ['label' => 'Margin',    'value' => money($margin).' ('.$marginPercent.'%)',         'icon' => 'percent',      'top' => '#fb923c', 'text' => 'text-feedback-warning',  'display' => 'text'],
+    ];
+@endphp
+<section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+    @foreach ($tiles as $tile)
+        <article class="bg-white rounded-sm shadow-sm overflow-hidden relative">
+            <div class="absolute top-0 left-0 right-0 h-1" style="background-color: {{ $tile['top'] }};"></div>
+            <div class="p-4 pt-5">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[11px] font-semibold text-ink-tertiary uppercase tracking-wider">{{ $tile['label'] }}</span>
+                    <i data-lucide="{{ $tile['icon'] }}" class="text-ink-tertiary" style="width:14px;height:14px;"></i>
+                </div>
+                <h3 class="text-2xl font-bold {{ $tile['text'] }} mb-0">{{ $tile['value'] }}</h3>
+            </div>
+        </article>
+    @endforeach
+</section>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
     <div class="lg:col-span-7 space-y-4">

@@ -77,6 +77,7 @@ Route::middleware(['web', 'seller'])->prefix('seller')->as('seller.')->group(fun
         Route::post('/update-profile', [SellerEmployeeController::class, 'updateProfile'])->name('updateProfile');
         Route::post('{id}/toggle-active', [SellerEmployeeController::class, 'toggleActive'])->name('toggle_active');
         Route::post('{employee}/set-permissions', [SellerEmployeeController::class, 'setPermissions'])->name('set_permissions');
+        Route::delete('{id}', [SellerEmployeeController::class, 'destroy'])->name('destroy');
     });
 
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');

@@ -120,17 +120,30 @@ class PayoutService
         });
     }
 
+    public function chargeConfig(): array
+    {
+        return [
+            'currency' => currency('symbol'),
+            'minimum_withdrawal' => 1.0,
+            'fixed_fee' => 10.0,
+            'tiers' => [
+                ['min' => 50000, 'rate' => 0.5],
+                ['min' => 10000, 'rate' => 1.0],
+            ],
+        ];
+    }
+
     public function calculateCharge(float $amount): float
     {
+        $config = $this->chargeConfig();
         $chargePercent = 0;
         $chargeFixed = 0;
 
-        if ($amount >= 50000) {
-            $chargePercent = 0.5;
-        } elseif ($amount >= 10000) {
-            $chargePercent = 1;
+        $matched = collect($config['tiers'])->first(fn ($tier) => $amount >= $tier['min']);
+        if ($matched) {
+            $chargePercent = $matched['rate'];
         } else {
-            $chargeFixed = 10;
+            $chargeFixed = $config['fixed_fee'];
         }
 
         $percentCharge = ($amount * $chargePercent) / 100;

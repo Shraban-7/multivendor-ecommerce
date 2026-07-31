@@ -52,8 +52,9 @@ class SellerPayoutController extends Controller
         $seller = seller();
         $availableBalance = $this->payoutService->getAvailableBalance($seller);
         $methods = SellerPayoutMethod::where('seller_id', $seller->id)->get();
+        $feeConfig = $this->payoutService->chargeConfig();
 
-        return view('seller.payouts.create', compact('availableBalance', 'methods'));
+        return view('seller.payouts.create', compact('availableBalance', 'methods', 'feeConfig'));
     }
 
     public function store(Request $request)

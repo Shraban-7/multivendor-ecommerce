@@ -38,12 +38,14 @@ class ProductController extends Controller
     {
         $categories = $this->categoryRepo->getAllWithSubcategories();
         $brands = $this->brandRepo->getAll();
-        $products = $this->productRepo->getForSeller(get_seller_id(), [
+        $sellerId = get_seller_id();
+        $products = $this->productRepo->getForSeller($sellerId, [
             'search' => $request->search,
             'status' => $request->status,
         ]);
+        $counts = $this->productRepo->getStatusCountsForSeller($sellerId);
 
-        return view('seller.products.index', compact('products', 'categories', 'brands'));
+        return view('seller.products.index', compact('products', 'categories', 'brands', 'counts'));
     }
 
     public function create()

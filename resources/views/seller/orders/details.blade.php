@@ -2,16 +2,35 @@
 @section('title', 'Order Details | ' . $order->invoice_id)
 @section('content')
 
-    <div class="flex justify-between items-start mb-4">
-        <div>
-            <h1 class="text-xl font-semibold text-ink">Order Details</h1>
-            <p class="text-sm text-ink-secondary mt-1">#{{ $order->invoice_id }}</p>
+    <section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+        <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #F85606, #fb923c, #fbbf24);"></div>
+        <div class="p-5 lg:p-6 pt-6">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="min-w-0">
+                    <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                        <a href="{{ route('seller.orders.index') }}" class="hover:text-brand-deep transition-colors"><i data-lucide="shopping-bag" style="width:12px;height:12px;"></i></a>
+                        <span>Orders</span>
+                        <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                        <span class="text-ink-soft font-semibold">{{ $order->invoice_id }}</span>
+                    </nav>
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <h1 class="text-xl font-bold text-ink-emphasis mb-0">Order Details</h1>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-tint text-brand-deep">
+                            <i data-lucide="receipt-text" style="width:11px;height:11px;" class="me-1"></i> #{{ $order->invoice_id }}
+                        </span>
+                    </div>
+                    <p class="text-sm text-ink-secondary mb-0">Placed {{ $order->created_at->format('d/m/Y h:i A') }}</p>
+                </div>
+                <div class="flex flex-wrap gap-2 shrink-0">
+                    <a href="{{ route('seller.orders.index') }}" class="btn btn-light btn-sm"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</a>
+                    <button type="button" class="btn btn-primary btn-sm"
+                        onclick="printReceipt('{{ route('invoice', $order->invoice_id) }}')">
+                        <i data-lucide="download" style="width:14px;height:14px;"></i> Invoice
+                    </button>
+                </div>
+            </div>
         </div>
-        <button type="button" class="btn btn-light btn-sm"
-            onclick="printReceipt('{{ route('invoice', $order->invoice_id) }}')">
-            <i data-lucide="download" class="icon-xs"></i> Invoice
-        </button>
-    </div>
+    </section>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         <div class="lg:col-span-1 space-y-4">
@@ -37,21 +56,24 @@
                         <span class="text-ink-tertiary">Status:</span>
                         <div class="flex items-center gap-2">
                             @php
-                                $label = $order->status->label();
-                                $colors = [
-                                    'pending' => 'text-white bg-blue-500',
-                                    'accepted' => 'text-ink-tertiary bg-surface-muted',
-                                    'shipped' => 'text-white bg-indigo-500',
-                                    'delivered' => 'text-white bg-green-500',
-                                    'completed' => 'text-white bg-green-500',
-                                    'cancelled' => 'text-white bg-red-500',
-                                    'return_requested' => 'text-ink bg-yellow-400',
-                                    'return_approved' => 'text-white bg-blue-500',
-                                    'returned' => 'text-ink-tertiary bg-surface-muted',
-                                    'refunded' => 'text-white bg-indigo-500',
+                                $statusKey = (string) $order->status->value;
+                                $pillMap = [
+                                    'pending' => ['bg-amber-50 text-amber-700', 'bg-amber-400'],
+                                    'accepted' => ['bg-sky-50 text-sky-700', 'bg-sky-400'],
+                                    'shipped' => ['bg-indigo-50 text-indigo-700', 'bg-indigo-400'],
+                                    'delivered' => ['bg-emerald-50 text-emerald-700', 'bg-emerald-400'],
+                                    'completed' => ['bg-emerald-50 text-emerald-700', 'bg-emerald-400'],
+                                    'cancelled' => ['bg-rose-50 text-rose-700', 'bg-rose-400'],
+                                    'return_requested' => ['bg-amber-50 text-amber-700', 'bg-amber-400'],
+                                    'return_approved' => ['bg-sky-50 text-sky-700', 'bg-sky-400'],
+                                    'returned' => ['bg-neutral-100 text-neutral-600', 'bg-neutral-400'],
+                                    'refunded' => ['bg-violet-50 text-violet-700', 'bg-violet-400'],
                                 ];
+                                [$pillBg, $dotBg] = $pillMap[$statusKey] ?? ['bg-neutral-100 text-neutral-600', 'bg-neutral-400'];
                             @endphp
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full {{ $colors[$label] ?? 'text-ink-tertiary bg-surface-muted' }}">{{ $order->status->title() }}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $pillBg }}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>{{ $order->status->title() }}
+                            </span>
                             <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#changeStatusModal">
                                 <i data-lucide="refresh-cw" class="icon-xs"></i> Update
                             </button>
@@ -64,11 +86,11 @@
                     <div class="flex justify-between text-sm items-center">
                         <span class="text-ink-tertiary">Payment Status:</span>
                         @if ($order->due == $order->payable)
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-white bg-red-500 rounded-full">Unpaid</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700"><span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>Unpaid</span>
                         @elseif ($order->due > 0)
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-ink bg-yellow-400 rounded-full">Partially Paid</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700"><span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>Partially Paid</span>
                         @else
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-white bg-green-500 rounded-full">Paid</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>Paid</span>
                         @endif
                     </div>
                 </div>
@@ -140,11 +162,11 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-ink border-collapse">
                             <thead>
-                                <tr>
-                                    <th scope="col">Product</th>
-                                    <th scope="col" class="text-center">Price</th>
-                                    <th scope="col" class="text-center">Discount</th>
-                                    <th scope="col" class="text-right">Total</th>
+                                <tr class="bg-surface-muted/50">
+                                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Product</th>
+                                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary text-center">Price</th>
+                                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary text-center">Discount</th>
+                                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary text-right">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -263,7 +285,7 @@
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Change Order Status</label>
                             <div class="flex">
                                 <span class="inline-flex items-center px-3 py-2 text-sm text-ink-tertiary bg-surface-muted border border-border rounded-l-xs">{{ ucfirst($order->status->title()) }}</span>
-                                <select name="new_status" class="flex-1 px-3 py-2 text-sm text-ink bg-white border border-border rounded-r-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" required>
+                                <select name="new_status" class="flex-1 px-3 py-2 text-sm text-ink bg-surface-muted rounded-r-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" required>
                                     <option value="">-- Select Status --</option>
                                     @foreach (\App\Domain\Order\Enums\OrderStatus::cases() as $status)
                                         <option value="{{ $status->value }}"
@@ -276,7 +298,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Remarks (optional)</label>
-                            <textarea name="remarks" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3"></textarea>
+                            <textarea name="remarks" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" rows="3"></textarea>
                         </div>
                         <input type="hidden" name="changed_by" value="{{ auth()->user()->role ?? 'admin' }}">
                     </div>

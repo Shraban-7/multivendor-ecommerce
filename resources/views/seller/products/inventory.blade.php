@@ -1,70 +1,143 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+    $totalProducts = count($products);
+    $totalStock = 0;
+    $totalValue = 0;
+    $lowStock = 0;
+    foreach ($products as $p) {
+        foreach ($p['variants'] ?? [] as $v) {
+            $totalStock += (int) ($v['quantity'] ?? 0);
+            $totalValue += (float) ($v['price'] ?? 0) * (int) ($v['quantity'] ?? 0);
+            if (((int) ($v['quantity'] ?? 0)) <= 5) { $lowStock++; }
+        }
+        if (empty($p['variants'])) {
+            $totalStock += (int) ($p['quantity'] ?? 0);
+            $totalValue += (float) ($p['price'] ?? 0) * (int) ($p['quantity'] ?? 0);
+            if (((int) ($p['quantity'] ?? 0)) <= 5) { $lowStock++; }
+        }
+    }
+@endphp
 @extends('seller.layouts.app')
 @section('title', 'Product Inventory')
 
 @push('styles')
 <style>
-    :root { --row-height: 36px; --compact-padding: 6px 8px; --border-color: #e0e0e0; }
+    :root { --row-height: 36px; --compact-padding: 6px 8px; --border-color: #E5E5E5; }
     .inventory-page { font-size: 13px; }
     .header-controls { display: flex; gap: 12px; margin-bottom: 10px; align-items: center; padding: 4px 0; flex-wrap: wrap; }
     .search-box { flex: 1; max-width: 320px; }
-    .toggle-btn { background: white; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 4px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; }
-    .toggle-btn.active { background: #f0f0f0; }
+    .toggle-btn { background: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; }
+    .toggle-btn.active { background: var(--bs-surface-muted, #F5F5F5); }
     .compact-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: auto; }
     .compact-table th { position: sticky; top: 0; background: white; z-index: 10; padding: var(--compact-padding); border-bottom: 2px solid var(--border-color); font-weight: 600; color: #444; white-space: nowrap; }
     .compact-table th.sortable { cursor: pointer; }
-    .compact-table th.sortable:hover { background-color: #f8f8f8; }
+    .compact-table th.sortable:hover { background-color: #FAFAFA; }
     .compact-table td { padding: var(--compact-padding); border-bottom: 1px solid var(--border-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .compact-table tbody tr:nth-child(odd) { background-color: #fcfcfc; }
-    .compact-table tbody tr:hover { background-color: #eef7ff !important; }
-    .thumbnail { width: 32px; height: 32px; object-fit: cover; border-radius: 2px; display: none; }
+    .compact-table tbody tr:nth-child(odd) { background-color: #FCFCFC; }
+    .compact-table tbody tr:hover { background-color: #FFF1EA !important; }
+    .thumbnail { width: 32px; height: 32px; object-fit: cover; border-radius: 4px; display: none; }
     .qty-cell { text-align: right; width: 80px; }
     .price-cell { text-align: right; width: 100px; }
     .hidden-column { display: none; }
     #resizeable { position: relative; user-select: none; }
     #handle { position: absolute; top: 0; right: 0; width: 8px; height: 100%; cursor: ew-resize; background-color: transparent; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 2px; transition: background-color 0.2s ease; user-select: none; }
-    #handle:hover { background-color: #ddd; }
-    #handle span { display: block; width: 4px; height: 2px; margin: 2px 0; background-color: #666; border-radius: 1px; }
-    #handle:hover span { background-color: #333; }
+    #handle:hover { background-color: #E5E5E5; }
+    #handle span { display: block; width: 4px; height: 2px; margin: 2px 0; background-color: #767676; border-radius: 1px; }
+    #handle:hover span { background-color: #2D3748; }
     @media (max-width: 768px) { .search-box { max-width: 100%; order: 1; } .toggle-group { order: 2; } .compact-table { min-width: 700px; } }
 </style>
 @endpush
 
 @section('content')
-<div class="flex justify-between items-end mb-3">
-    <h4 class="font-bold mb-0 text-ink">Product Inventory</h4>
-</div>
 
-<div class="inventory-page">
-    <div class="grid grid-cols-1">
-        <div class="lg:col-span-full" id="resizeable">
-            <div class="header-controls">
-                <input type="text" class="w-full px-2 py-1 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors search-box" placeholder="Search products / SKU / variant…" id="searchInput">
-
-                <div class="toggle-group flex gap-2">
-                    <span class="toggle-btn" id="toggleImages" data-active="false" style="display: none;">
-                        <i data-lucide="image" style="width:16px;height:16px;"></i>
-                        Show Images
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-3 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #F85606, #fb923c, #fbbf24);"></div>
+    <div class="p-5 lg:p-6 pt-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="package" class="text-feedback-info" style="width:12px;height:12px;"></i>
+                    <span>Catalog</span>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold">Inventory</span>
+                </nav>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Product Inventory</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-feedback-info/15 text-feedback-info">
+                        <i data-lucide="boxes" style="width:11px;height:11px;" class="me-1"></i> Stock Cockpit
                     </span>
+                </div>
+                <p class="text-sm text-ink-secondary mb-0">Live spreadsheet of every variant across your catalog.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-                    <div class="dropdown">
-                        <span class="toggle-btn" id="toggleContextMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i data-lucide="columns" style="width:14px;height:14px;"></i> Columns <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
-                        </span>
-                        <div class="dropdown-menu p-2" aria-labelledby="toggleContextMenu" style="min-width:200px;">
-                            <div class="grid grid-cols-2 gap-x-2 gap-y-1">
-                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleId" class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="id" style="cursor:pointer;"> ID</label></div>
-                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleVariant" checked class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="variant" style="cursor:pointer;"> Variant</label></div>
-                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleQuantity" checked class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="quantity" style="cursor:pointer;"> Stock</label></div>
-                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="togglePrice" checked class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="price" style="cursor:pointer;"> Price</label></div>
-                                <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none" style="cursor:pointer;"><input type="checkbox" id="toggleImageColumn" class="column-toggle h-4 w-4 rounded border-border text-brand focus:ring-brand m-0" data-column="image" style="cursor:pointer;"> Image</label></div>
-                            </div>
-                        </div>
-                    </div>
+@php
+    $tiles = [
+        ['label' => 'Products',     'value' => $totalProducts, 'top' => '#F85606', 'text' => 'text-brand-deep',        'icon' => 'package'],
+        ['label' => 'Units in Stock','value' => $totalStock,    'top' => '#0ea5e9', 'text' => 'text-feedback-info',     'icon' => 'cubes'],
+        ['label' => 'Inventory Value', 'value' => money($totalValue), 'top' => '#10b981', 'text' => 'text-feedback-success',  'icon' => 'dollar-sign', 'is_money' => true],
+        ['label' => 'Low Stock',     'value' => $lowStock,     'top' => '#ef4444', 'text' => 'text-feedback-danger',   'icon' => 'triangle-alert'],
+    ];
+@endphp
+<section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+    @foreach ($tiles as $tile)
+        <article class="bg-white rounded-sm shadow-sm overflow-hidden relative">
+            <div class="absolute top-0 left-0 right-0 h-1" style="background-color: {{ $tile['top'] }};"></div>
+            <div class="p-4 pt-5">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[11px] font-semibold text-ink-tertiary uppercase tracking-wider">{{ $tile['label'] }}</span>
+                    <i data-lucide="{{ $tile['icon'] }}" class="text-ink-tertiary" style="width:14px;height:14px;"></i>
+                </div>
+                <h3 class="text-2xl font-bold {{ $tile['text'] }} mb-0">
+                    @if($tile['is_money'] ?? false)
+                        {{ $tile['value'] }}
+                    @else
+                        {{ number_format($tile['value']) }}
+                    @endif
+                </h3>
+            </div>
+        </article>
+    @endforeach
+</section>
+
+<section class="bg-white rounded-sm shadow-sm overflow-hidden">
+    <div class="px-5 py-3 bg-surface-muted flex items-center gap-2 flex-wrap">
+        <i data-lucide="sliders-horizontal" style="width:14px;height:14px;" class="text-ink-tertiary"></i>
+        <h3 class="text-sm font-bold text-ink-emphasis mb-0">Inventory Cockpit</h3>
+        <div class="grow"></div>
+        <span class="toggle-btn" id="toggleImages" data-active="false" style="display: none;">
+            <i data-lucide="image" style="width:16px;height:16px;"></i>
+            Show Images
+        </span>
+        <div class="dropdown">
+            <span class="toggle-btn" id="toggleContextMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                <i data-lucide="columns" style="width:14px;height:14px;"></i> Columns <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
+            </span>
+            <div class="dropdown-menu p-2" aria-labelledby="toggleContextMenu" style="min-width:200px;">
+                <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                    <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none"><input type="checkbox" id="toggleId" class="column-toggle h-4 w-4 rounded text-brand focus:outline-none focus:ring-1 focus:ring-brand-deep m-0" data-column="id"> ID</label></div>
+                    <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none"><input type="checkbox" id="toggleVariant" checked class="column-toggle h-4 w-4 rounded text-brand focus:outline-none focus:ring-1 focus:ring-brand-deep m-0" data-column="variant"> Variant</label></div>
+                    <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none"><input type="checkbox" id="toggleQuantity" checked class="column-toggle h-4 w-4 rounded text-brand focus:outline-none focus:ring-1 focus:ring-brand-deep m-0" data-column="quantity"> Stock</label></div>
+                    <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none"><input type="checkbox" id="togglePrice" checked class="column-toggle h-4 w-4 rounded text-brand focus:outline-none focus:ring-1 focus:ring-brand-deep m-0" data-column="price"> Price</label></div>
+                    <div class="col-span-1"><label class="flex items-center gap-1 text-sm py-1 px-1 rounded-xs cursor-pointer user-select-none"><input type="checkbox" id="toggleImageColumn" class="column-toggle h-4 w-4 rounded text-brand focus:outline-none focus:ring-1 focus:ring-brand-deep m-0" data-column="image"> Image</label></div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="table-container" style="overflow: auto; max-height: calc(100vh - 220px);">
-                <table class="w-full text-left text-sm text-ink border-collapse">
+    <div class="p-4 border-t border-border">
+        <div class="header-controls">
+            <input type="text"
+                   class="search-box w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                   placeholder="Search products / SKU / variant…"
+                   id="searchInput">
+        </div>
+
+        <div id="resizeable">
+            <div class="table-container" style="overflow: auto; max-height: calc(100vh - 280px);">
+                <table class="compact-table">
                     <thead>
                         <tr>
                             <th class="col-id hidden-column">ID</th>
@@ -81,8 +154,7 @@
             </div>
         </div>
     </div>
-</div>
-@endsection
+</section>
 
 @push('scripts')
 <script>
@@ -143,7 +215,7 @@ function renderProducts() {
             <td class="price-cell col-compare_price text-left">${variant.compare_price}</td>
             <td class="text-right">${variant.sku}</td>
             <td class="col-image hidden-column">
-                <img src="${variant.image}" class="thumbnail" alt="${variant.name}" onerror="this.outerHTML='<div class=\\'thumbnail\\'>Missing</div>'">
+                <img src="${variant.image}" class="thumbnail" alt="${variant.name}" onerror="this.outerHTML='<div class=&quot;thumbnail&quot;>Missing</div>'">
             </td>
         `;
         productList.appendChild(row);
@@ -211,3 +283,5 @@ document.addEventListener('mousemove', e => {
 });
 </script>
 @endpush
+
+@endsection

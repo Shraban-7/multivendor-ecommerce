@@ -1,171 +1,209 @@
+@php
+    $summary = $summary ?? ['total' => 0, 'global' => 0, 'seller' => 0, 'active' => 0, 'expired' => 0];
+@endphp
 @extends('admin.layouts.app')
 @section('title', 'Coupons')
 
 @section('content')
-    <div class="flex justify-between items-start mb-4">
-        <div>
-            <h1 class="text-xl font-semibold text-ink">Coupons</h1>
-            <p class="text-sm text-ink-secondary mt-1">Manage discount coupons across the marketplace</p>
-        </div>
-        <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary btn-sm">
-            <i data-lucide="plus" class="icon-xs"></i> Create Coupon
-        </a>
-    </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-        <div class="bg-white border border-border rounded-sm shadow-sm p-4">
-            <div class="text-ink-tertiary text-xs uppercase tracking-wider font-semibold mb-1">Total</div>
-            <div class="text-xl font-bold text-ink">{{ number_format($summary['total']) }}</div>
-        </div>
-        <div class="bg-white border border-border rounded-sm shadow-sm p-4">
-            <div class="text-ink-tertiary text-xs uppercase tracking-wider font-semibold mb-1">Global</div>
-            <div class="text-xl font-bold" style="color: #2563eb">{{ number_format($summary['global']) }}</div>
-        </div>
-        <div class="bg-white border border-border rounded-sm shadow-sm p-4">
-            <div class="text-ink-tertiary text-xs uppercase tracking-wider font-semibold mb-1">Seller</div>
-            <div class="text-xl font-bold" style="color: #d97706">{{ number_format($summary['seller']) }}</div>
-        </div>
-        <div class="bg-white border border-border rounded-sm shadow-sm p-4">
-            <div class="text-ink-tertiary text-xs uppercase tracking-wider font-semibold mb-1">Active</div>
-            <div class="text-xl font-bold" style="color: #059669">{{ number_format($summary['active']) }}</div>
-        </div>
-        <div class="bg-white border border-border rounded-sm shadow-sm p-4">
-            <div class="text-ink-tertiary text-xs uppercase tracking-wider font-semibold mb-1">Expired</div>
-            <div class="text-xl font-bold" style="color: #dc2626">{{ number_format($summary['expired']) }}</div>
-        </div>
-    </div>
-
-    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
-        <div class="px-4 py-3 border-b border-border bg-surface-muted">
-            <h6 class="text-xs font-semibold text-ink uppercase tracking-wider">Search & Filter</h6>
-        </div>
-        <div class="p-4">
-            <form method="GET" action="{{ route('admin.coupons.index') }}" class="flex items-end gap-3 flex-wrap">
-                <div class="w-44">
-                    <label class="block text-xs font-medium text-ink-secondary mb-1">Type</label>
-                    <select name="type" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
-                        <option value="">All Types</option>
-                        <option value="global" {{ request('type') === 'global' ? 'selected' : '' }}>Global</option>
-                        <option value="seller" {{ request('type') === 'seller' ? 'selected' : '' }}>Seller</option>
-                    </select>
+{{-- ═══ HERO ═══ --}}
+<section class="bg-white rounded-sm shadow-sm overflow-hidden mb-3 relative">
+    <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #a855f7, #c084fc, #e879f9);"></div>
+    <div class="p-5 lg:p-6 pt-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+                <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                    <i data-lucide="ticket-percent" class="text-[#a855f7]" style="width:12px;height:12px;"></i>
+                    <span>Reach</span>
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                    <span class="text-ink-soft font-semibold">Coupons</span>
+                </nav>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <h1 class="text-xl font-bold text-ink-emphasis mb-0">Coupons</h1>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#a855f7]/15 text-[#a855f7]">
+                        <i data-lucide="percent" style="width:11px;height:11px;" class="me-1"></i> Discount Engine
+                    </span>
                 </div>
-                <div class="w-44">
-                    <label class="block text-xs font-medium text-ink-secondary mb-1">Status</label>
-                    <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
-                        <option value="">All Status</option>
-                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
-                        <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expired</option>
-                    </select>
-                </div>
-                <div class="flex-1 min-w-[200px]">
-                    <label class="block text-xs font-medium text-ink-secondary mb-1">Search</label>
-                    <input type="text" name="search" value="{{ request('search') }}" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Coupon code or title…">
-                </div>
-                <button type="submit" class="btn btn-primary btn-sm">
-                    <i data-lucide="search" class="icon-xs"></i> Filter
-                </button>
-                @if(request('search') || request('type') || request('status'))
-                    <a href="{{ route('admin.coupons.index') }}" class="btn btn-light btn-sm">Clear</a>
-                @endif
-            </form>
-        </div>
-    </div>
-
-    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-ink border-collapse">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2.5">Code</th>
-                        <th class="px-4 py-2.5">Discount</th>
-                        <th class="px-4 py-2.5">Type</th>
-                        <th class="px-4 py-2.5">Seller</th>
-                        <th class="px-4 py-2.5">Uses</th>
-                        <th class="px-4 py-2.5">Validity</th>
-                        <th class="px-4 py-2.5">Status</th>
-                        <th class="px-4 py-2.5 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-border">
-                    @forelse ($coupons as $coupon)
-                        <tr class="hover:bg-surface-muted/50 transition-colors">
-                            <td class="px-4 py-3">
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-mono font-semibold rounded-full bg-surface-muted text-ink">{{ $coupon->code }}</span>
-                                @if ($coupon->title)
-                                    <div class="text-xs text-ink-tertiary mt-0.5">{{ $coupon->title }}</div>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                @if ($coupon->discount_type === 'percentage')
-                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-purple-500 text-white">{{ $coupon->discount_value }}%</span>
-                                @else
-                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white">{{ money($coupon->discount_value) }}</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-white {{ $coupon->isGlobal() ? 'bg-blue-500' : 'bg-amber-500' }}">
-                                    {{ $coupon->isGlobal() ? 'Global' : 'Seller' }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                @if ($coupon->seller)
-                                    <small class="text-ink">{{ $coupon->seller->business_name ?? $coupon->seller->name }}</small>
-                                @else
-                                    <small class="text-ink-tertiary">—</small>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-sm">
-                                @if ($coupon->usage_limit)
-                                    <span class="font-semibold">{{ $coupon->used_count }}</span> / {{ $coupon->usage_limit }}
-                                @else
-                                    <span class="font-semibold">{{ $coupon->used_count }}</span> / <span class="text-ink-tertiary">∞</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-sm text-ink-secondary">
-                                {{ $coupon->valid_from->format('d M Y') }} → {{ $coupon->valid_until->format('d M Y') }}
-                            </td>
-                            <td class="px-4 py-3">
-                                @if(!$coupon->status)
-                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white">Inactive</span>
-                                @elseif($coupon->valid_until->isPast())
-                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white">Expired</span>
-                                @elseif($coupon->valid_from->isFuture())
-                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-blue-500 text-white">Scheduled</span>
-                                @else
-                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500 text-white">Active</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('admin.coupons.edit', $coupon) }}" class="btn btn-light btn-sm" title="Edit">
-                                        <i data-lucide="edit" class="icon-xs"></i>
-                                    </a>
-                                    <form method="POST" action="{{ route('admin.coupons.destroy', $coupon) }}" class="inline" onsubmit="return confirm('Delete this coupon?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
-                                            <i data-lucide="trash-2" class="icon-xs"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-center py-10">
-                                <i data-lucide="ticket-percent" style="width:48px;height:48px;" class="mx-auto text-ink-tertiary"></i>
-                                <p class="text-ink-tertiary mt-3 mb-0">No coupons found.</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        @if ($coupons->hasPages())
-            <div class="flex justify-end px-4 py-3 border-t border-border">
-                {{ $coupons->links() }}
+                <p class="text-sm text-ink-secondary mb-0">Manage discount codes across the entire marketplace.</p>
             </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary">
+                    <i data-lucide="plus" style="width:15px;height:15px;"></i> Create Coupon
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ═══ KPI TILES ═══ --}}
+@php
+    $tiles = [
+        ['key' => 'total',   'label' => 'Total',    'top' => '#a855f7', 'text' => 'text-[#a855f7]',         'icon' => 'ticket-percent'],
+        ['key' => 'global',  'label' => 'Global',   'top' => '#0ea5e9', 'text' => 'text-feedback-info',     'icon' => 'globe-2'],
+        ['key' => 'seller',  'label' => 'Seller',   'top' => '#fb923c', 'text' => 'text-feedback-warning',  'icon' => 'store'],
+        ['key' => 'active',  'label' => 'Active',   'top' => '#10b981', 'text' => 'text-feedback-success',  'icon' => 'check-circle-2'],
+        ['key' => 'expired', 'label' => 'Expired',  'top' => '#ef4444', 'text' => 'text-feedback-danger',   'icon' => 'x-circle'],
+    ];
+@endphp
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-3">
+    @foreach ($tiles as $tile)
+        <article class="bg-white rounded-sm shadow-sm overflow-hidden relative">
+            <div class="absolute top-0 left-0 right-0 h-1" style="background-color: {{ $tile['top'] }};"></div>
+            <div class="p-4 pt-5">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[11px] font-semibold text-ink-tertiary uppercase tracking-wider">{{ $tile['label'] }}</span>
+                    <i data-lucide="{{ $tile['icon'] }}" class="text-ink-tertiary" style="width:14px;height:14px;"></i>
+                </div>
+                <h3 class="text-2xl font-bold {{ $tile['text'] }} mb-0">{{ number_format($summary[$tile['key']]) }}</h3>
+            </div>
+        </article>
+    @endforeach
+</section>
+
+{{-- ═══ FILTER + TABLE ═══ --}}
+<section class="bg-white rounded-sm shadow-sm overflow-hidden">
+    <div class="px-5 py-3 bg-surface-muted flex items-center gap-2">
+        <i data-lucide="sliders-horizontal" style="width:14px;height:14px;" class="text-ink-tertiary"></i>
+        <h3 class="text-sm font-bold text-ink-emphasis mb-0">Search & Filter</h3>
+        <div class="grow"></div>
+        @if(request('search') || request('type') || request('status'))
+            <a href="{{ route('admin.coupons.index') }}" class="text-[11px] font-semibold text-ink-tertiary hover:text-ink-emphasis inline-flex items-center gap-1">
+                <i data-lucide="x" style="width:11px;height:11px;"></i> Clear
+            </a>
         @endif
     </div>
+    <div class="p-4 border-t border-border">
+        <form method="GET" action="{{ route('admin.coupons.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-2">
+            <div class="md:col-span-2">
+                <select name="type"
+                        class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
+                    <option value="">All Types</option>
+                    <option value="global" @selected(request('type') === 'global')>Global</option>
+                    <option value="seller" @selected(request('type') === 'seller')>Seller</option>
+                </select>
+            </div>
+            <div class="md:col-span-2">
+                <select name="status"
+                        class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
+                    <option value="">All Status</option>
+                    <option value="active"   @selected(request('status') === 'active')>Active</option>
+                    <option value="inactive" @selected(request('status') === 'inactive')>Inactive</option>
+                    <option value="expired"  @selected(request('status') === 'expired')>Expired</option>
+                </select>
+            </div>
+            <div class="md:col-span-6 relative">
+                <i data-lucide="search" class="absolute top-1/2 -translate-y-1/2 text-ink-tertiary" style="width:14px;height:14px; left: 10px;"></i>
+                <input type="text" name="search" value="{{ request('search') }}"
+                       placeholder="Search by code or title…"
+                       class="w-full pl-8 pr-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
+            </div>
+            <div class="md:col-span-2">
+                <button type="submit" class="btn btn-primary w-full">
+                    <i data-lucide="search" style="width:14px;height:14px;"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="px-4 pt-4 pb-1 text-xs text-ink-tertiary">
+        Showing <span class="text-ink-emphasis font-semibold">{{ $coupons->firstItem() ?? 0 }}</span>
+        – <span class="text-ink-emphasis font-semibold">{{ $coupons->lastItem() ?? 0 }}</span>
+        of <span class="text-ink-emphasis font-semibold">{{ $coupons->total() }}</span> coupons
+    </div>
+
+    <div class="overflow-x-auto px-4 pb-4">
+        <table class="w-full text-left text-sm border-collapse">
+            <thead class="bg-surface-muted">
+                <tr>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Code</th>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Type</th>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Discount</th>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Min</th>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary text-center">Uses</th>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Validity</th>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Status</th>
+                    <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($coupons as $coupon)
+                    @php
+                        $isExpired   = $coupon->valid_until->isPast();
+                        $isScheduled = $coupon->valid_from->isFuture();
+                        $pillBg = match (true) {
+                            !$coupon->status => 'bg-surface-muted text-ink-tertiary',
+                            $isExpired       => 'bg-feedback-danger/15 text-feedback-danger',
+                            $isScheduled     => 'bg-feedback-info/15 text-feedback-info',
+                            default          => 'bg-feedback-success/15 text-feedback-success',
+                        };
+                        $pillLabel = match (true) {
+                            !$coupon->status => 'Inactive',
+                            $isExpired       => 'Expired',
+                            $isScheduled     => 'Scheduled',
+                            default          => 'Active',
+                        };
+                    @endphp
+                    <tr class="border-t border-border hover:bg-surface-muted/40 transition-colors">
+                        <td class="px-4 py-3">
+                            <code class="px-1.5 py-0.5 rounded-xs bg-surface-muted text-ink-emphasis font-mono text-xs font-semibold">{{ $coupon->code }}</code>
+                            @if ($coupon->title)
+                                <div class="text-xs text-ink-tertiary mt-1">{{ $coupon->title }}</div>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $coupon->type === 'global' ? 'bg-feedback-info/15 text-feedback-info' : 'bg-feedback-warning/15 text-feedback-warning' }}">
+                                {{ ucfirst($coupon->type) }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-ink-secondary">
+                            @if ($coupon->discount_type === 'percentage')
+                                <span class="font-semibold text-[#a855f7]">{{ $coupon->discount_value }}%</span>
+                                @if ($coupon->max_discount)
+                                    <small class="text-ink-tertiary block">Cap {{ money($coupon->max_discount) }}</small>
+                                @endif
+                            @else
+                                <span class="font-semibold text-feedback-success">{{ money($coupon->discount_value) }}</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 text-xs text-ink-secondary">{{ $coupon->min_purchase > 0 ? money($coupon->min_purchase) : '—' }}</td>
+                        <td class="px-4 py-3 text-center text-sm whitespace-nowrap">
+                            <span class="font-semibold text-ink-emphasis">{{ $coupon->used_count }}</span>
+                            <span class="text-ink-tertiary">/</span>
+                            <span class="text-ink-secondary">{{ $coupon->usage_limit ?: '∞' }}</span>
+                        </td>
+                        <td class="px-4 py-3 text-xs text-ink-secondary whitespace-nowrap">
+                            {{ $coupon->valid_from->format('d M Y') }} <span class="text-ink-tertiary">→</span> {{ $coupon->valid_until->format('d M Y') }}
+                        </td>
+                        <td class="px-4 py-3">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $pillBg }}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5"></span>
+                                {{ $pillLabel }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="{{ route('admin.coupons.edit', $coupon) }}" class="btn btn-light btn-sm">
+                                <i data-lucide="pencil" style="width:13px;height:13px;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8">
+                            <div class="py-10 text-center">
+                                <i data-lucide="ticket-percent" class="text-ink-tertiary mx-auto mb-2" style="width:36px;height:36px;"></i>
+                                <p class="text-ink-soft font-semibold mb-1">No coupons yet</p>
+                                <p class="text-ink-tertiary text-xs">Create the first marketplace coupon.</p>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-end p-4 border-t border-border">
+        {{ $coupons->links() }}
+    </div>
+</section>
+
 @endsection

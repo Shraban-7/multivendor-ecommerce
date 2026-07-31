@@ -17,12 +17,12 @@
                 <div class="space-y-5">
                     <div>
                         <label class="block text-xs font-medium text-ink-secondary mb-1">Flash Sale Title</label>
-                        <input type="text" name="title" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Ex: Winter Mega Flash Sale">
+                        <input type="text" name="title" class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" placeholder="Ex: Winter Mega Flash Sale">
                     </div>
 
                     <div>
                         <label class="block text-xs font-medium text-ink-secondary mb-1">Banner Image</label>
-                        <input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
+                        <input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                     </div>
 
                     <div>
@@ -36,11 +36,11 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Start Time</label>
-                            <input type="datetime-local" name="start_time" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
+                            <input type="datetime-local" name="start_time" class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-ink-secondary mb-1">End Time</label>
-                            <input type="datetime-local" name="end_time" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
+                            <input type="datetime-local" name="end_time" class="w-full px-3 py-2 text-sm text-ink-emphasis bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
                         </div>
                     </div>
 

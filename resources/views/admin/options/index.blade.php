@@ -2,22 +2,53 @@
 @section('title', 'Product Options')
 
 @section('content')
-    <div class="mb-3 flex justify-between items-center">
-        <h4 class="mb-0">Product Options</h4>
-        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addOptionModal">
-            <i data-lucide="plus" class="icon-xs"></i> Add Option
-        </button>
-    </div>
+    <section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+        <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #8b5cf6, #a78bfa, #c4b5fd);"></div>
+        <div class="p-5 lg:p-6 pt-6">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="min-w-0">
+                    <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                        <i data-lucide="sliders-horizontal" class="text-feedback-warning" style="width:12px;height:12px;"></i>
+                        <span>Catalog</span>
+                        <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                        <span class="text-ink-soft font-semibold">Options</span>
+                    </nav>
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <h1 class="text-xl font-bold text-ink-emphasis mb-0">Product Options</h1>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-violet-50 text-violet-700">
+                            <i data-lucide="sliders-horizontal" style="width:11px;height:11px;" class="me-1"></i> {{ $options->total() }} Total
+                        </span>
+                    </div>
+                    <p class="text-sm text-ink-secondary mb-0">Manage variant options and values applied across categories.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 shrink-0">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addOptionModal">
+                        <i data-lucide="plus" style="width:14px;height:14px;"></i> Add Option
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="overflow-x-auto">
+    <section class="bg-white rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border bg-surface-muted flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="shrink-0 w-7 h-7 rounded-sm bg-violet-50 text-violet-700 flex items-center justify-center">
+                    <i data-lucide="sliders-horizontal" style="width:14px;height:14px;"></i>
+                </span>
+                <h5 class="mb-0 font-bold text-ink">Option List</h5>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-violet-50 text-violet-700">{{ $options->total() }} options</span>
+        </div>
+        <div class="overflow-x-auto">
         <table id="product-attribute-table" class="w-full text-left text-sm text-ink border-collapse">
             <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Categories</th>
-                    <th scope="col">Values</th>
-                    <th scope="col">Last Update</th>
-                    <th scope="col">Action</th>
+                <tr class="bg-surface-muted/50">
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Name</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Categories</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Values</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Last Update</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,7 +60,7 @@
                         <td>
                             <div class="flex flex-wrap">
                                 @foreach ($productOption->categories as $category)
-                                    <span class="badge bg-surface-muted border text-ink me-1 mb-1">{{ $category->name }}</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-surface-muted text-ink-secondary me-1 mb-1">{{ $category->name }}</span>
                                 @endforeach
                             </div>
                         </td>
@@ -37,11 +68,11 @@
                             <div class="flex flex-wrap">
                                 @foreach ($productOption->option_values as $optionValue)
                                     <button
-                                        class="badge bg-surface-muted border text-ink me-1 mb-1 inline-flex items-center gap-1 option-value-badge"
+                                        class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-surface-muted text-ink-secondary hover:bg-brand-tint hover:text-brand-deep transition-colors me-1 mb-1 option-value-badge"
                                         data-bs-toggle="modal" data-bs-target="#editOptionValueModal"
                                         data-id="{{ $optionValue->id }}" data-value="{{ $optionValue->value }}">
                                         {{ $optionValue->value }}
-                                        <i data-lucide="edit" class="icon-xs"></i>
+                                        <i data-lucide="edit" style="width:11px;height:11px;"></i>
                                     </button>
                                 @endforeach
                             </div>
@@ -86,14 +117,14 @@
                                         <div class="mb-3">
                                             <label for="edit_option_name_{{ $productOption->id }}"
                                                 class="block text-xs font-medium text-ink-secondary mb-1 font-bold">Option Name</label>
-                                            <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                                            <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                                                 id="edit_option_name_{{ $productOption->id }}" name="name"
                                                 value="{{ $productOption->name }}" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="edit_category_id_{{ $productOption->id }}"
                                                 class="block text-xs font-medium text-ink-secondary mb-1 font-bold">Categories</label>
-                                            <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors select2-categories"
+                                            <select class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors select2-categories"
                                                 id="edit_category_id_{{ $productOption->id }}" name="categories[]"
                                                 multiple="multiple" required>
                                                 @foreach ($categories as $category)
@@ -107,7 +138,7 @@
                                         <div class="mb-3">
                                             <label for="edit_attribute_value_{{ $productOption->id }}"
                                                 class="block text-xs font-medium text-ink-secondary mb-1 font-bold">Values</label>
-                                            <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors select2-values"
+                                            <select class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors select2-values"
                                                 id="edit_attribute_value_{{ $productOption->id }}" name="values[]"
                                                 multiple="multiple" required>
                                                 @foreach ($productOption->option_values as $value)
@@ -166,9 +197,11 @@
                 @endforeach
             </tbody>
         </table>
-    </div>
-
-    {{ $options->links() }}
+        </div>
+        <div class="px-4 py-3 border-t border-border bg-surface-muted/40">
+            {{ $options->links() }}
+        </div>
+    </section>
 
     <div class="modal fade" id="addOptionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -184,11 +217,11 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="option_name" class="block text-xs font-medium text-ink-secondary mb-1 font-bold">Option Name</label>
-                            <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="option_name" name="name" required>
+                            <input type="text" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" id="option_name" name="name" required>
                         </div>
                         <div class="mb-3">
                             <label for="category_id" class="block text-xs font-medium text-ink-secondary mb-1 font-bold">Categories</label>
-                            <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="category_id" name="categories[]" multiple="multiple"
+                            <select class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" id="category_id" name="categories[]" multiple="multiple"
                                 required>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -197,7 +230,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="attribute_value" class="block text-xs font-medium text-ink-secondary mb-1 font-bold">Values</label>
-                            <select class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors" id="attribute_value" name="values[]" multiple="multiple"
+                            <select class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors" id="attribute_value" name="values[]" multiple="multiple"
                                 required></select>
                             <small class="text-ink-tertiary">Type and press Enter or comma to add multiple values.</small>
                         </div>
@@ -228,7 +261,7 @@
 
                         <div class="mb-3">
                             <label class="block text-xs font-medium text-ink-secondary mb-1">Value</label>
-                            <input type="text" name="value" id="option_value_input" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
+                            <input type="text" name="value" id="option_value_input" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors" required>
                         </div>
                     </div>
 

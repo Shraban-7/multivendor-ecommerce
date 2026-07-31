@@ -2,29 +2,106 @@
 @section('title', 'My Products')
 @section('content')
 
-    <div class="flex justify-between items-start mb-4">
-        <div>
-            <h1 class="text-xl font-semibold text-ink">My Products</h1>
-            <p class="text-sm text-ink-secondary mt-1">Manage your product catalog and inventory</p>
+    <section class="bg-white rounded-sm shadow-sm overflow-hidden mb-4 relative">
+        <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #F85606, #fb923c, #fbbf24);"></div>
+        <div class="p-5 lg:p-6 pt-6">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="min-w-0">
+                    <nav class="flex items-center gap-1 mb-2 text-xs text-ink-tertiary">
+                        <i data-lucide="package" class="text-brand-deep" style="width:12px;height:12px;"></i>
+                        <span>Catalog</span>
+                        <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                        <span class="text-ink-soft font-semibold">My Products</span>
+                    </nav>
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <h1 class="text-xl font-bold text-ink-emphasis mb-0">My Products</h1>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-tint text-brand-deep">
+                            <i data-lucide="package" style="width:11px;height:11px;" class="me-1"></i> {{ $products->total() }} Total
+                        </span>
+                    </div>
+                    <p class="text-sm text-ink-secondary mb-0">Manage your product catalog and inventory.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 shrink-0">
+                    <a href="{{ route('seller.products.inventory') }}" class="btn btn-light btn-sm"><i data-lucide="warehouse" style="width:14px;height:14px;"></i> Inventory</a>
+                    <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm">
+                        <i data-lucide="plus" style="width:14px;height:14px;"></i> Add Product
+                    </a>
+                </div>
+            </div>
         </div>
-        <a href="{{ route('seller.products.create') }}" class="btn btn-primary btn-sm">
-            <i data-lucide="plus" class="icon-xs"></i> Add Product
-        </a>
-    </div>
+    </section>
+
+    @php
+        $prodKpis = [
+            ['label' => 'Pending Approval', 'value' => $counts['pending'] ?? 0, 'icon' => 'hourglass', 'tone' => 'amber', 'link' => 'pending'],
+            ['label' => 'Active',           'value' => $counts['active'] ?? 0,   'icon' => 'check-circle-2', 'tone' => 'emerald', 'link' => 'active'],
+            ['label' => 'Draft',            'value' => $counts['draft'] ?? 0,    'icon' => 'file-pen', 'tone' => 'sky', 'link' => 'draft'],
+            ['label' => 'Inactive',         'value' => $counts['inactive'] ?? 0, 'icon' => 'eye-off', 'tone' => 'neutral', 'link' => 'inactive'],
+            ['label' => 'Deleted',          'value' => $counts['deleted'] ?? 0,  'icon' => 'trash-2', 'tone' => 'rose', 'link' => 'deleted'],
+        ];
+    @endphp
+    <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
+        @foreach ($prodKpis as $kpi)
+            @php
+                $toneClass = match ($kpi['tone']) {
+                    'amber'   => 'text-amber-700',
+                    'emerald' => 'text-emerald-700',
+                    'sky'     => 'text-sky-700',
+                    'rose'    => 'text-rose-700',
+                    default   => 'text-neutral-600',
+                };
+                $barClass = match ($kpi['tone']) {
+                    'amber'   => 'bg-amber-400',
+                    'emerald' => 'bg-emerald-400',
+                    'sky'     => 'bg-sky-400',
+                    'rose'    => 'bg-rose-400',
+                    default   => 'bg-neutral-400',
+                };
+                $iconBg = match ($kpi['tone']) {
+                    'amber'   => 'bg-amber-50 text-amber-600',
+                    'emerald' => 'bg-emerald-50 text-emerald-600',
+                    'sky'     => 'bg-sky-50 text-sky-600',
+                    'rose'    => 'bg-rose-50 text-rose-600',
+                    default   => 'bg-surface-muted text-ink-tertiary',
+                };
+            @endphp
+            <a href="{{ route('seller.products.index', ['status' => $kpi['link']]) }}"
+                class="block bg-white border border-border rounded-sm shadow-sm p-4 transition-shadow hover:shadow-md relative overflow-hidden">
+                <div class="h-1 absolute top-0 left-0 right-0 {{ $barClass }}"></div>
+                <div class="flex items-start justify-between gap-3 mt-1">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[11px] font-semibold text-ink-tertiary uppercase tracking-wider mb-0">{{ $kpi['label'] }}</p>
+                        <h3 class="mb-0 font-bold text-2xl {{ $toneClass }} mt-1">{{ number_format($kpi['value']) }}</h3>
+                    </div>
+                    <span class="shrink-0 w-10 h-10 rounded-sm flex items-center justify-center {{ $iconBg }}">
+                        <i data-lucide="{{ $kpi['icon'] }}" style="width:20px;height:20px;"></i>
+                    </span>
+                </div>
+            </a>
+        @endforeach
+    </section>
 
     <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden mb-4">
         <div class="px-4 py-3 border-b border-border bg-surface-muted flex items-center justify-between">
-            <h6 class="text-xs font-semibold text-ink uppercase tracking-wider">Search & Filter</h6>
+            <div class="flex items-center gap-2">
+                <span class="shrink-0 w-7 h-7 rounded-sm bg-brand-tint text-brand flex items-center justify-center">
+                    <i data-lucide="sliders-horizontal" style="width:14px;height:14px;"></i>
+                </span>
+                <h6 class="text-sm font-semibold text-ink mb-0">Search & Filter</h6>
+            </div>
+            @if(request('search') || request('status'))
+                <a href="{{ route('seller.products.index') }}" class="btn btn-light btn-sm">Clear</a>
+            @endif
         </div>
         <div class="p-4">
             <form method="GET" action="{{ route('seller.products.index') }}">
-                <div class="flex items-center gap-3">
-                    <div class="flex-1">
-                        <input type="text" name="search" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
+                <div class="flex items-center gap-3 flex-wrap">
+                    <div class="flex-1 min-w-[200px]">
+                        <input type="text" name="search" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors"
                             placeholder="Search by product name or SKU..." value="{{ request('search') }}">
                     </div>
                     <div class="w-48">
-                        <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep transition-colors">
+                        <select name="status" class="w-full px-3 py-2 text-sm text-ink bg-surface-muted rounded-xs focus:outline-none focus:ring-1 focus:ring-brand-deep transition-colors">
                             <option value="">All Status</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
@@ -36,25 +113,32 @@
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i data-lucide="search" class="icon-xs"></i> Search
                     </button>
-                    @if(request('search') || request('status'))
-                        <a href="{{ route('seller.products.index') }}" class="btn btn-light btn-sm">Clear</a>
-                    @endif
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="overflow-x-auto">
+    <div class="bg-white border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border bg-surface-muted flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="shrink-0 w-7 h-7 rounded-sm bg-brand-tint text-brand flex items-center justify-center">
+                    <i data-lucide="package" style="width:14px;height:14px;"></i>
+                </span>
+                <h5 class="mb-0 font-bold text-ink">Product List</h5>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-brand-tint text-brand-deep">{{ $products->total() }} products</span>
+        </div>
+        <div class="overflow-x-auto">
         <table class="w-full text-left text-sm text-ink border-collapse">
             <thead>
-                <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Stock</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Visibility</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
+                <tr class="bg-surface-muted/50">
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Product</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Price</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Stock</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Date</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Visibility</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Status</th>
+                    <th scope="col" class="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -65,8 +149,8 @@
                         $maxP = $product->variants->max('price') ?? $product->price;
                         $totalStock = $product->totalStock;
                     @endphp
-                    <tr>
-                        <td>
+                    <tr class="border-t border-border hover:bg-surface-muted/40 transition-colors">
+                        <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 <img src="{{ $product->imageUrl }}" class="w-12 h-12 rounded-full border object-cover" alt="Image">
                                 <div>
@@ -85,7 +169,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td>
+                        <td class="px-4 py-3">
                             @if($vc > 0)
                                 <span class="font-semibold">{{ money($minP) }}</span>
                                 @if ($maxP != $minP)
@@ -98,37 +182,46 @@
                                 <div class="text-xs text-ink-tertiary"><s>{{ money($product->compare_price) }}</s></div>
                             @endif
                         </td>
-                        <td>
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-white {{ $totalStock <= $product->low_stock_quantity ? 'bg-red-500' : ($totalStock == 0 ? 'bg-gray-500' : 'bg-green-500') }}">
+                        <td class="px-4 py-3">
+                            @php
+                                $stockPill = $totalStock <= $product->low_stock_quantity
+                                    ? ['bg-rose-50 text-rose-700', 'bg-rose-400']
+                                    : ($totalStock == 0 ? ['bg-neutral-100 text-neutral-600', 'bg-neutral-400'] : ['bg-emerald-50 text-emerald-700', 'bg-emerald-400']);
+                            @endphp
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $stockPill[0] }}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5" style="background: {{ $stockPill[1] }};"></span>
                                 {{ $totalStock }} {{ $product->unit->short_name ?? 'pcs' }}
                             </span>
                         </td>
-                        <td class="text-ink-tertiary text-xs">{{ $product->created_at->format('d/m/y h:i A') }}</td>
-                        <td>
+                        <td class="px-4 py-3 text-ink-tertiary text-xs">{{ $product->created_at->format('d/m/y h:i A') }}</td>
+                        <td class="px-4 py-3">
                             @if ($product->is_visible && $product->status == $product::STATUS_ACTIVE)
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-surface-muted text-ink-tertiary">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-surface-muted text-ink-tertiary">
                                     <i data-lucide="eye" class="icon-xs me-1"></i> Visible
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-surface-muted text-ink-tertiary">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-surface-muted text-ink-tertiary">
                                     <i data-lucide="eye-off" class="icon-xs me-1"></i> Hidden
                                 </span>
                             @endif
                         </td>
-                        <td>
-                            @if ($product->status == $product::STATUS_PENDING_APPROVAL)
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-ink-tertiary bg-surface-muted">Pending</span>
-                            @elseif ($product->status == $product::STATUS_ACTIVE)
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-white bg-green-500">Active</span>
-                            @elseif ($product::STATUS_DRAFT !== null && $product->status == $product::STATUS_DRAFT)
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-white bg-blue-500">Draft</span>
-                            @elseif ($product->status == $product::STATUS_INACTIVE)
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-ink bg-yellow-400">Inactive</span>
-                            @elseif ($product->status == $product::STATUS_DELETED)
-                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full text-white bg-red-500">Deleted</span>
-                            @endif
+                        <td class="px-4 py-3">
+                            @php
+                                $statusKey = (int) $product->status;
+                                $statusPillMap = [
+                                    $product::STATUS_PENDING_APPROVAL => ['bg-amber-50 text-amber-700', 'bg-amber-400', 'Pending'],
+                                    $product::STATUS_ACTIVE => ['bg-emerald-50 text-emerald-700', 'bg-emerald-400', 'Active'],
+                                    $product::STATUS_DRAFT => ['bg-sky-50 text-sky-700', 'bg-sky-400', 'Draft'],
+                                    $product::STATUS_INACTIVE => ['bg-neutral-100 text-neutral-600', 'bg-neutral-400', 'Inactive'],
+                                    $product::STATUS_DELETED => ['bg-rose-50 text-rose-700', 'bg-rose-400', 'Deleted'],
+                                ];
+                                [$pillBg, $dotBg, $pillLabel] = $statusPillMap[$statusKey] ?? ['bg-neutral-100 text-neutral-600', 'bg-neutral-400', 'Unknown'];
+                            @endphp
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider {{ $pillBg }}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70 me-1.5" style="background: {{ $dotBg }};"></span>{{ $pillLabel }}
+                            </span>
                         </td>
-                        <td>
+                        <td class="px-4 py-3">
                             <div class="dropdown">
                                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i data-lucide="edit" class="icon-xs"></i>
@@ -176,10 +269,12 @@
                 @endforelse
             </tbody>
         </table>
-    </div>
-
-    <div class="flex justify-end mt-4">
-        {{ $products->links() }}
+        </div>
+        <div class="px-4 py-3 border-t border-border bg-surface-muted/40">
+            <div class="flex justify-end">
+                {{ $products->links() }}
+            </div>
+        </div>
     </div>
 
     @foreach ($products as $product)

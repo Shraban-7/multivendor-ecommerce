@@ -91,7 +91,7 @@ class FlashSaleController extends Controller
 
     public function show($id)
     {
-        $sale = FlashSale::with('products.seller', 'products')->findOrFail($id);
+        $sale = FlashSale::with(['products.seller', 'products.product'])->findOrFail($id);
 
         return view('admin.flash_sales.show', compact('sale'));
     }

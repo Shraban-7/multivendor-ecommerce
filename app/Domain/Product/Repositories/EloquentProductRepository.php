@@ -71,6 +71,23 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return $query->latest('id')->paginate($perPage);
     }
 
+    public function getStatusCountsForSeller(int $sellerId): array
+    {
+        $counts = Product::query()
+            ->where('seller_id', $sellerId)
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        return [
+            'pending' => (int) ($counts[Product::STATUS_PENDING_APPROVAL] ?? 0),
+            'active' => (int) ($counts[Product::STATUS_ACTIVE] ?? 0),
+            'inactive' => (int) ($counts[Product::STATUS_INACTIVE] ?? 0),
+            'draft' => (int) ($counts[Product::STATUS_DRAFT] ?? 0),
+            'deleted' => (int) ($counts[Product::STATUS_DELETED] ?? 0),
+        ];
+    }
+
     public function store(array $data): Product
     {
         return Product::create($data);
