@@ -18,7 +18,6 @@ yarn-error.log
 /.idea
 /.vscode
 /.cursor
-/AUDIT_REPORT.md
-/tasks
-/docs
-laravel-multivendor-rearchitecture-guide.md
+# Ignore all .md files except root README.md
+*.md
+!/README.md
