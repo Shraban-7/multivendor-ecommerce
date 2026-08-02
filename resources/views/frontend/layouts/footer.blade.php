@@ -11,11 +11,15 @@
 
             <!-- Brand -->
             <div>
-                <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center gap-2 mb-5">
                     @if (! empty($settings?->logo_white))
-                        <img src="{{ storage_url($settings->logo_white) }}" alt="{{ $appName }}" class="h-8 w-auto">
+                        <img
+                            src="{{ storage_url($settings->logo_white) }}"
+                            alt="{{ $appName }}"
+                            class="h-16 sm:h-20 lg:h-24 w-auto max-w-[220px] sm:max-w-[280px] lg:max-w-[320px] object-contain object-left"
+                        >
                     @else
-                        <span class="text-lg font-bold text-[#F85606]">{{ $appName }}</span>
+                        <span class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#F85606]">{{ $appName }}</span>
                     @endif
                 </div>
                 <p class="text-sm text-[#767676] mb-4">Bangladesh's leading online marketplace with thousands of products at the best prices.</p>
@@ -101,7 +105,7 @@
     <!-- Copyright Bar -->
     <div class="border-t border-[#2A2A2A]">
         <div class="max-w-[1400px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p class="text-xs text-[#595959]">&copy; {{ date('Y') }} {{ $appName }}. All rights reserved.</p>
+            <p class="text-xs text-[#595959]">{{ $settings?->footer_text ?: ('© '.date('Y').' '.$appName.'. All rights reserved.') }}</p>
             <div class="flex items-center gap-4 text-xs text-[#595959]">
                 <a href="{{ route('pages.show', 'terms-and-conditions') }}" class="hover:text-[#F85606] eq">Terms &amp; Conditions</a>
                 <a href="{{ route('pages.show', 'privacy-policy') }}" class="hover:text-[#F85606] eq">Privacy Policy</a>

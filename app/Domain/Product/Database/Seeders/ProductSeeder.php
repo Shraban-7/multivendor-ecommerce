@@ -122,7 +122,7 @@ class ProductSeeder extends Seeder
                 Product::create([
                     'name' => $productData['name'],
                     'slug' => $slug,
-                    'thumbnail' => $productData['thumbnail'] ?? null,
+                    'thumbnail' => null,
                     'short_description' => Str::limit(strip_tags($productData['description'] ?? $productData['name']), 160),
                     'description' => $productData['description'] ?? '',
                     'cost_price' => $cost > 0 ? $cost : max(1, round($price * 0.7, 2)),

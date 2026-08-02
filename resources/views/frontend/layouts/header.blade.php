@@ -18,7 +18,7 @@
                 </button>
                 <a href="{{ url('/') }}" class="flex items-center gap-1" aria-label="{{ $appName }} home">
                     @if (! empty($settings?->logo_white))
-                        <img src="{{ storage_url($settings->logo_white) }}" alt="{{ $appName }}" class="h-8 sm:h-10 w-auto">
+                        <img src="{{ storage_url($settings->logo) }}" alt="{{ $appName }}" class="h-8 sm:h-10 w-auto">
                     @else
                         <span class="text-xl sm:text-2xl font-bold text-[#F85606]">{{ $appName }}</span>
                     @endif
