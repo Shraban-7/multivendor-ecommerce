@@ -30,7 +30,7 @@
                 <td>{{ $banner->id }}</td>
                 <td>
                     @if($banner->image)
-                    <img src="{{ asset('storage/' . $banner->image) }}" width="80" class="rounded">
+                    <img src="{{ storage_url($banner->image) }}" width="80" class="rounded" alt="{{ $banner->title }}">
                     @else
                     <span class="text-ink-tertiary">No Image</span>
                     @endif

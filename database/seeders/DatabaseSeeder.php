@@ -7,6 +7,7 @@ use App\Domain\Order\Database\Seeders\CouponSeeder;
 use App\Domain\Order\Database\Seeders\WishlistSeeder;
 use App\Domain\Payment\Database\Seeders\PaymentGatewaySeeder;
 use App\Domain\Payment\Database\Seeders\PaymentOptionSeeder;
+use App\Domain\Product\Database\Seeders\BannerSeeder;
 use App\Domain\Product\Database\Seeders\BrandSeeder;
 use App\Domain\Product\Database\Seeders\CategoryBannerSeeder;
 use App\Domain\Product\Database\Seeders\CategoryOptionSeeder;
@@ -21,6 +22,7 @@ use App\Domain\Product\Database\Seeders\ProductStockSeeder;
 use App\Domain\Product\Database\Seeders\ProductUnitSeeder;
 use App\Domain\Product\Database\Seeders\ProductVariantSeeder;
 use App\Domain\Product\Database\Seeders\SizeSeeder;
+use App\Domain\Review\Database\Seeders\ReviewSeeder;
 use App\Domain\Shipping\Database\Seeders\DistrictSeeder;
 use App\Domain\Shipping\Database\Seeders\DivisionSeeder;
 use App\Domain\Shipping\Database\Seeders\UnionSeeder;
@@ -53,8 +55,9 @@ class DatabaseSeeder extends Seeder
             // \App\Domain\Order\Database\Seeders\OrderSeeder::class,
             // \App\Domain\Order\Database\Seeders\OrderItemSeeder::class,
             WishlistSeeder::class,
-            // \App\Domain\Review\Database\Seeders\ReviewSeeder::class,
+            ReviewSeeder::class,
             CouponSeeder::class,
+            BannerSeeder::class,
             CategoryBannerSeeder::class,
             HomeMidBannerSeeder::class,
             SocialLinkSeeder::class,

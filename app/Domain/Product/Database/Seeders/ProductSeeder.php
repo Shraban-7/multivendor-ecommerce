@@ -2,6 +2,7 @@
 
 namespace App\Domain\Product\Database\Seeders;
 
+use App\Domain\Product\Database\Seeders\Support\ProductImageResolver;
 use App\Domain\Product\Models\Brand;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
@@ -16,6 +17,10 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Product::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $jsonPath = database_path('data/products.json');
 
         if (! File::exists($jsonPath)) {
@@ -119,10 +124,17 @@ class ProductSeeder extends Seeder
                     $comparePrice = null;
                 }
 
+                $thumbnail = ! empty($productData['thumbnail'])
+                    ? trim((string) $productData['thumbnail'])
+                    : ProductImageResolver::primary(
+                        $productData['name'],
+                        $productData['category'] ?? null
+                    );
+
                 Product::create([
                     'name' => $productData['name'],
                     'slug' => $slug,
-                    'thumbnail' => null,
+                    'thumbnail' => $thumbnail,
                     'short_description' => Str::limit(strip_tags($productData['description'] ?? $productData['name']), 160),
                     'description' => $productData['description'] ?? '',
                     'cost_price' => $cost > 0 ? $cost : max(1, round($price * 0.7, 2)),

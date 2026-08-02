@@ -46,4 +46,14 @@ class Banner extends Model
             ->where('is_active', true)
             ->orderBy('sort_order', 'asc');
     }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return storage_url($this->image);
+    }
+
+    public function getLinkAttribute(): ?string
+    {
+        return $this->button_link;
+    }
 }

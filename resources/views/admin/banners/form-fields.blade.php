@@ -18,7 +18,7 @@
         <label class="block text-xs font-medium text-ink-secondary mb-1">Image</label>
         <input type="file" name="image" class="w-full px-3 py-2 text-sm text-ink bg-white border border-border rounded-xs focus:outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep placeholder:text-ink-tertiary transition-colors">
         @if($banner && $banner->image)
-        <img src="{{ asset('storage/'.$banner->image) }}" alt="banner" class="mt-2 rounded" width="100">
+        <img src="{{ storage_url($banner->image) }}" alt="banner" class="mt-2 rounded" width="100">
         @endif
     </div>
 

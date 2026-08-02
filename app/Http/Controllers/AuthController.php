@@ -49,7 +49,7 @@ class AuthController extends Controller
 
         $otpLog = OtpLog::generate($phone, OtpLog::TYPE_SIGNUP);
 
-        $otpMessage = "{$otpLog->code} is your Slash Mart verification code. Valid for 5 min";
+        $otpMessage = "{$otpLog->code} is your ShopCart verification code. Valid for 5 min";
 
         send_sms($otpMessage, $phone);
 

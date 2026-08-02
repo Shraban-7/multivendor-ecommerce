@@ -2,6 +2,7 @@
 
 namespace App\Domain\Product\Database\Seeders;
 
+use App\Domain\Product\Database\Seeders\Support\ProductImageResolver;
 use App\Domain\Product\Models\Color;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductVariant;
@@ -44,7 +45,9 @@ class ProductVariantSeeder extends Seeder
 
         foreach ($products as $product) {
             $json = $jsonByName->get(Str::lower(trim($product->name)));
-            $thumbnail = $json['thumbnail'] ?? $product->thumbnail;
+            $thumbnail = $product->thumbnail
+                ?: ($json['thumbnail'] ?? null)
+                ?: ProductImageResolver::primary($product->name, $product->category?->name);
             $variantRows = $this->buildVariantsForProduct($product, $json, $colors, $sizes, $thumbnail, $now);
 
             foreach ($variantRows as $row) {

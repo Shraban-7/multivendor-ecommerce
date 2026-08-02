@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-@section('title', 'Slash Mart')
+@section('title', 'Home')
 
 @section('content')
 

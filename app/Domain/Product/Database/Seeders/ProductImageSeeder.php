@@ -2,8 +2,10 @@
 
 namespace App\Domain\Product\Database\Seeders;
 
+use App\Domain\Product\Database\Seeders\Support\ProductImageResolver;
 use App\Domain\Product\Models\Product;
 use App\Domain\Product\Models\ProductImage;
+use App\Domain\Product\Models\ProductVariant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -22,7 +24,11 @@ class ProductImageSeeder extends Seeder
                 ->keyBy(fn (array $p) => Str::lower(trim($p['name'] ?? '')));
         }
 
-        $products = Product::query()->with('seller:id,name')->orderBy('id')->get();
+        $products = Product::query()
+            ->with(['seller:id,name', 'category:id,name'])
+            ->orderBy('id')
+            ->get();
+
         if ($products->isEmpty()) {
             $this->command?->warn('No products found. Run ProductSeeder first.');
 
@@ -31,33 +37,22 @@ class ProductImageSeeder extends Seeder
 
         $now = now();
         $rows = [];
+        $thumbnailUpdates = [];
         $perSeller = [];
 
         foreach ($products as $product) {
             $json = $jsonByName->get(Str::lower(trim($product->name)));
 
-            $gallery = collect($json['images'] ?? [])
-                ->filter()
-                ->unique()
-                ->values();
+            $gallery = ProductImageResolver::forProduct(
+                name: $product->name,
+                category: $product->category?->name ?? ($json['category'] ?? null),
+                jsonThumbnail: $json['thumbnail'] ?? $product->thumbnail,
+                jsonImages: $json['images'] ?? null,
+                minImages: 2,
+                forceNameMatch: false,
+            );
 
-            $thumbnail = $json['thumbnail'] ?? $product->thumbnail;
-
-            if ($gallery->isEmpty() && $thumbnail) {
-                $gallery = collect([$thumbnail]);
-            } elseif ($thumbnail && ! $gallery->contains($thumbnail)) {
-                $gallery = $gallery->prepend($thumbnail)->unique()->values();
-            }
-
-            // Ensure every product has at least 2 gallery slides for the details UI.
-            if ($gallery->isEmpty()) {
-                $gallery = collect([
-                    'images/products/placeholder-1.jpg',
-                    'images/products/placeholder-2.jpg',
-                ]);
-            } elseif ($gallery->count() === 1) {
-                $gallery->push($gallery->first());
-            }
+            $thumbnailUpdates[$product->id] = $gallery[0];
 
             foreach ($gallery as $image) {
                 $rows[] = [
@@ -69,14 +64,19 @@ class ProductImageSeeder extends Seeder
             }
 
             $sellerName = $product->seller?->name ?? 'Unknown';
-            $perSeller[$sellerName] = ($perSeller[$sellerName] ?? 0) + $gallery->count();
+            $perSeller[$sellerName] = ($perSeller[$sellerName] ?? 0) + count($gallery);
         }
 
-        DB::transaction(function () use ($rows) {
+        DB::transaction(function () use ($rows, $thumbnailUpdates) {
             ProductImage::query()->delete();
 
             foreach (array_chunk($rows, 500) as $chunk) {
                 ProductImage::insert($chunk);
+            }
+
+            foreach ($thumbnailUpdates as $productId => $thumbnail) {
+                Product::where('id', $productId)->update(['thumbnail' => $thumbnail]);
+                ProductVariant::where('product_id', $productId)->update(['image' => $thumbnail]);
             }
         });
 
@@ -84,6 +84,6 @@ class ProductImageSeeder extends Seeder
             $this->command?->info(sprintf('  %-18s %3d images', $seller, $count));
         }
 
-        $this->command?->info('Attached '.count($rows).' gallery images for '.$products->count().' products.');
+        $this->command?->info('Attached '.count($rows).' gallery images and synced thumbnails for '.$products->count().' products.');
     }
 }

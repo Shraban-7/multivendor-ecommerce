@@ -2,6 +2,7 @@
 
 namespace App\Domain\Product\Providers;
 
+use App\Domain\Product\Console\SyncProductCatalogCommand;
 use App\Domain\Product\Models\Banner;
 use App\Domain\Product\Models\Category;
 use App\Domain\Product\Models\Product;
@@ -35,6 +36,9 @@ class ProductServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->commands([
+            SyncProductCatalogCommand::class,
+        ]);
         Product::observe(ProductObserver::class);
         Banner::observe(BannerObserver::class);
         Category::observe(CategoryObserver::class);
